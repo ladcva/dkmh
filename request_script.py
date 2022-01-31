@@ -1,3 +1,14 @@
+"""
+ This is the default license template.
+ 
+ File: request_script.py
+ Author: mac
+ Copyright (c) 2022 mac
+ 
+ To edit this license information: Press Ctrl+Shift+P and press 'Create new License Template...'.
+"""
+
+
 import subprocess
 from time import sleep
 from datetime import datetime

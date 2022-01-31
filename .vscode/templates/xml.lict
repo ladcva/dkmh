@@ -1,0 +1,16 @@
+This is a license template.
+
+Some variables:
+- File: %(File) [the file the license is inserted to]
+- Path: %(Path) [the path to the file]
+- CurrentYear: %(CurrentYear) [the current year]
+- CurrentMonth: %(CurrentMonth) [the current month]
+- CurrentDay: %(CurrentDay) [the current day]
+- CreationYear: %(CreationYear) [the year the file was created]
+- CreationMonth: %(CreationMonth) [the month the file was created]
+- CreationDay: %(CreationDay) [the day the file was created]
+- Date: %(Date) [the current date]
+- Username: %(Username) [the name of the current user logged in]
+- CopyrightYear: %(CopyrightYear) [the year that should be used for copyright notices]
+
+Note: You can use environment variables with: %(#ENVIRONMENT_VAR).
