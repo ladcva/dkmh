@@ -1,0 +1,96 @@
+
+
+
+<h3 class="title-table" lang="lhpchodangky-tabletitle">Lớp học phần chờ đăng ký</h3>
+<div class="text-right" style="margin-bottom:10px; margin-top:18px">
+    <label><input checked="checked" id="checkLichTrung" name="checkLichTrung" type="checkbox" value="true" /><input name="checkLichTrung" type="hidden" value="false" /><b><span class="text-uppercase" style="color:red; margin-left: 5px !important; margin-right: 10px !important;" lang="lhpchodangky-lhpkhongtrunglich">HIỂN THỊ LỚP học phần KHÔNG TRÙNG LỊCH</span></b></label>
+</div>
+
+<div class="table-responsive">
+    <table id="table_lhpchodangky" class="table-pointer table-dkhp table-custom table table-bordered text-center no-footer dtr-inline" width="100%" role="grid">
+        <thead>
+            <tr role="row">
+                
+                <th lang="sv-stt">STT</th>
+                <th lang="dkhp-thongtinlhp">Thông tin lớp học phần</th>
+                <th lang="dkhp-dadangky">Đã đăng ký</th>
+            </tr>
+        </thead>
+        <tbody>
+                    <tr class="tr-active" onclick="SelectLopHocPhanChoDangKy(this)" data-guidlhp="ij-e5YIaK5HvvnSn1iuttg">
+                        
+                        <td style="width:40px">1</td>
+                        <td class="text-left">
+                                <div class="name">GDTC - Điền kinh</div>
+                            <div>
+                                <span lang="dkhp-trangthai">Trạng thái</span>: <span class="cl-red">Mở lớp </span><br />
+                                <span lang="dkhp-malhp">M&#227; lớp  học phần</span>: PES100301 - PES1003
+                            </div>
+
+                        </td>
+                        <td>
+                            50 / 50
+                        </td>
+                    </tr>
+                    <tr class="" onclick="SelectLopHocPhanChoDangKy(this)" data-guidlhp="NbfkRyzJLfL_s-pz-Io0Ig">
+                        
+                        <td style="width:40px">2</td>
+                        <td class="text-left">
+                                <div class="name">GDTC - Điền kinh</div>
+                            <div>
+                                <span lang="dkhp-trangthai">Trạng thái</span>: <span class="cl-red">Mở lớp </span><br />
+                                <span lang="dkhp-malhp">M&#227; lớp  học phần</span>: PES100302 - PES1003
+                            </div>
+
+                        </td>
+                        <td>
+                            50 / 50
+                        </td>
+                    </tr>
+                    <tr class="" onclick="SelectLopHocPhanChoDangKy(this)" data-guidlhp="D5M0mtJWjcFI1B8kkBgpUg">
+                        
+                        <td style="width:40px">3</td>
+                        <td class="text-left">
+                                <div class="name">GDTC - Điền kinh</div>
+                            <div>
+                                <span lang="dkhp-trangthai">Trạng thái</span>: <span class="cl-red">Mở lớp </span><br />
+                                <span lang="dkhp-malhp">M&#227; lớp  học phần</span>: PES100305 - PES1003
+                            </div>
+
+                        </td>
+                        <td>
+                            50 / 50
+                        </td>
+                    </tr>
+                    <tr class="" onclick="SelectLopHocPhanChoDangKy(this)" data-guidlhp="LsULEjRsHaJwLxNGZWNv3A">
+                        
+                        <td style="width:40px">4</td>
+                        <td class="text-left">
+                                <div class="name">GDTC - Điền kinh</div>
+                            <div>
+                                <span lang="dkhp-trangthai">Trạng thái</span>: <span class="cl-red">Mở lớp </span><br />
+                                <span lang="dkhp-malhp">M&#227; lớp  học phần</span>: PES100306 - PES1003
+                            </div>
+
+                        </td>
+                        <td>
+                            50 / 50
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</div>
+<br />
+<br />
+    <script>
+        $(document).ready(function () {
+            var trActive = $("#table_lhpchodangky .tr-active");
+            SelectLopHocPhanChoDangKy(trActive);
+        });
+
+        $("#checkLichTrung").change(function () {
+            var trActive = $("#box_monhocphan_chodangky .tr-active");
+            SelectMonHocChoDangKy(trActive);
+        });
+    </script>
+<script type="text/javascript" src="/Scripts/lang/lang.js"></script>
