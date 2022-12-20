@@ -9,6 +9,18 @@ tomcat
 #
 *.log
 
+# Cron response
+cron_respones.log
+
+# curl command
+curl_command.sh
+
+#setting clmm
+.vscode/settings.json
+
+# test files
+test.py
+
 # Binaries
 *.7z
 *.dmg
@@ -55,3 +67,4 @@ nb-configuration.xml
 release.properties
 pom.xml.releaseBackup
 pom.xml.tag
+
