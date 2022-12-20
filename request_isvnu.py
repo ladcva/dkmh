@@ -45,7 +45,7 @@ def subject_request():
 
       # Find ma hoc phan cho mon hoc
       attribute2 = tag.find_all('div')[1].find('span', text='Mã lớp  học phần').next_sibling
-      print("GUID: {}".format(attribute),"\n","Ma hoc phan: {}".format(attribute2))
+      print("GUID: {}".format(attribute),"\n","Ma hoc phan{}".format(attribute2))
 
     except IndexError:
       break
