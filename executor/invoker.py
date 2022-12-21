@@ -4,7 +4,7 @@ from random import random, randint, randrange
 from time import sleep
 from datetime import datetime
 
-# num_processes = 15
+NUM_PROCESSES = 15
 
 class Invoker:
     def __init__(self) -> None:
@@ -29,7 +29,8 @@ class Invoker:
 
     def task(self, identifier, value):
 
-        print(f'Task {identifier} executing with {value} at {datetime.now().utcnow()}', flush=True)
+        datetime_now = datetime.now().strftime("%H:%M:%S")
+        print(f'Task {identifier} executing with {value} at {datetime_now}', flush=True)
 
         execution_time = randrange(start=5, stop=14)
         sleep(execution_time)
@@ -38,7 +39,7 @@ class Invoker:
 
     def invoke_processes(self, **data):
         num_workers = data['workers']
-        with Pool(num_workers) as p:
+        with Pool(NUM_PROCESSES) as p:
             items = [(i, random()) for i in range(num_workers)]
             result = p.starmap_async(self.task, items)
             for result in result.get():
