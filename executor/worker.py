@@ -5,4 +5,5 @@ from time import sleep
 from datetime import datetime
 
 class Worker:
-    pass
+    def __init__(self) -> None:
+        pass
