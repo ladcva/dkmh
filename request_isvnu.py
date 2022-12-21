@@ -1,15 +1,15 @@
 import requests
-import shutil
 from bs4 import BeautifulSoup
 
 '''
 # check ma hoc phan, thay vao URL
 lhp = str(input("Dien ma mon hoc: "))
 
-url = f"https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&MaMonHoc={lhp}&DSHocPhanDuocHoc={lhp}&IsLHPKhongTrungLich=true&LoaiDKHP=1"
+url = f"https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&MaMonHoc={lhp}&DSHocPhanDuocHoc={lhp}&IsLHPKhongTrungLich=true&LoaiDKHP=1" 
 '''
 
-url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&MaMonHoc=PES1003&DSHocPhanDuocHoc=PES1003&IsLHPKhongTrungLich=true&LoaiDKHP=1"
+# Để crawl all môn thì IsLHPKhongTrungLich = false
+url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&MaMonHoc=PES1003&DSHocPhanDuocHoc=PES1003&IsLHPKhongTrungLich=false&LoaiDKHP=1"
 
 payload={}
 headers = {
@@ -30,27 +30,25 @@ headers = {
   'x-requested-with': 'XMLHttpRequest'
 }
 
-response = requests.request("POST", url, headers=headers, data=payload)
+def subject_request():
+  # create a response variable
+  response = requests.request("POST", url, headers=headers, data=payload)
 
-'''
-with open('sample.json', 'wb') as out_file:
-  shutil.copyfileobj(response.raw, out_file)
-'''
+  # create a Soup variable using BS4
+  soup = BeautifulSoup(response.text, 'html.parser')
 
-soup = BeautifulSoup(response.text, 'html.parser')
+  # Find GUID for mon hoc
+  for i in range(1,16):
+    try:
+      tag = soup.find_all('tr')[i]
+      attribute = tag['data-guidlhp']
 
-tag = soup.findAll('tr')[1]
-attribute = tag['data-guidlhp']
+      # Find ma hoc phan cho mon hoc
+      attribute2 = tag.find_all('div')[1].find('span', text='Mã lớp  học phần').next_sibling
+      print("GUID: {}".format(attribute),"\n","Ma hoc phan{}".format(attribute2))
 
-print(attribute)
-
-
-# 2 
-attribute2 = tag.findAll('div')[1].find('span', text='Mã lớp  học phần').next_sibling
-
-
-
-print(attribute2)
+    except IndexError:
+      break
 
 
-#print(response.text)
+subject_request()
