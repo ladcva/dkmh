@@ -1,9 +1,20 @@
-from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
-from multiprocessing import Pool
-from random import random, randint, randrange
+from multiprocessing.process import BaseProcess
+from random import randrange
 from time import sleep
 from datetime import datetime
 
-class Worker:
+class Worker(BaseProcess):
     def __init__(self) -> None:
-        pass
+        super().__init__()
+
+    @classmethod
+    def task(cls, identifier, value):
+
+        datetime_now = datetime.now().strftime("%H:%M:%S")
+        print(f'Task {identifier} executing with {value} at {datetime_now}', flush=True)
+
+        execution_time = randrange(start=5, stop=14)
+        sleep(execution_time)
+        print(f"Completed - Task {identifier}")
+
+        return f"({identifier}, {value}) after {execution_time} seconds !"

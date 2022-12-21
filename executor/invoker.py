@@ -1,20 +1,22 @@
-from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
 from multiprocessing import Pool
-from random import random, randint, randrange
-from time import sleep
-from datetime import datetime
+from random import random
+from executor.worker import Worker
 
 NUM_PROCESSES = 15
 
 class Invoker:
+    """
+    This constructor invokes a pool of parallel workers.
+    """
     def __init__(self) -> None:
         pass
 
+    @staticmethod
     def create_wokers():
         pass
 
-    def findlen(*args):
-
+    @staticmethod
+    def find_len(*args):
         res = []
         for arg in args:
             try:
@@ -24,24 +26,16 @@ class Invoker:
             res.append((lenval, arg))
         return res
 
+    @staticmethod
     def f(x):
         return x*x
 
-    def task(self, identifier, value):
-
-        datetime_now = datetime.now().strftime("%H:%M:%S")
-        print(f'Task {identifier} executing with {value} at {datetime_now}', flush=True)
-
-        execution_time = randrange(start=5, stop=14)
-        sleep(execution_time)
-        print(f"Completed - Task {identifier}")
-        return f"({identifier}, {value}) after {execution_time} seconds !"
-
-    def invoke_processes(self, **data):
+    @classmethod
+    def invoke_processes(cls, **data):
         num_workers = data['workers']
         with Pool(NUM_PROCESSES) as p:
             items = [(i, random()) for i in range(num_workers)]
-            result = p.starmap_async(self.task, items)
+            result = p.starmap_async(Worker.task, items)
             for result in result.get():
                 print(f'Got result: {result}', flush=True)
             # process pool is closed automatically
