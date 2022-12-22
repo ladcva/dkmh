@@ -3,7 +3,11 @@ from random import randrange
 from time import sleep
 from datetime import datetime
 
+
 class Worker(BaseProcess):
+    """
+        This constructor defines tasks that will be executed in the workers.
+        """
     def __init__(self) -> None:
         super().__init__()
 
