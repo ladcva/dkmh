@@ -21,7 +21,7 @@ def receive_param():
         invoker_response.start()
 
         response_msg = {
-            'num_worker_requested': int(data['workers']),
+            'num_worker_requested': int(float(data['workers'])),
             'num_worker_allocated': get_num_workers(data['workers']),
             'invoker_is_alive': invoker_response.is_alive(),
             'invoker_thread_name': invoker_response.getName()

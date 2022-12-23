@@ -11,28 +11,12 @@ class Invoker:
     def __init__(self) -> None:
         pass
 
-    # @staticmethod
-    # def get_num_workers(provided_num_workers):
-    #     checked_num_workers: int
-    #     try:
-    #         checked_num_workers = int(provided_num_workers)
-    #     except ValueError or TypeError:
-    #         print("Invalid value, \"workers\" must be int.")
-    #         print(f"Using DEFAULT_NUM_PROCESSES={DEFAULT_NUM_PROCESSES} instead.")
-    #         checked_num_workers = DEFAULT_NUM_PROCESSES
-    #     return checked_num_workers
-
     @staticmethod
     def create_workers(provided_num_workers: int):
         checked_num_workers = get_num_workers(provided_num_workers)
         assert checked_num_workers > 0, f"Number of workers must be greater than 0. Got {checked_num_workers}"
 
         return Pool(checked_num_workers)
-
-        # if checked_num_workers < DEFAULT_NUM_PROCESSES:
-        #     return Pool(checked_num_workers)
-        # else:
-        #     return Pool(DEFAULT_NUM_PROCESSES)
 
     @staticmethod
     def find_len(*args):
@@ -51,7 +35,7 @@ class Invoker:
 
     @classmethod
     def invoke_processes(cls, **data):
-        num_workers_requested = int(data['workers'])
+        num_workers_requested = int(float(data['workers']))
 
         with cls.create_workers(num_workers_requested) as p:
             items = [(i, random()) for i in range(num_workers_requested)]
@@ -63,8 +47,3 @@ class Invoker:
             print(log_message)
         return log_message
 
-    # def main():
-    #     server = SimpleJSONRPCServer(('localhost', 3010))
-    #     server.register_function(invoke_processes)
-    #     print("Start server")
-    #     server.serve_forever()
