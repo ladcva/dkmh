@@ -52,3 +52,5 @@ def subject_request():
 
 
 subject_request()
+# crawl -> send den module khac xu li -> receiver
+# database

@@ -22,3 +22,4 @@ class Worker(BaseProcess):
         print(f"Completed - Task {identifier}")
 
         return f"({identifier}, {value}) after {execution_time} seconds !"
+
