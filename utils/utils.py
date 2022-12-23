@@ -5,7 +5,7 @@ from config.default import DEFAULT_NUM_PROCESSES
 # Utility functions
 def get_num_workers(provided_num_workers):
     try:
-        provided_num_workers = int(provided_num_workers)
+        provided_num_workers = int(float(provided_num_workers))
     except TypeError or ValueError:
         print("Invalid value, \"workers\" must be int.")
         print(f"Using DEFAULT_NUM_PROCESSES={DEFAULT_NUM_PROCESSES} instead.")
