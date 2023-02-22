@@ -2,6 +2,7 @@ from multiprocessing.process import BaseProcess
 from random import randrange
 from time import sleep
 from datetime import datetime
+from uuid import uuid4
 
 
 class Worker(BaseProcess):
@@ -12,14 +13,15 @@ class Worker(BaseProcess):
         super().__init__()
 
     @classmethod
-    def task(cls, identifier, value):
+    def task(cls, auth_user, value):
+        task_uuid = uuid4()
 
         datetime_now = datetime.now().strftime("%H:%M:%S")
-        print(f'Task {identifier} executing with {value} at {datetime_now}', flush=True)
+        print(f'Task {task_uuid} with object {value} executing at {datetime_now}, auth_user = {auth_user}', flush=True)
 
-        execution_time = randrange(start=5, stop=14)
+        execution_time = randrange(start=3, stop=7)
         sleep(execution_time)
-        print(f"Completed - Task {identifier}")
+        print(f"Completed - Task {task_uuid}")
 
-        return f"({identifier}, {value}) after {execution_time} seconds !"
+        return f"Successfully registered {value['className']} after {execution_time} seconds !"
 

@@ -9,25 +9,11 @@ url = f"https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&Ma
 '''
 
 # Để crawl all môn thì IsLHPKhongTrungLich = false
-url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&MaMonHoc=PES1003&DSHocPhanDuocHoc=PES1003&IsLHPKhongTrungLich=false&LoaiDKHP=1"
+url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=27&MaMonHoc=INS2011&DSHocPhanDuocHoc=INS2011&IsLHPKhongTrungLich=false&LoaiDKHP=1"
 
 payload={}
 headers = {
-  'authority': 'sv.isvnu.vn',
-  'accept': 'text/html, */*; q=0.01',
-  'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
-  'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-  'cookie': 'ASP.NET_SessionId=eegxrqrbdm5xxp2cxrnql3hh; __RequestVerificationToken=72wUCejJDOAf2mifGTwY-ui2wdHPQ-D8q1egJi0BRoGloRQLlM4SwS-JEfkDAuo39egNoDsvkgU1w5qa-hjoKjnCKm9vuLxSPDI_-lUNssE1; SinhVien_LangName=; _ga=GA1.2.343368229.1671026498; ASC.AUTH=34552BB4081FAC768BE5324FDA464E5EB259E619364F4EBA217AE33D00D1326B6960FD0E5780AE22A99F327D358B272212E212DCB364BCCD089CE31AB0B46F7F5319713E122E7BE5EDD81C169507EA03C77EAE9D1884D4ECEBC07FCEF7AD2256C350BF58BCCC148C48DB8EB5CDE38CA306D6C5EE6A63927270488275FE515377',
-  'origin': 'https://sv.isvnu.vn',
-  'Referer': 'https://sv.isvnu.vn/dang-ky-hoc-phan.html',
-  'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Microsoft Edge";v="108"',
-  'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': 'Windows',
-  'sec-fetch-dest': 'empty',
-  'sec-fetch-mode': 'cors',
-  'sec-fetch-site': 'same-origin',
-  'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46',
-  'x-requested-with': 'XMLHttpRequest'
+  'cookie': '_ga=GA1.2.1000091377.1671634543; ASP.NET_SessionId=t0fmbgxgkd3n3ayoutw10p22; __RequestVerificationToken=ixTDUomDQ7f1Kx6DRJzmpedAmS2KmZyjzv8BDV-WFoETIPyuE9nxcEqOTa1PtrNzIX1Kva6rc8WfsPAyNTb9iCZ-aG7X4Bdfu5ZD9ZJvDZ01; PAVWs3tE769MuloUJ81Y=lJVoIW0Nv6nBeFQ5y0RWnLqHyVkRK5V-zGEVZDYbXkY; ASC.AUTH=C755BEDF469030D764CA9EFA3B5F9067E8EB2CECE8C30C1C7365EB0DBBF2725859E0099D6D76321C88CF90ABD53266990D8479247E63757457040F631611FB6DFFF67130DE0A342F3997FE2B30F3ED386EA4680196F761BD1BEE622FD8448C3EA5189E7519ED4BEB7A315283F9430F97D8BF0803E242CC1F4F74C0E4F94F444D; _gid=GA1.2.674121839.1677083976; _gat_gtag_UA_184858033_10=1',
 }
 
 def subject_request():

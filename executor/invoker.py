@@ -36,10 +36,14 @@ class Invoker:
     @classmethod
     def invoke_processes(cls, **data):
         num_workers_requested = int(float(data['workers']))
+        auth_user = data['auth']
+
+        iterable_queued_classes = [(auth_user, item) for item in data['queuedClasses']]
+        # print(iterable_queued_classes)
 
         with cls.create_workers(num_workers_requested) as p:
             items = [(i, random()) for i in range(num_workers_requested)]
-            result = p.starmap_async(Worker.task, items)
+            result = p.starmap_async(Worker.task, iterable_queued_classes)
             for result in result.get():
                 print(f'Got result: {result}', flush=True)
             # process pool is closed automatically
