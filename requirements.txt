@@ -4,3 +4,4 @@ jsonrpclib
 python-dotenv==0.21.0
 Werkzeug~=2.2.2
 bs4
+mysql.connector

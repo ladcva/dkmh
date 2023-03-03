@@ -2,19 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 
-# # get current semester
-# base_sem = 35
-# current_month = datetime.datetime.now().month
-# if 8 <= current_month <= 11: # sem 1
-#     base_sem += 1
-# elif 12 <= current_month <= 2: # sem 2
-#     base_sem += 2
-# else: # sem 3
-#     base_sem += 3
-
-# # increment IDDongDangKy based on current semester
-# IDDotDangKy = base_sem
-
 IDDotDangKy = int(input("Nhap ID cua Hoc Ky: "))
 
 def crawl_lhp_data(start_lhp=1, end_lhp=100):
