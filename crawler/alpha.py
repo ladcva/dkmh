@@ -1,37 +1,56 @@
-# run every 5 minutes
-# check for changes in Id dot dang ky
-
-import requests
-from bs4 import BeautifulSoup
+# Importing libraries
+import time
 import hashlib
+from urllib.request import urlopen, Request
 
-# URL of the website to monitor
-url = "https://www.example.com"
+# setting the URL you want to monitor
+url = Request('https://sv.isvnu.vn/SinhVienDangKy/CheckDotChoPhepDangKy',
+			headers={'User-Agent': 'Mozilla/5.0'})
 
-# Hash of the initial state of the website
-initial_hash = None
+# to perform a GET request and load the
+# content of the website and store it in a var
+response = urlopen(url).read()
 
-# Function to calculate the hash of the website content
-def calculate_hash(content):
-    return hashlib.sha256(content.encode('utf-8')).hexdigest()
-
-# Monitor the website for changes
+# to create the initial hash
+currentHash = hashlib.sha224(response).hexdigest()
+print("running")
+time.sleep(10)
 while True:
-    # Make a POST request to the website
-    response = requests.post(url, data={'param1': 'value1', 'param2': 'value2'})
-    soup = BeautifulSoup(response.content, 'html.parser')
+	try:
+		# perform the get request and store it in a var
+		response = urlopen(url).read()
 
-    # Calculate the hash of the website content
-    current_hash = calculate_hash(str(soup))
+		# create a hash
+		currentHash = hashlib.sha224(response).hexdigest()
 
-    # If the hash of the content has changed, save a snapshot and notify Crawler 2
-    if current_hash != initial_hash:
-        # Save a snapshot of the website content
-        with open('snapshot.html', 'w') as f:
-            f.write(str(soup))
+		# wait for 30 seconds
+		time.sleep(30)
 
-        # Notify Crawler 2 to update its data
-        requests.post('http://crawler2.example.com/update', data={'new_data': str(soup)})
+		# perform the get request
+		response = urlopen(url).read()
 
-        # Update the hash of the content to the current hash
-        initial_hash = current_hash
+		# create a new hash
+		newHash = hashlib.sha224(response).hexdigest()
+
+		# check if new hash is same as the previous hash
+		if newHash == currentHash:
+			continue
+
+		# if something changed in the hashes
+		else:
+			# notify
+			print("something changed")
+
+			# again read the website
+			response = urlopen(url).read()
+
+			# create a hash
+			currentHash = hashlib.sha224(response).hexdigest()
+
+			# wait for 30 seconds
+			time.sleep(30)
+			continue
+
+	# To handle exceptions
+	except Exception as e:
+		print("error")
