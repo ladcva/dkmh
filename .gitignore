@@ -78,7 +78,7 @@ cron_respones.log
 curl_command.sh
 
 #setting clmm
-.vscode/settings.json
+.vscode/*
 
 # test files
 test.py

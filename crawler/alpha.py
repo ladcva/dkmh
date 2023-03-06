@@ -1,56 +1,26 @@
 # Importing libraries
-import time
-import hashlib
 from urllib.request import urlopen, Request
+from bs4 import BeautifulSoup
+import requests
 
 # setting the URL you want to monitor
-url = Request('https://sv.isvnu.vn/SinhVienDangKy/CheckDotChoPhepDangKy',
-			headers={'User-Agent': 'Mozilla/5.0'})
+url = 'https://sv.isvnu.vn/dashboard.html'
+headers = {
+  'cookie': '_ga=GA1.2.1000091377.1671634543; ASP.NET_SessionId=t0fmbgxgkd3n3ayoutw10p22; __RequestVerificationToken=ixTDUomDQ7f1Kx6DRJzmpedAmS2KmZyjzv8BDV-WFoETIPyuE9nxcEqOTa1PtrNzIX1Kva6rc8WfsPAyNTb9iCZ-aG7X4Bdfu5ZD9ZJvDZ01; PAVWs3tE769MuloUJ81Y=lJVoIW0Nv6nBeFQ5y0RWnLqHyVkRK5V-zGEVZDYbXkY; ASC.AUTH=C755BEDF469030D764CA9EFA3B5F9067E8EB2CECE8C30C1C7365EB0DBBF2725859E0099D6D76321C88CF90ABD53266990D8479247E63757457040F631611FB6DFFF67130DE0A342F3997FE2B30F3ED386EA4680196F761BD1BEE622FD8448C3EA5189E7519ED4BEB7A315283F9430F97D8BF0803E242CC1F4F74C0E4F94F444D; _gid=GA1.2.674121839.1677083976; _gat_gtag_UA_184858033_10=1',
+}
 
-# to perform a GET request and load the
-# content of the website and store it in a var
-response = urlopen(url).read()
 
-# to create the initial hash
-currentHash = hashlib.sha224(response).hexdigest()
-print("running")
-time.sleep(10)
-while True:
-	try:
-		# perform the get request and store it in a var
-		response = urlopen(url).read()
+ 
+main_site = requests.get(url, headers=headers)
+soup = BeautifulSoup(main_site.content, 'html.parser')
+for option in soup.find_all('option'):
+    print(option["value"])
+    
+items = soup.select('option[value]')
+values = [item.get('value') for item in items if item.get('value')]
+textValues = [item.text for item in items if 'HK' in item.text]
 
-		# create a hash
-		currentHash = hashlib.sha224(response).hexdigest()
+res = dict(map(lambda k,v : (int(k), v), values,textValues))
+res
 
-		# wait for 30 seconds
-		time.sleep(30)
-
-		# perform the get request
-		response = urlopen(url).read()
-
-		# create a new hash
-		newHash = hashlib.sha224(response).hexdigest()
-
-		# check if new hash is same as the previous hash
-		if newHash == currentHash:
-			continue
-
-		# if something changed in the hashes
-		else:
-			# notify
-			print("something changed")
-
-			# again read the website
-			response = urlopen(url).read()
-
-			# create a hash
-			currentHash = hashlib.sha224(response).hexdigest()
-
-			# wait for 30 seconds
-			time.sleep(30)
-			continue
-
-	# To handle exceptions
-	except Exception as e:
-		print("error")
+print(res)
