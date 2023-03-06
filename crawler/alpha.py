@@ -14,9 +14,9 @@ def get_dict_semester_website():
 	soup = BeautifulSoup(main_site.content, 'html.parser')
 	
 	# Get all option tags
-	items = soup.select('option[value]')
-	values = [item.get('value') for item in items if item.get('value')]
-	textValues = [item.text for item in items if 'HK' in item.text]
+	tag_items = soup.select('option[value]')
+	values = [item.get('value') for item in tag_items if item.get('value')]
+	textValues = [item.text for item in tag_items if 'HK' in item.text]
 
 	# Convert to dict
 	# dict_res = {35: 'HK2 (2022-2023)', 34: 'HK1 (2022-2023)'}
