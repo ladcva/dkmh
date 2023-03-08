@@ -15,3 +15,8 @@ def get_num_workers(provided_num_workers):
             return provided_num_workers
         else:
             return DEFAULT_NUM_PROCESSES
+
+def sort_by_key(unsorted_dict):
+    sorted_dict = dict(sorted(unsorted_dict.items()))
+    return sorted_dict
+
