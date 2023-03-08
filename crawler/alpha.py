@@ -24,5 +24,4 @@ def get_dict_semester_website():
 
 	return dict_res
 
-
 get_dict_semester_website()

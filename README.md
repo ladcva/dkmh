@@ -151,7 +151,35 @@ _Below is an example of how you can instruct your audience on installing and set
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Database Schema
+Subject table:
 
+Subject ID (Primary Key)
+Subject Name
+Subject Code
+Class table:
+
+Class ID (Primary Key)
+Class Code
+Semester ID (Foreign Key to Semester table)
+Semester table:
+
+Semester ID (Primary Key)
+Semester Name (e.g. II, 2022/2023)
+Start Date
+End Date
+Subject_Class table (Many-to-Many relationship table between Subject and Class):
+
+Subject ID (Foreign Key to Subject table)
+Class ID (Foreign Key to Class table)
+To store historical data, you can add a new table to store previous semesters' information:
+
+Historical_Semester table:
+
+Semester ID (Primary Key)
+Semester Name
+Start Date
+End Date
 
 <!-- USAGE EXAMPLES -->
 ## Usage
