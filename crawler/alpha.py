@@ -92,7 +92,6 @@ def ingest_new_semester():
         session.commit()
 
 
-
 if __name__ == '__main__':
     ids_semester_website = set(int(item) for item in get_dict_semester_website().keys())
     ids_semester_db = set(int(item) for item in get_current_semester_detail_db().keys())
