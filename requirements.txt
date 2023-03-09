@@ -4,5 +4,5 @@ jsonrpclib
 python-dotenv==0.21.0
 Werkzeug~=2.2.2
 bs4
-mysql.connector
+psycopg2==2.9.5
 requests
