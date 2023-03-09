@@ -1,7 +1,9 @@
 from sqlalchemy import ARRAY, BigInteger, Column, DateTime, Identity, Integer, PrimaryKeyConstraint, create_engine
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base
+from sqlalchemy_utils import database_exists, create_database
 from config.default import POSTGRES_CONN_STRING
+from db_migration import init_load
 
 
 base = declarative_base()
@@ -21,6 +23,14 @@ class SemesterSnapshot(base):
 
 if __name__ == '__main__':
 
-    # To create table (only if schema dkmh exist)
+    # To create table and database dkmh
     engine = create_engine(POSTGRES_CONN_STRING, echo=True)
-    base.metadata.create_all(engine, checkfirst=True)
+    # base.metadata.create_all(engine, checkfirst=True)
+    
+    if not database_exists(engine.url):
+        create_database(engine.url)
+        base.metadata.create_all(engine, checkfirst=True)
+        init_load.init_load()
+    else:
+        base.metadata.create_all(engine, checkfirst=True)
+        init_load.init_load()

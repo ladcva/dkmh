@@ -33,7 +33,7 @@ def get_dict_semester_website():
     return dict_res
 
 def get_current_semester_detail_db():
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    engine = create_engine(POSTGRES_CONN_STRING, echo=True)
 
     Session = sessionmaker(bind=engine)
     session = Session()
