@@ -32,8 +32,7 @@ def get_dict_semester_website():
 
     return dict_res
 
-def get_current_semester_detail_db():
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+def get_current_semester_detail_db(engine):
 
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -55,10 +54,7 @@ def get_current_semester_detail_db():
     return res
         
 
-def ingest_new_semester():
-
-    # Define the database engine
-    engine = create_engine('postgresql+psycopg2://admin:1@localhost:5432/dkmh', echo=False)
+def ingest_new_semester(engine):
 
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -93,13 +89,16 @@ def ingest_new_semester():
 
 
 if __name__ == '__main__':
+
+    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+
     ids_semester_website = set(int(item) for item in get_dict_semester_website().keys())
-    ids_semester_db = set(int(item) for item in get_current_semester_detail_db().keys())
+    ids_semester_db = set(int(item) for item in get_current_semester_detail_db(engine).keys())
 
     diff = ids_semester_website - ids_semester_db
 
     if diff:
-        ingest_new_semester()
+        ingest_new_semester(engine)
         print(f'Successfully added semester {diff} to db.')
         # Call beta job
     else:

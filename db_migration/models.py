@@ -1,7 +1,6 @@
-from sqlalchemy import ARRAY, BigInteger, Column, DateTime, Identity, Integer, PrimaryKeyConstraint, create_engine
+from sqlalchemy import ARRAY, BigInteger, Column, DateTime, Identity, Integer, PrimaryKeyConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base
-from config.default import POSTGRES_CONN_STRING
 
 
 base = declarative_base()
@@ -17,3 +16,4 @@ class SemesterSnapshot(base):
     details = Column(JSONB)
     start_time = Column(DateTime)
     end_time = Column(DateTime)
+    

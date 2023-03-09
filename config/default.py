@@ -11,3 +11,14 @@ class DefaultConfig(object):
     DEBUG = True
     ENV = 'development'
     SECRET_KEY = 'GDtfDCFYjD'
+
+class PgConnection:
+    def __init__(self, username, password, host, port, database):
+        self.username = username
+        self.password = password
+        self.host = host
+        self.port = port
+        self.database = database
+
+    def conn_string(self):
+        return f"postgresql+psycopg2://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
