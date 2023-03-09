@@ -11,7 +11,10 @@ from db_migration.models import SemesterSnapshot
 from config.default import POSTGRES_CONN_STRING, ASC_AUTH_STR, ISVNU_DASHBOARD_URL
 
 
-def get_dict_semester_website(url, cookie):
+def get_dict_semester_website():
+
+    url = ISVNU_DASHBOARD_URL
+    cookie = {'ASC.AUTH': ASC_AUTH_STR}
 
     main_site = requests.get(url, cookies=cookie)
     soup = BeautifulSoup(main_site.content, 'html.parser')
@@ -93,7 +96,7 @@ if __name__ == '__main__':
     if cookie_is_valid:
         engine = create_engine(POSTGRES_CONN_STRING, echo=False)
 
-        ids_semester_website = set(int(item) for item in get_dict_semester_website(url, cookie).keys())
+        ids_semester_website = set(int(item) for item in get_dict_semester_website().keys())
         ids_semester_db = set(int(item) for item in get_current_semester_detail_db(engine).keys())
 
         diff = ids_semester_website - ids_semester_db
