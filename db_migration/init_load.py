@@ -1,13 +1,13 @@
-from db_migration.models import SemesterSnapshot
+from db_migration.models import SemesterSnapshot, base
 from crawler.alpha import get_dict_semester_website
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert, update, func
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import database_exists, create_database
+from config.default import POSTGRES_CONN_STRING
 from datetime import datetime
 
-def init_load():
-    # Define the database engine
-    engine = create_engine('postgresql+psycopg2://admin:1@localhost:5432/dkmh', echo=False)
+def init_load(engine):
 
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -39,3 +39,16 @@ def init_load():
         session.execute(update_old_rec)
         session.execute(insert_new_rec)
         session.commit()
+
+if __name__ == '__main__':
+    # To create table and database dkmh
+    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    # base.metadata.create_all(engine, checkfirst=True)
+
+    if not database_exists(engine.url):
+        create_database(engine.url)
+        base.metadata.create_all(engine, checkfirst=True)
+        init_load(engine)
+    else:
+        base.metadata.create_all(engine, checkfirst=True)
+        init_load(engine)
