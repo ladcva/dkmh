@@ -1,3 +1,5 @@
+import requests
+
 # Get constants from config file
 from config.default import DEFAULT_NUM_PROCESSES
 
@@ -20,3 +22,15 @@ def sort_by_key(unsorted_dict):
     sorted_dict = dict(sorted(unsorted_dict.items()))
     return sorted_dict
 
+
+def check_cookie(url, cookie):
+    # Set the cookie in a session object
+    session = requests.Session()
+    session.cookies.set('cookie_name', cookie)
+    response = session.get(url)
+    if response.status_code == 200:
+        # If the status code is 200, the cookie is valid
+        return True
+    else:
+        # If the status code is not 200, the cookie is invalid
+        return False

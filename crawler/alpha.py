@@ -2,7 +2,7 @@
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
-from utils.utils import sort_by_key
+from utils.utils import sort_by_key, check_cookie
 
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert, update, func
@@ -89,17 +89,21 @@ def ingest_new_semester(engine):
 
 
 if __name__ == '__main__':
+    
+    check_cookie = check_cookie()
+    if check_cookie == True:
+        engine = create_engine(POSTGRES_CONN_STRING, echo=False)
 
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+        ids_semester_website = set(int(item) for item in get_dict_semester_website().keys())
+        ids_semester_db = set(int(item) for item in get_current_semester_detail_db(engine).keys())
 
-    ids_semester_website = set(int(item) for item in get_dict_semester_website().keys())
-    ids_semester_db = set(int(item) for item in get_current_semester_detail_db(engine).keys())
+        diff = ids_semester_website - ids_semester_db
 
-    diff = ids_semester_website - ids_semester_db
-
-    if diff:
-        ingest_new_semester(engine)
-        print(f'Successfully added semester {diff} to db.')
-        # Call beta job
+        if diff:
+            ingest_new_semester(engine)
+            print(f'Successfully added semester {diff} to db.')
+            # Call beta job
+        else:
+            print('No changes on website. Latest record in db is already up-to-date.')
     else:
-        print('No changes on website. Latest record in db is already up-to-date.')
+        exit
