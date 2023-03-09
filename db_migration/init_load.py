@@ -13,7 +13,7 @@ def init_load(engine):
     session = Session()
 
     source_data = get_dict_semester_website()
-    set_ids = set(int(i) for i in source_data)
+    set_ids = set(int(keys) for keys in source_data)
 
     latest_rec_time = (
         select(func.max(SemesterSnapshot.start_time))

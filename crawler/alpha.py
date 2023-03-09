@@ -60,7 +60,7 @@ def ingest_new_semester(engine):
     session = Session()
 
     source_data = get_dict_semester_website()
-    set_ids = set(source_data)
+    set_ids = set(int(keys) for keys in source_data)
 
     latest_rec_time = (
         select(func.max(SemesterSnapshot.start_time))
