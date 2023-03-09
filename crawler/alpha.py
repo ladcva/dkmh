@@ -2,21 +2,16 @@
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
-from utils.utils import sort_by_key, check_cookie
+from utils.utils import sort_by_key, validate_cookie
 
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert, update, func
 from sqlalchemy.orm import sessionmaker
 from db_migration.models import SemesterSnapshot
-from config.default import POSTGRES_CONN_STRING
+from config.default import POSTGRES_CONN_STRING, ASC_AUTH_STR, ISVNU_DASHBOARD_URL
 
 
-def get_dict_semester_website():
-
-    url = 'https://sv.isvnu.vn/dashboard.html'
-    cookie = {
-        'ASC.AUTH': 'C755BEDF469030D764CA9EFA3B5F9067E8EB2CECE8C30C1C7365EB0DBBF2725859E0099D6D76321C88CF90ABD53266990D8479247E63757457040F631611FB6DFFF67130DE0A342F3997FE2B30F3ED386EA4680196F761BD1BEE622FD8448C3EA5189E7519ED4BEB7A315283F9430F97D8BF0803E242CC1F4F74C0E4F94F444D'
-    }
+def get_dict_semester_website(url, cookie):
 
     main_site = requests.get(url, cookies=cookie)
     soup = BeautifulSoup(main_site.content, 'html.parser')
@@ -27,7 +22,7 @@ def get_dict_semester_website():
     text_values = [item.text for item in tag_items if 'HK' in item.text]
 
     # Convert to dict and sort by key
-    dict_res = dict(map(lambda k,v : (k, v), values, text_values))
+    dict_res = dict(map(lambda k, v: (k, v), values, text_values))
     dict_res = sort_by_key(dict_res)
 
     return dict_res
@@ -90,11 +85,15 @@ def ingest_new_semester(engine):
 
 if __name__ == '__main__':
     
-    check_cookie = check_cookie()
-    if check_cookie == True:
+    url = ISVNU_DASHBOARD_URL
+    cookie = {'ASC.AUTH': ASC_AUTH_STR}
+
+    cookie_is_valid = validate_cookie(url, cookie)
+
+    if cookie_is_valid:
         engine = create_engine(POSTGRES_CONN_STRING, echo=False)
 
-        ids_semester_website = set(int(item) for item in get_dict_semester_website().keys())
+        ids_semester_website = set(int(item) for item in get_dict_semester_website(url, cookie).keys())
         ids_semester_db = set(int(item) for item in get_current_semester_detail_db(engine).keys())
 
         diff = ids_semester_website - ids_semester_db
@@ -105,5 +104,4 @@ if __name__ == '__main__':
             # Call beta job
         else:
             print('No changes on website. Latest record in db is already up-to-date.')
-    else:
-        exit
+

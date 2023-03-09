@@ -23,14 +23,16 @@ def sort_by_key(unsorted_dict):
     return sorted_dict
 
 
-def check_cookie(url, cookie):
-    # Set the cookie in a session object
-    session = requests.Session()
-    session.cookies.set('cookie_name', cookie)
-    response = session.get(url)
-    if response.status_code == 200:
-        # If the status code is 200, the cookie is valid
-        return True
-    else:
-        # If the status code is not 200, the cookie is invalid
+def validate_cookie(url, cookie):
+    from bs4 import BeautifulSoup
+
+    main_site = requests.get(url, cookies=cookie)
+    soup = BeautifulSoup(main_site.content, 'html.parser')
+
+    # Get all <option> tags
+    tag_items = soup.select('option[value]')
+    if 'HK' not in tag_items[1].text:
+        print('Invalid cookie, maybe expired ?')
         return False
+    else:
+        return True
