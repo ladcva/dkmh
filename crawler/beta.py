@@ -1,12 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-import datetime
 
 IDDotDangKy = int(input("Nhap ID cua Hoc Ky: "))
 
 def crawl_lhp_data(start_lhp=1, end_lhp=100):
     base_url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy={}&MaMonHoc={}&DSHocPhanDuocHoc={}&IsLHPKhongTrungLich=true&LoaiDKHP=1"
-
     for lhp in range(start_lhp, end_lhp + 1):
         url = base_url.format(IDDotDangKy,lhp, lhp)
         response = requests.post(url, headers=headers, data=payload)
