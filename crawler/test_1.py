@@ -1,23 +1,19 @@
-import requests
+import requests, itertools
 from config.default import ASC_AUTH_STR
 
 
-codes = []
 def subjects_crawler():
     list1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT']
-    # list2 = range(1,8)
-    list3 = range(1000, 7999)
+    list3 = range(1000, 8000)
+    codes = ([i + str(j) for i, j in itertools.product(list1, list3)])
+    return codes
 
-    for i in list1:
-        for j in list3:
-            codes.append(i+str(j))
-
-    print(codes[:20])
+codes_list = subjects_crawler()
 
 def validate_subject_code():
     base_url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&MaMonHoc={}&DSHocPhanDuocHoc={}&IsLHPKhongTrungLich=true&LoaiDKHP=1"  #test with a fixed IDDotdangky
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
-    for code in codes:
+    for code in codes_list:
         url = base_url.format(code, code)
         response = requests.post(url, cookies=cookie)
 
@@ -27,7 +23,7 @@ def validate_subject_code():
             print("Subject code exist") #fetch the code to database
 
 
-#Test
+# Test
 base_url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy=35&MaMonHoc={}&DSHocPhanDuocHoc={}&IsLHPKhongTrungLich=true&LoaiDKHP=1"  #test with a fixed IDDotdangky
 cookie = {'ASC.AUTH': ASC_AUTH_STR}
 url = base_url.format("INS3069", "INS3069")
