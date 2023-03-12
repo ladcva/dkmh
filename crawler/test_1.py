@@ -28,9 +28,9 @@ if __name__ == "__main__":
     available_subject_codes = []
 
     for subject_code in codes_list:
-        current_sbj = validate_subject_code(35, subject_code)
-        if subject_code:
-            available_subject_codes.append(current_sbj)
+        exist_current_sbj = validate_subject_code(35, subject_code)
+        if exist_current_sbj:
+            available_subject_codes.append(exist_current_sbj)
 
     print(available_subject_codes)
 
