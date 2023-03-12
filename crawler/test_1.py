@@ -5,7 +5,7 @@ from functools import partial
 
 
 def get_all_subjects():
-    list1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT']
+    list1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT', 'FLF', 'VLF', 'ENG', 'LIN', 'MNS', 'BSA']
     list2 = range(1, 5)
     list3 = range(0, 200)
     codes = ([f"{i}{j}{k:03d}" for i, j, k in itertools.product(list1, list2, list3)])
