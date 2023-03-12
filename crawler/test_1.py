@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     with Pool(processes=num_processes) as pool:
         func = partial(validate_subject_code, 35)   # Create a partial func to pass semester_id to validate_subject_code
-        for result in pool.imap_unordered(func, 35, codes_list, chunksize=chunk_size): # Dont need ordered results, so imap_unordered will gain performance
+        for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Dont need ordered results, so imap_unordered will gain performance
             if result:
                 available_subject_codes.append(result)
 
