@@ -4,8 +4,9 @@ from config.default import ASC_AUTH_STR
 
 def subjects_crawler():
     list1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT']
-    list3 = range(1000, 8000)
-    codes = ([i + str(j) for i, j in itertools.product(list1, list3)])
+    list2 = range(1, 5)
+    list3 = range(0, 200)
+    codes = ([f"{i}{j}{k:03d}" for i, j, k in itertools.product(list1, list2, list3)])
     return codes
 
 codes_list = subjects_crawler()
@@ -33,3 +34,6 @@ if "lhpchodangky-notfound" in response.text:
     print("Subject code does not exist") #testing
 else:
     print("Subject code exist") #fetch the code to database
+
+print(subjects_crawler())
+print(f"Total {len(subjects_crawler())} subjects to iterate")
