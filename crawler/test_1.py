@@ -3,6 +3,7 @@ from config.default import ASC_AUTH_STR
 from multiprocessing import Pool, cpu_count
 from functools import partial
 
+available_subject_codes = []
 
 def get_all_subjects():
     list1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT', 'FLF', 'VLF', 'ENG', 'LIN', 'MNS', 'BSA']
@@ -28,7 +29,6 @@ def validate_subject_code(semester_id, subject_code: str):
 if __name__ == "__main__":
     start_time = time.time()
     codes_list = get_all_subjects()
-    available_subject_codes = []
     num_processes = cpu_count()  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
 
