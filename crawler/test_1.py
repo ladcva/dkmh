@@ -1,7 +1,9 @@
 import requests, itertools, time
 from config.default import ASC_AUTH_STR
 from multiprocessing import Pool, cpu_count
+from utils.utils import semester_id_loop, IDs
 from functools import partial
+
 
 available_subject_codes = []
 
@@ -42,16 +44,21 @@ if __name__ == "__main__":
     codes_list = get_all_subjects()
     num_processes = cpu_count()  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
+    semester_id_loop() # Call this to create a semester ids list
 
-    with Pool(processes=num_processes) as pool:
-        func = partial(validate_subject_code, 35)   # Create a partial func to pass semester_id to validate_subject_code
-        for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Dont need ordered results, so imap_unordered will gain performance
-            if result:
-                available_subject_codes.append(result)
+    for id in IDs: # For id in semester ids
+        with Pool(processes=num_processes) as pool:
+            func = partial(validate_subject_code, id)   # Create a partial func to pass semester_id to validate_subject_code
+            for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Dont need ordered results, so imap_unordered will gain performance
+                if result:
+                    available_subject_codes.append(result)
 
-    print(available_subject_codes)
-    end_time = time.time()
-    print(f"Processing time: {end_time - start_time} seconds")
+        print(available_subject_codes)
+        end_time = time.time()
+        print(f"Processing time: {end_time - start_time} seconds")
+        time.sleep(10)
+        
+    set(available_subject_codes)
 
     
 #TODO Refactor and use multiprocessing to speed up the process or think of a better way to optimize the process -> partially done, multiprocessing implemented

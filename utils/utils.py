@@ -1,5 +1,9 @@
 import requests
-
+# Get semester ids in database
+from sqlalchemy import create_engine
+from sqlalchemy.sql.expression import select
+from config.default import POSTGRES_CONN_STRING
+from db_migration.models import SemesterSnapshot
 # Get constants from config file
 from config.default import DEFAULT_NUM_PROCESSES
 
@@ -36,3 +40,13 @@ def validate_cookie(url, cookie):
         return False
     else:
         return True
+
+
+IDs = []
+def semester_id_loop():
+    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    query = select(SemesterSnapshot.list_semester_id)
+    
+    with engine.connect() as conn:
+        IDs.extend(conn.execute(query).fetchall())
+    
