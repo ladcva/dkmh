@@ -23,3 +23,4 @@ class PgConnection:
 
     def conn_string(self):
         return f"postgresql+psycopg2://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
+    
