@@ -13,17 +13,28 @@ def get_all_subjects():
     return codes
 
 
-def validate_subject_code(semester_id, subject_code: str):
+def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_delay=1):
     url = f"https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy={semester_id}&MaMonHoc={subject_code}&DSHocPhanDuocHoc={subject_code}&IsLHPKhongTrungLich=true&LoaiDKHP=1"  #test with a fixed IDDotdangky
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
     
-    response = requests.post(url, cookies=cookie)
+    for i in range(retry_limit):
+        try:
+            response = requests.post(url, cookies=cookie, timeout=5)
+            if response.status_code == 200:
+                if "lhpchodangky-notfound" in response.text:    # Only return codes that are existed
+                    return None
+                else:
+                    print(f"{subject_code} exists") #fetch the code to database
+                    return subject_code
+        except requests.exceptions.RequestException as e:
+            if isinstance(e, requests.exceptions.ConnectionError):
+                print(f"Connection error occurred, retrying in {retry_delay} seconds")
+                time.sleep(retry_delay)
+            else:
+                print(f"Request exception occurred: {str(e)}")
+                break
 
-    if "lhpchodangky-notfound" in response.text:    # Only return codes that are existed
-        return None
-    else:
-        print(f"{subject_code} exist") #fetch the code to database
-        return subject_code
+    return None
 
 
 if __name__ == "__main__":
@@ -47,3 +58,4 @@ if __name__ == "__main__":
 #TODO Use a database to store the results
 #TODO Get all semester IDs and run the process for each semester ID -- DOING
 #TODO Re-design database
+#TODO Implement retry mechanism -> Implemented retry mechanism for ConnectionError - caused by bad internet
