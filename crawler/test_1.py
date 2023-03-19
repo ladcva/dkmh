@@ -46,9 +46,9 @@ if __name__ == "__main__":
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
     semester_id_loop() # Call this to create a semester ids list
 
-    for id in IDs: # For id in semester ids
+    for ID in IDs: # For id in semester ids
         with Pool(processes=num_processes) as pool:
-            func = partial(validate_subject_code, id)   # Create a partial func to pass semester_id to validate_subject_code
+            func = partial(validate_subject_code, ID)   # Create a partial func to pass semester_id to validate_subject_code
             for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Dont need ordered results, so imap_unordered will gain performance
                 if result:
                     available_subject_codes.append(result)
