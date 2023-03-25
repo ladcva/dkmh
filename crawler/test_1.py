@@ -1,6 +1,6 @@
 import requests, itertools, time
-from config.default import ASC_AUTH_STR
-from multiprocessing import Pool, cpu_count
+from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES
+from multiprocessing import Pool
 from utils.utils import semester_id_loop, IDs
 from functools import partial
 
@@ -42,7 +42,7 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
 if __name__ == "__main__":
     start_time = time.time()
     codes_list = get_all_subjects()
-    num_processes = cpu_count()  # Get number of CPU cores available
+    num_processes = DEFAULT_NUM_PROCESSES  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
     semester_id_loop() # Call this to create a semester ids list
 
