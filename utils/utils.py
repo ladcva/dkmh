@@ -49,4 +49,4 @@ def semester_id_loop():
     
     with engine.connect() as conn:
         IDs.extend(conn.execute(query).fetchall())
-    
+
