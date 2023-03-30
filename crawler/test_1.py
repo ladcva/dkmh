@@ -1,7 +1,7 @@
 import requests, itertools, time
 from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES
 from multiprocessing import Pool
-from utils.utils import get_semester_id
+from utils.utils import get_semester_id, insert_latest_id
 from functools import partial
 
 
@@ -55,9 +55,16 @@ if __name__ == "__main__":
         print(available_subject_codes)
         end_time = time.time()
         print(f"Processing time: {end_time - start_time} seconds")
-        time.sleep(10)
+        time.sleep(5)
         
-    set(available_subject_codes)
+        set_subject_codes = set(available_subject_codes)
+        if ID == get_semester_id()[0]:  # Only insert the latest semester id
+            insert_latest_id(set_subject_codes)    # Testing insertion to database - worked
+        else:
+            break
+
+        
+ 
 
     
 #TODO Refactor and use multiprocessing to speed up the process or think of a better way to optimize the process -> partially done, multiprocessing implemented

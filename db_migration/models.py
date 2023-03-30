@@ -1,6 +1,6 @@
-from sqlalchemy import ARRAY, BigInteger, Column, DateTime, Identity, Integer, PrimaryKeyConstraint
+from sqlalchemy import ARRAY, BigInteger, Column, DateTime, Identity, Integer, PrimaryKeyConstraint, Column, Integer, String, ForeignKey, Date
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 
 
 base = declarative_base()
@@ -17,3 +17,28 @@ class SemesterSnapshot(base):
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     
+class Class(base):
+    __tablename__ = 'classes'
+    code = Column(String,primary_key=True)
+    name = Column(String)
+    semesters = relationship('Semester', secondary='class_semester_association')
+
+class Semester(base):
+    __tablename__ = 'semesters'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+class ClassSemesterAssociation(base):
+    __tablename__ = 'class_semester_association'
+    class_id = Column(String, ForeignKey('classes.code'), primary_key=True)
+    semester_id = Column(Integer, ForeignKey('semesters.id'), primary_key=True)
+
+class RecentSemesterClasses(base):
+    __tablename__ = 'recent_semester_classes'
+    id = Column(Integer, primary_key=True)
+    class_code = Column(String, ForeignKey('classes.code'))
+    semester_id = Column(Integer, ForeignKey('semesters.id'))
+    room = Column(String)
+    time_slot = Column(String)
+    start_date = Column(Date)
+    end_date = Column(Date)
