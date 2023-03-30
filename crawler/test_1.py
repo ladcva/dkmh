@@ -57,13 +57,11 @@ if __name__ == "__main__":
         print(f"Processing time: {end_time - start_time} seconds")
         time.sleep(5)
         
-        set_subject_codes = set(available_subject_codes)
-        if ID == get_semester_id()[0]:  # Only insert the latest semester id
-            insert_latest_id(set_subject_codes)    # Testing insertion to database - worked
-        else:
-            break
+    set_subject_codes = set(available_subject_codes)
+    insert_latest_id(set_subject_codes)    # Testing insertion to database - worked
+   
 
-        
+
  
 
     
@@ -72,3 +70,4 @@ if __name__ == "__main__":
 #TODO Get all semester IDs and run the process for each semester ID -- DOING
 #TODO Re-design database - Doing
 #TODO Implement retry mechanism -> Implemented retry mechanism for ConnectionError - caused by bad internet
+#TODO 
