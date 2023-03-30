@@ -42,11 +42,12 @@ def validate_cookie(url, cookie):
         return True
 
 
-IDs = []
-def semester_id_loop():
+
+def get_semester_id():
+    IDs = []
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     query = select(SemesterSnapshot.list_semester_id)
-    
     with engine.connect() as conn:
         IDs.extend(conn.execute(query).fetchall())
+    return(IDs[0][0])
 

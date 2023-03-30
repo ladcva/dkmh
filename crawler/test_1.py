@@ -1,7 +1,7 @@
 import requests, itertools, time
 from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES
 from multiprocessing import Pool
-from utils.utils import semester_id_loop, IDs
+from utils.utils import get_semester_id
 from functools import partial
 
 
@@ -44,9 +44,8 @@ if __name__ == "__main__":
     codes_list = get_all_subjects()
     num_processes = DEFAULT_NUM_PROCESSES  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
-    semester_id_loop() # Call this to create a semester ids list
 
-    for ID in IDs[0][0]: # For id in semester ids
+    for ID in get_semester_id(): # For id in semester ids
         with Pool(processes=num_processes) as pool:
             func = partial(validate_subject_code, ID)   # Create a partial func to pass semester_id to validate_subject_code
             for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
