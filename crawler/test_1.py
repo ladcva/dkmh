@@ -15,7 +15,7 @@ def get_all_subjects():
     return codes
 
 
-def validate_subject_code(semester_id, subject_code: str):
+def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_delay=1):
     url = f"https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy={semester_id}&MaMonHoc={subject_code}&DSHocPhanDuocHoc={subject_code}&IsLHPKhongTrungLich=false&LoaiDKHP=1"  #test with a fixed IDDotdangky
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
     
