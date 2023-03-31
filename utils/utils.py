@@ -41,12 +41,12 @@ def validate_cookie(url, cookie):
         return True
 
 def get_semester_id():
-    IDs = []
+    semester_ids = []
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     query = select(SemesterSnapshot.list_semester_id)
     with engine.connect() as conn:
-        IDs.extend(conn.execute(query).fetchall())
-    return(sorted(IDs[0][0], reverse=True))
+        semester_ids.extend(conn.execute(query).fetchall())
+    return(sorted(semester_ids[0][0], reverse=True))
 
 # Import the lastes id to class_codes_snapshot table
 def insert_latest_id(set):
