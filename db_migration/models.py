@@ -17,6 +17,15 @@ class SemesterSnapshot(base):
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     
+class ClassCodesSnapshot(base):
+    __tablename__ = 'classes_snapshot'
+    __table_args__ = (
+        PrimaryKeyConstraint('class_id', name='class_id'),
+    )
+    class_id = Column(BigInteger, Identity(always=True, start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1))
+    code = Column(String,unique=True)
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)   
 class Class(base):
     __tablename__ = 'classes'
     code = Column(String,primary_key=True)

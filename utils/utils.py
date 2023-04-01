@@ -43,14 +43,14 @@ def validate_cookie(url, cookie):
 def get_semester_id():
     semester_ids = []
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    query = select(SemesterSnapshot.list_semester_id)
+    query = select(SemesterSnapshot.list_semester_id).where(SemesterSnapshot.end_time is None) 
     with engine.connect() as conn:
         semester_ids.extend(conn.execute(query).fetchall())
     return(sorted(semester_ids[0][0], reverse=True))
 
 # Import the lastes id to class_codes_snapshot table
 def insert_latest_id(set):
-    from db_migration.testLoadClass import class_codes_snapshot
+    from testing.create_class_snapshot import class_codes_snapshot
     from sqlalchemy import create_engine
     # from sqlalchemy.orm import sessionmaker
     from sqlalchemy.sql.expression import insert

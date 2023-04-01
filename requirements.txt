@@ -6,4 +6,4 @@ Werkzeug~=2.2.2
 bs4
 psycopg2==2.9.5
 requests
-sqlalchemy==1.4
+sqlalchemy==1.4.0
