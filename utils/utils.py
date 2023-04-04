@@ -63,3 +63,16 @@ def insert_latest_id(set):
         insert_new_class_codes = insert(class_codes_snapshot).values(code=class_code)
         engine.execute(insert_new_class_codes)
 
+def get_class_codes():
+    from db_migration.models import ClassCodesSnapshot
+    from sqlalchemy import create_engine
+    from sqlalchemy.sql.expression import select
+    from config.default import POSTGRES_CONN_STRING
+
+    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    query = select(ClassCodesSnapshot.code)
+    with engine.connect() as conn:
+        class_codes = conn.execute(query).fetchall()
+    return class_codes
+
+
