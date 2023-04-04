@@ -27,3 +27,4 @@ if __name__ == "__main__":
     crawl_lhp_data()
 
 
+#TODO: Create a function to check subject availability for the semester, implement retry mechanism

@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import select
 from config.default import POSTGRES_CONN_STRING
 from db_migration.models import SemesterSnapshot
 # Get constants from config file
-from config.default import DEFAULT_NUM_PROCESSES
+from config.default import DEFAULT_NUM_PROCESSES, ASC_AUTH_STR
 
 
 # Utility functions
@@ -74,5 +74,3 @@ def get_class_codes():
     with engine.connect() as conn:
         class_codes = conn.execute(query).fetchall()
     return class_codes
-
-
