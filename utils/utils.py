@@ -43,7 +43,7 @@ def validate_cookie(url, cookie):
 def get_semester_id():
     semester_ids = []
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    query = select(SemesterSnapshot.list_semester_id).where(SemesterSnapshot.end_time is None) 
+    query = select(SemesterSnapshot.list_semester_id).where(SemesterSnapshot.end_time == None) 
     with engine.connect() as conn:
         semester_ids.extend(conn.execute(query).fetchall())
     return(sorted(semester_ids[0][0], reverse=True))
@@ -62,3 +62,4 @@ def insert_latest_id(set):
         class_code = item
         insert_new_class_codes = insert(class_codes_snapshot).values(code=class_code)
         engine.execute(insert_new_class_codes)
+

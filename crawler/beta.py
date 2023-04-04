@@ -1,14 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
-from crawler.test_1 import available_subject_codes
-
-IDDotDangKy = int(input("Nhap ID cua Hoc Ky: "))
+from utils.utils import get_semester_id
+from config.default import ASC_AUTH_STR
 
 def crawl_lhp_data():
     base_url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy={}&MaMonHoc={}&DSHocPhanDuocHoc={}&IsLHPKhongTrungLich=true&LoaiDKHP=1"
+    payload={}
+    cookie = {'ASC.AUTH': ASC_AUTH_STR}
     for lhp in available_subject_codes:
         url = base_url.format(IDDotDangKy, lhp, lhp)
-        response = requests.post(url, headers=headers, data=payload)
+        response = requests.post(url, cookies=cookie, data=payload)
         soup = BeautifulSoup(response.text, 'html.parser')
         for i in range(1, 16):
             try:
@@ -19,12 +20,9 @@ def crawl_lhp_data():
             except IndexError:
                 break
 
-payload={}
-headers = {
-  'cookie': 'ASC.AUTH=C755BEDF469030D764CA9EFA3B5F9067E8EB2CECE8C30C1C7365EB0DBBF2725859E0099D6D76321C88CF90ABD53266990D8479247E63757457040F631611FB6DFFF67130DE0A342F3997FE2B30F3ED386EA4680196F761BD1BEE622FD8448C3EA5189E7519ED4BEB7A315283F9430F97D8BF0803E242CC1F4F74C0E4F94F444D',
-}
 
 if __name__ == "__main__":
+    lastest_sem_id = get_semester_id()[0]
     crawl_lhp_data()
 
 
