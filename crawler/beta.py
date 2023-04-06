@@ -15,8 +15,9 @@ def crawl_lhp_data():
             try:
                 tag = soup.find_all('tr')[i]
                 attribute = tag['data-guidlhp']
-                attribute2 = tag.find_all('div')[1].find('span', text='Mã lớp học phần').next_sibling
-                print("GUID: {}".format(attribute),"\n","Ma hoc phan{}".format(attribute2))
+                span_element = tag.find('span', attrs={'lang': 'dkhp-malhp'})
+                attribute2 = span_element.next_sibling.strip()
+                return("GUID: {}".format(attribute),"\n","Ma hoc phan{}".format(attribute2))
             except IndexError:
                 break
 
@@ -28,6 +29,6 @@ if __name__ == "__main__":
 
 
 
-#TODO: Store course codes to database
+#TODO: Ingest GUID and LHP to database
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism
 #TODO: When a new semester detected, replace the data in the current RecentSemesterClasses table 
