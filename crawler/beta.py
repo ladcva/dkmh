@@ -1,14 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 from utils.utils import get_semester_id, get_class_codes
-from config.default import ASC_AUTH_STR
+from config.default import ASC_AUTH_STR, DKHP_URL
 
 def crawl_lhp_data():
-    base_url = "https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy={}&MaMonHoc={}&DSHocPhanDuocHoc={}&IsLHPKhongTrungLich=true&LoaiDKHP=1"
     payload={}
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
     for lhp in class_codes:
-        url = base_url.format(lastest_sem_id, lhp, lhp)
+        url = DKHP_URL.format(lastest_sem_id, lhp, lhp)
         response = requests.post(url, cookies=cookie, data=payload)
         soup = BeautifulSoup(response.text, 'html.parser')
         for i in range(1, 16):
