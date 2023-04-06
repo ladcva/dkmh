@@ -27,4 +27,7 @@ if __name__ == "__main__":
     crawl_lhp_data()
 
 
+
+#TODO: Store course codes to database
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism
+#TODO: When a new semester detected, replace the data in the current RecentSemesterClasses table 
