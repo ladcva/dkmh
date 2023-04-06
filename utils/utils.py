@@ -50,7 +50,7 @@ def get_semester_id():
 
 # Import the lastes id to class_codes_snapshot table
 def insert_latest_id(set):
-    from testing.create_class_snapshot import class_codes_snapshot
+    from db_migration.models import ClassCodesSnapshot
     from sqlalchemy import create_engine
     # from sqlalchemy.orm import sessionmaker
     from sqlalchemy.sql.expression import insert
@@ -60,7 +60,7 @@ def insert_latest_id(set):
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for item in set:
         class_code = item
-        insert_new_class_codes = insert(class_codes_snapshot).values(code=class_code)
+        insert_new_class_codes = insert(ClassCodesSnapshot).values(code=class_code)
         engine.execute(insert_new_class_codes)
 
 def get_class_codes():
@@ -74,3 +74,26 @@ def get_class_codes():
     with engine.connect() as conn:
         class_codes = conn.execute(query).fetchall()
     return class_codes
+
+def insert_to_lastest_sem(guids, subject_codes, course_codes):
+    from db_migration.models import RecentSemesterClasses
+    from sqlalchemy import create_engine
+    from sqlalchemy.sql.expression import insert
+    from config.default import POSTGRES_CONN_STRING
+
+    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    for i in range(len(subject_codes)):
+        insert_lastest_sem = insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], course_code=course_codes[i])
+        engine.execute(insert_lastest_sem)
+
+def insert_to_classes(subject_codes):
+    from db_migration.models import Class
+    from sqlalchemy import create_engine
+    from sqlalchemy.sql.expression import insert
+    from config.default import POSTGRES_CONN_STRING
+
+    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    for item in subject_codes:
+        subject_code = item
+        insert_classes = insert(Class).values(code=subject_code)
+        engine.execute(insert_classes)

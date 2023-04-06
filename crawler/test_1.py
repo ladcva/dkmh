@@ -2,7 +2,6 @@ import requests, itertools, time
 from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES
 from multiprocessing import Pool
 from utils.utils import get_semester_id, insert_latest_id
-from testing.create_class_snapshot import create_classes_snapshot_table
 from functools import partial
 
 
@@ -57,9 +56,9 @@ if __name__ == "__main__":
         time.sleep(5)
         
     set_subject_codes = set(available_subject_codes)
-    create_classes_snapshot_table() # Deprecated in next version, ClassesSnapshot table already included in init_load
+    # create_classes_snapshot_table() # Deprecated in next version, ClassesSnapshot table already included in init_load
     insert_latest_id(set_subject_codes)    # Testing insertion to database - worked
-   
+    print("Task run sucessfully !")
 
 
  
