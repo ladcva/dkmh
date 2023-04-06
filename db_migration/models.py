@@ -44,8 +44,8 @@ class RecentSemesterClasses(base):
     __tablename__ = 'recent_semester_classes'
     class_code = Column(String, ForeignKey('classes.code'), primary_key=True)
     course_code = Column(String, primary_key=True)
-    guid = Column(Integer, primary_key=True)
-    semester_id = Column(String, ForeignKey('semesters.id'))
+    guid = Column(String, primary_key=True)
+    semester_id = Column(Integer, ForeignKey('semesters.id'))
     room = Column(String)
     time_slot = Column(String)
     start_date = Column(Date)
