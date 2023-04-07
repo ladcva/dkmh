@@ -45,8 +45,6 @@ if __name__ == "__main__":
         guids.append(each[0])
         subject_codes.append(each[1])
         course_codes.append(each[2])
-    # print(len(temp))
-    # print(len(temp2))
     time.sleep(3)
     insert_to_classes(subject_codes)
     insert_to_lastest_sem(guids, subject_codes, course_codes)  # Initially worked, needs more testing
