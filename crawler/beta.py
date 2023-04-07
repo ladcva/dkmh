@@ -24,13 +24,13 @@ def crawl_lhp_data():
                 attribute2 = span_element.next_sibling.strip()
                 print(attribute, attribute2)
                 temp.append((attribute, attribute2)) 
-                for item in temp:
-                    guid = item[0]
-                    specific_class_code = item[1].split(' - ')[0].split(': ')[1]
-                    general_class_code = item[1].split(' - ')[1]
-                    temp2.append((guid, general_class_code, specific_class_code))
             except IndexError:
                 break
+    for item in temp:
+        guid = item[0]
+        specific_class_code = item[1].split(' - ')[0].split(': ')[1]
+        general_class_code = item[1].split(' - ')[1]
+        temp2.append((guid, general_class_code, specific_class_code))
 
 if __name__ == "__main__":
     temp = []
@@ -45,13 +45,15 @@ if __name__ == "__main__":
         guids.append(each[0])
         subject_codes.append(each[1])
         course_codes.append(each[2])
+    # print(len(temp))
+    # print(len(temp2))
     time.sleep(3)
-    insert_to_classes(set(subject_codes))
-    insert_to_lastest_sem(guids, subject_codes, course_codes)  # Kinda worked, but there is a shit duplicate dont know why figure later
+    insert_to_classes(subject_codes)
+    insert_to_lastest_sem(guids, subject_codes, course_codes)  # Initially worked, needs more testing
     print("Task completed")
 
 
-
+#TODO: add Multiprocessing to speed things up
 #TODO: Ingest GUID and LHP to database
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism
 #TODO: When a new semester detected, replace the data in the current RecentSemesterClasses table 

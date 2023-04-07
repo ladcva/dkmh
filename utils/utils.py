@@ -82,7 +82,7 @@ def insert_to_lastest_sem(guids, subject_codes, course_codes):
     from config.default import POSTGRES_CONN_STRING
 
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    for i in range(len(subject_codes)):
+    for i in range(len(guids)):
         insert_lastest_sem = insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], course_code=course_codes[i])
         engine.execute(insert_lastest_sem)
 
@@ -93,7 +93,7 @@ def insert_to_classes(subject_codes):
     from config.default import POSTGRES_CONN_STRING
 
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    for item in subject_codes:
+    for item in set(subject_codes):
         subject_code = item
         insert_classes = insert(Class).values(code=subject_code)
         engine.execute(insert_classes)
