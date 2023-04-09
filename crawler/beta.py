@@ -56,6 +56,6 @@ if __name__ == "__main__":
 
 
 #TODO: add Multiprocessing to speed things up -> DONE
-#TODO: Ingest GUID and LHP to database
+#TODO: Ingest GUID and LHP to database -> DONE
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism
 #TODO: When a new semester detected, replace the data in the current RecentSemesterClasses table 

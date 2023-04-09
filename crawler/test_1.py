@@ -58,8 +58,7 @@ if __name__ == "__main__":
     set_subject_codes = set(available_subject_codes)
     # create_classes_snapshot_table() # Deprecated in next version, ClassesSnapshot table already included in init_load
     insert_latest_id(set_subject_codes)    # Testing insertion to database - worked
-    print("Task run sucessfully !")
-
+    print("Task run sucessfully !")  
 
  
 
