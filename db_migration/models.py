@@ -48,5 +48,4 @@ class RecentSemesterClasses(base):
     semester_id = Column(Integer, ForeignKey('semesters.id'))
     room = Column(String)
     time_slot = Column(String)
-    start_date = Column(Date)
-    end_date = Column(Date)
+    from_to = Column(String)
