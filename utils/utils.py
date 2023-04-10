@@ -54,7 +54,7 @@ def insert_latest_id(set):
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for item in set:
         class_code = item
-        insert_new_class_codes = insert(ClassCodesSnapshot).values(code=class_code)
+        insert_new_class_codes = pg_insert(ClassCodesSnapshot).values(code=class_code).on_conflict_do_nothing()
         engine.execute(insert_new_class_codes)
 
 def get_class_codes():
@@ -67,16 +67,16 @@ def get_class_codes():
 def insert_to_lastest_sem(guids, subject_codes, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for i in range(len(guids)):
-        insert_lastest_sem = insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], 
+        insert_lastest_sem = pg_insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], 
                                                                   course_code=course_codes[i], semester_id=semester_id, time_slot=schedules[i],
-                                                                  room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i])
+                                                                  room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i]).on_conflict_do_nothing()
         engine.execute(insert_lastest_sem)
 
 def insert_to_classes(subject_codes):
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for item in set(subject_codes):
         subject_code = item
-        insert_classes = insert(Class).values(code=subject_code)
+        insert_classes = pg_insert(Class).values(code=subject_code).on_conflict_do_nothing()
         engine.execute(insert_classes)
 
 def insert_to_semester():
@@ -95,4 +95,5 @@ def insert_to_semester():
     query2 = pg_insert(Semester).values(id=sem_ids, name=sem_names).on_conflict_do_nothing()
     engine.execute(query2)
 
-insert_to_semester()
+
+#TODO: Decide on_conflict strategy, do nothing or upsert
