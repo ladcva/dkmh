@@ -1,11 +1,12 @@
 import requests
-# Get semester ids in database
+# Import nessary db modules
+from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Semester, RecentSemesterClasses
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import select
-from config.default import POSTGRES_CONN_STRING
-from db_migration.models import SemesterSnapshot
+from sqlalchemy.sql.expression import select, insert
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+
 # Get constants from config file
-from config.default import DEFAULT_NUM_PROCESSES, ASC_AUTH_STR
+from config.default import DEFAULT_NUM_PROCESSES, ASC_AUTH_STR, POSTGRES_CONN_STRING
 
 
 # Utility functions
@@ -50,13 +51,6 @@ def get_semester_id():
 
 # Import the lastes id to class_codes_snapshot table
 def insert_latest_id(set):
-    from db_migration.models import ClassCodesSnapshot
-    from sqlalchemy import create_engine
-    # from sqlalchemy.orm import sessionmaker
-    from sqlalchemy.sql.expression import insert
-    from config.default import POSTGRES_CONN_STRING
-
-
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for item in set:
         class_code = item
@@ -64,11 +58,6 @@ def insert_latest_id(set):
         engine.execute(insert_new_class_codes)
 
 def get_class_codes():
-    from db_migration.models import ClassCodesSnapshot
-    from sqlalchemy import create_engine
-    from sqlalchemy.sql.expression import select
-    from config.default import POSTGRES_CONN_STRING
-
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     query = select(ClassCodesSnapshot.code)
     with engine.connect() as conn:
@@ -76,26 +65,34 @@ def get_class_codes():
     return class_codes
 
 def insert_to_lastest_sem(guids, subject_codes, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
-    from db_migration.models import RecentSemesterClasses
-    from sqlalchemy import create_engine
-    from sqlalchemy.sql.expression import insert
-    from config.default import POSTGRES_CONN_STRING
-
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for i in range(len(guids)):
         insert_lastest_sem = insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], 
                                                                   course_code=course_codes[i], semester_id=semester_id, time_slot=schedules[i],
-                                                                    room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i])
+                                                                  room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i])
         engine.execute(insert_lastest_sem)
 
 def insert_to_classes(subject_codes):
-    from db_migration.models import Class
-    from sqlalchemy import create_engine
-    from sqlalchemy.sql.expression import insert
-    from config.default import POSTGRES_CONN_STRING
-
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for item in set(subject_codes):
         subject_code = item
         insert_classes = insert(Class).values(code=subject_code)
         engine.execute(insert_classes)
+
+def insert_to_semester():
+    details = []
+    sem_ids = []
+    sem_names = []
+    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    query = select(SemesterSnapshot.details).where(SemesterSnapshot.end_time == None)
+    with engine.connect() as conn:
+        details.extend(conn.execute(query).fetchall())
+
+    for key,value in details[0][0].items():
+        sem_ids.append(key)
+        sem_names.append(value)
+    
+    query2 = pg_insert(Semester).values(id=sem_ids, name=sem_names).on_conflict_do_nothing()
+    engine.execute(query2)
+
+insert_to_semester()

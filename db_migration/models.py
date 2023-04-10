@@ -32,7 +32,7 @@ class Class(base):
 
 class Semester(base):
     __tablename__ = 'semesters'
-    id = Column(Integer, primary_key=True)
+    id = Column(String, primary_key=True)
     name = Column(String)
 
 class ClassSemesterAssociation(base):
