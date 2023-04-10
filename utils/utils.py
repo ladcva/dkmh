@@ -75,7 +75,7 @@ def get_class_codes():
         class_codes = conn.execute(query).fetchall()
     return class_codes
 
-def insert_to_lastest_sem(guids, subject_codes, course_codes):
+def insert_to_lastest_sem(guids, subject_codes, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
     from db_migration.models import RecentSemesterClasses
     from sqlalchemy import create_engine
     from sqlalchemy.sql.expression import insert
@@ -83,7 +83,9 @@ def insert_to_lastest_sem(guids, subject_codes, course_codes):
 
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for i in range(len(guids)):
-        insert_lastest_sem = insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], course_code=course_codes[i])
+        insert_lastest_sem = insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], 
+                                                                  course_code=course_codes[i], semester_id=semester_id, time_slot=schedules[i],
+                                                                    room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i])
         engine.execute(insert_lastest_sem)
 
 def insert_to_classes(subject_codes):
