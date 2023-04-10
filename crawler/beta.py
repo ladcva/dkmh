@@ -80,7 +80,7 @@ if __name__ == "__main__":
     insert_to_lastest_sem(guids, subject_codes, course_codes, lastest_sem_id, schedules, rooms, lecturers, time_frames)  # Initially worked, needs more testing
     print("Task completed")
 
-
+#WARNING: Semester ID in the Semester table has to be imported by hand at the moment, do this if encounter Foreign Key constraint error
 #TODO: add Multiprocessing to speed things up -> DONE
 #TODO: Ingest GUID and LHP to database -> DONE
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism
