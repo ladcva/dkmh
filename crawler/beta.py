@@ -5,9 +5,7 @@ from utils.utils import get_semester_id, get_class_codes, insert_to_lastest_sem,
 from config.default import ASC_AUTH_STR, DKHP_URL, LH_URL, DEFAULT_NUM_PROCESSES
 
 def crawl_lhp_data(code):
-    temp = []
-    temp2 = []
-    temp3 = []
+    temp, temp2, temp3 = [], [], []
     attributes = []
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
     url = DKHP_URL.format(lastest_sem_id, code, code)
@@ -52,6 +50,7 @@ def crawl_lhp_data(code):
         temp3.append((attribute3, attribute4, attribute5, attribute6))
     temp4 = [x + y for x, y in zip(temp2, temp3)]
     return temp4
+
 if __name__ == "__main__":
     temp_instance = temp_lists()
     lastest_sem_id = get_semester_id()[1] # index 1 is for testing purpose, the lastest sem ID doesn't have any codes yet
