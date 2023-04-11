@@ -6,6 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 from config.default import POSTGRES_CONN_STRING
 from datetime import datetime
+from utils.utils import insert_to_semester
+import time
 
 def init_load(engine):
 
@@ -52,3 +54,6 @@ if __name__ == '__main__':
     else:
         base.metadata.create_all(engine, checkfirst=True)
         init_load(engine)
+    
+    time.sleep(2)
+    insert_to_semester()

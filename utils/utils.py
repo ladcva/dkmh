@@ -97,4 +97,3 @@ def insert_to_semester():
 
 
 #TODO: Decide on_conflict strategy, do nothing or upsert
-#TODO: Where to put the inser to semester function, where to run it
