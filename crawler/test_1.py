@@ -4,7 +4,7 @@ from multiprocessing import Pool
 from utils.utils import get_semester_id, insert_latest_id
 from functools import partial
 
-
+semester_ids = get_semester_id()
 available_subject_codes = []
 
 def get_all_subjects():
@@ -39,7 +39,6 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
 if __name__ == "__main__":
     start_time = time.time()
     codes_list = get_all_subjects()
-    semester_ids = get_semester_id()
     num_processes = DEFAULT_NUM_PROCESSES  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
 
