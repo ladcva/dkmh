@@ -1,7 +1,7 @@
 import requests, time
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
-from utils.utils import get_semester_id, get_class_codes, insert_to_lastest_sem, insert_to_classes
+from utils.utils import get_semester_id, get_class_codes, insert_to_lastest_sem, insert_to_classes, temp_lists
 from config.default import ASC_AUTH_STR, DKHP_URL, LH_URL, DEFAULT_NUM_PROCESSES
 
 def crawl_lhp_data(code):
@@ -53,13 +53,7 @@ def crawl_lhp_data(code):
     temp4 = [x + y for x, y in zip(temp2, temp3)]
     return temp4
 if __name__ == "__main__":
-    guids = []
-    subject_codes = []
-    course_codes = []
-    schedules = []
-    rooms = []
-    lecturers = []
-    time_frames = []
+    temp_instance = temp_lists()
     lastest_sem_id = get_semester_id()[1] # index 1 is for testing purpose, the lastest sem ID doesn't have any codes yet
     class_codes = [item[0] for item in get_class_codes()]
     chunk_size = len(class_codes) // DEFAULT_NUM_PROCESSES
@@ -68,16 +62,16 @@ if __name__ == "__main__":
         results = p.map(crawl_lhp_data, class_codes, chunksize=chunk_size)
     for result in results:
          for each in result:
-            guids.append(each[0])
-            subject_codes.append(each[1])
-            course_codes.append(each[2])
-            schedules.append(each[3])
-            rooms.append(each[4])
-            lecturers.append(each[5])
-            time_frames.append(each[6])
+            temp_instance.guids.append(each[0])
+            temp_instance.subject_codes.append(each[1])
+            temp_instance.course_codes.append(each[2])
+            temp_instance.schedules.append(each[3])
+            temp_instance.rooms.append(each[4])
+            temp_instance.lecturers.append(each[5])
+            temp_instance.timeframes.append(each[6])
     time.sleep(3)
-    insert_to_classes(subject_codes)
-    insert_to_lastest_sem(guids, subject_codes, course_codes, lastest_sem_id, schedules, rooms, lecturers, time_frames)  # Initially worked, needs more testing
+    insert_to_classes(temp_instance.subject_codes)
+    insert_to_lastest_sem(temp_instance.guids, temp_instance.subject_codes, temp_instance.course_codes, lastest_sem_id, temp_instance.schedules, temp_instance.rooms, temp_instance.lecturers, temp_instance.timeframes)  # Initially worked, needs more testing
     print("Task completed")
 
 #WARNING: Semester ID in the Semester table has to be imported by hand at the moment, do this if encounter Foreign Key constraint error

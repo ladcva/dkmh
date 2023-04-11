@@ -97,3 +97,13 @@ def insert_to_semester():
 
 
 #TODO: Decide on_conflict strategy, do nothing or upsert
+
+class temp_lists():
+    def __init__(self):
+        self.guids = []
+        self.subject_codes = []
+        self.course_codes = []
+        self.schedules = []
+        self.rooms = []
+        self.lecturers = []
+        self.timeframes = []
