@@ -64,10 +64,10 @@ def get_class_codes():
         class_codes = conn.execute(query).fetchall()
     return class_codes
 
-def insert_to_lastest_sem(guids, subject_codes, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
+def insert_to_lastest_sem(guids, subject_codes, subject_names, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
     engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     for i in range(len(guids)):
-        insert_lastest_sem = pg_insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], 
+        insert_lastest_sem = pg_insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], subject_name=subject_names[i],
                                                                   course_code=course_codes[i], semester_id=semester_id, time_slot=schedules[i],
                                                                   room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i]).on_conflict_do_nothing()
         engine.execute(insert_lastest_sem)
@@ -92,9 +92,11 @@ def insert_to_semester():
         sem_ids.append(key)
         sem_names.append(value)
     
-    query2 = pg_insert(Semester).values(id=sem_ids, name=sem_names).on_conflict_do_nothing()
-    engine.execute(query2)
+    for i in range(len(sem_ids)):
+        query2 = pg_insert(Semester).values(id=sem_ids[i], name=sem_names[i]).on_conflict_do_nothing()
+        engine.execute(query2)
 
+#TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
 
 #TODO: Decide on_conflict strategy, do nothing or upsert
 
@@ -102,6 +104,7 @@ class TempLists:
     def __init__(self):
         self.guids = []
         self.subject_codes = []
+        self.subject_names =  []
         self.course_codes = []
         self.schedules = []
         self.rooms = []
@@ -112,9 +115,10 @@ class TempLists:
         for each in result:
             self.guids.append(each[0])
             self.subject_codes.append(each[1])
-            self.course_codes.append(each[2])
-            self.schedules.append(each[3])
-            self.rooms.append(each[4])
-            self.lecturers.append(each[5])
-            self.timeframes.append(each[6])
+            self.subject_names.append(each[2])
+            self.course_codes.append(each[3])
+            self.schedules.append(each[4])
+            self.rooms.append(each[5])
+            self.lecturers.append(each[6])
+            self.timeframes.append(each[7])
 

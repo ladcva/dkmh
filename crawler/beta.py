@@ -26,8 +26,9 @@ def crawl_lhp_data(code):
                     continue
             span_element = tag.find('span', attrs={'lang': 'dkhp-malhp'})
             attribute2 = span_element.next_sibling.strip()
-            print(attribute, attribute2)
-            temp.append((attribute, attribute2)) 
+            attribute3 = soup.find_all('div', class_='name')[0].text
+            print(attribute, attribute2, attribute3)
+            temp.append((attribute, attribute2, attribute3)) 
         except IndexError:
             break
 
@@ -35,7 +36,8 @@ def crawl_lhp_data(code):
         guid = item[0]
         specific_class_code = item[1].split(' - ')[0].split(': ')[1]
         general_class_code = item[1].split(' - ')[1]
-        temp2.append((guid, general_class_code, specific_class_code))
+        subject_name = item[2]
+        temp2.append((guid, general_class_code, subject_name, specific_class_code))
 
     for item in temp2:
         guid = item[0]
@@ -43,11 +45,11 @@ def crawl_lhp_data(code):
         response2 = requests.post(url2, cookies=cookie, data={'GuidIDLopHocPhan': guid})
         soup2 = BeautifulSoup(response2.text, 'html.parser')
         tag = soup2.find_all('td')
-        attribute3 = tag[1].text
-        attribute4 = tag[3].text
-        attribute5 = tag[6].text
-        attribute6 = tag[7].text
-        temp3.append((attribute3, attribute4, attribute5, attribute6))
+        schedule = tag[1].text
+        room = tag[3].text
+        lecturer = tag[6].text
+        timeframe = tag[7].text
+        temp3.append((schedule, room, lecturer, timeframe))
     temp4 = [x + y for x, y in zip(temp2, temp3)]
     return temp4
 
@@ -64,12 +66,12 @@ if __name__ == "__main__":
 
     time.sleep(3)
     insert_to_classes(temp_instance.subject_codes)
-    insert_to_lastest_sem(temp_instance.guids, temp_instance.subject_codes, temp_instance.course_codes, lastest_sem_id, 
+    insert_to_lastest_sem(temp_instance.guids, temp_instance.subject_codes, temp_instance.subject_names, temp_instance.course_codes, lastest_sem_id, 
                           temp_instance.schedules, temp_instance.rooms, temp_instance.lecturers, temp_instance.timeframes)  # Initially worked, needs more testing
     print("Task completed")
 
 #WARNING: Semester ID in the Semester table has to be imported by hand at the moment, do this if encounter Foreign Key constraint error
 #TODO: add Multiprocessing to speed things up -> DONE
 #TODO: Ingest GUID and LHP to database -> DONE
-#TODO: Create a function to check subject availability for the semester, implement retry mechanism
+#TODO: Create a function to check subject availability for the semester, implement retry mechanism -> Partially done
 #TODO: When a new semester detected, replace the data in the current RecentSemesterClasses table 

@@ -38,11 +38,12 @@ class Semester(base):
 class ClassSemesterAssociation(base):
     __tablename__ = 'class_semester_association'
     class_id = Column(String, ForeignKey('classes.code'), primary_key=True)
-    semester_id = Column(Integer, ForeignKey('semesters.id'), primary_key=True)
+    semester_id = Column(String, ForeignKey('semesters.id'), primary_key=True)
 
 class RecentSemesterClasses(base):
     __tablename__ = 'recent_semester_classes'
     class_code = Column(String, ForeignKey('classes.code'), primary_key=True)
+    subject_name = Column(String)
     course_code = Column(String, primary_key=True)
     guid = Column(String, primary_key=True)
     semester_id = Column(String, ForeignKey('semesters.id'))
