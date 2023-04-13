@@ -194,3 +194,8 @@ cython_debug/
 *.vsix
 sample.html
 testing/test.txt
+covid-variants.csv
+covid-variants.csv
+.gitignore
+pt2.py
+.gitignore
