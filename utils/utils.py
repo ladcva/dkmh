@@ -4,6 +4,8 @@ from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Sem
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
 
 # Get constants from config file
 from config.default import DEFAULT_NUM_PROCESSES, ASC_AUTH_STR, POSTGRES_CONN_STRING
@@ -41,60 +43,63 @@ def validate_cookie(url, cookie):
     else:
         return True
 
+# Create Session for these SQLAlchemy functions
+engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+Session = sessionmaker(bind=engine)
+
+# Get semester ids
 def get_semester_id():
     semester_ids = []
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    query = select(SemesterSnapshot.list_semester_id).where(SemesterSnapshot.end_time == None) 
-    with engine.connect() as conn:
-        semester_ids.extend(conn.execute(query).fetchall())
+    with Session() as session:
+        query = session.query(SemesterSnapshot.list_semester_id).where(SemesterSnapshot.end_time == None) 
+        semester_ids.extend(query.all())
     return(sorted(semester_ids[0][0], reverse=True))
 
 # Import the lastes id to class_codes_snapshot table
 def insert_latest_id(set):
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    for item in set:
-        class_code = item
-        insert_new_class_codes = pg_insert(ClassCodesSnapshot).values(code=class_code).on_conflict_do_nothing()
-        engine.execute(insert_new_class_codes)
+    with Session() as session:
+        for item in set:
+            class_code = item
+            insert_new_class_codes = pg_insert(ClassCodesSnapshot).values(code=class_code).on_conflict_do_nothing()
+            session.execute(insert_new_class_codes)
 
 def get_class_codes():
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    query = select(ClassCodesSnapshot.code)
-    with engine.connect() as conn:
-        class_codes = conn.execute(query).fetchall()
+    with Session() as session:
+        query = select(ClassCodesSnapshot.code)
+        class_codes = session.execute(query).fetchall()
     return class_codes
 
 def insert_to_lastest_sem(guids, subject_codes, subject_names, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    for i in range(len(guids)):
-        insert_lastest_sem = pg_insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], subject_name=subject_names[i],
-                                                                  course_code=course_codes[i], semester_id=semester_id, time_slot=schedules[i],
-                                                                  room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i]).on_conflict_do_nothing()
-        engine.execute(insert_lastest_sem)
+    with Session() as session:
+        for i in range(len(guids)):
+            insert_lastest_sem = pg_insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], subject_name=subject_names[i],
+                                                                    course_code=course_codes[i], semester_id=semester_id, time_slot=schedules[i],
+                                                                    room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i]).on_conflict_do_nothing()
+            session.add(insert_lastest_sem)
+            session.commit()
 
 def insert_to_classes(subject_codes):
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    for item in set(subject_codes):
-        subject_code = item
-        insert_classes = pg_insert(Class).values(code=subject_code).on_conflict_do_nothing()
-        engine.execute(insert_classes)
+    with Session() as session:
+        for item in set(subject_codes):
+            subject_code = item
+            insert_classes = pg_insert(Class).values(code=subject_code).on_conflict_do_nothing()
+            session.add(insert_classes)
+            session.commit()
 
 def insert_to_semester():
-    details = []
-    sem_ids = []
-    sem_names = []
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-    query = select(SemesterSnapshot.details).where(SemesterSnapshot.end_time == None)
-    with engine.connect() as conn:
-        details.extend(conn.execute(query).fetchall())
+    details, sem_ids, sem_names = [], [], []
+    with Session() as session:
+        query = select(SemesterSnapshot.details).where(SemesterSnapshot.end_time == None)
+        details.extend(session.execute(query).fetchall())
 
-    for key,value in details[0][0].items():
-        sem_ids.append(key)
-        sem_names.append(value)
-    
-    for i in range(len(sem_ids)):
-        query2 = pg_insert(Semester).values(id=sem_ids[i], name=sem_names[i]).on_conflict_do_nothing()
-        engine.execute(query2)
+        for key,value in details[0][0].items():
+            sem_ids.append(key)
+            sem_names.append(value)
+        
+        for i in range(len(sem_ids)):
+            insert_semester = pg_insert(Semester).values(id=sem_ids[i], name=sem_names[i]).on_conflict_do_nothing()
+            session.add(insert_semester)
+            session.commit()
 
 #TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
 
@@ -122,3 +127,4 @@ class TempLists:
             self.lecturers.append(each[6])
             self.timeframes.append(each[7])
 
+print(get_semester_id())
