@@ -199,3 +199,4 @@ covid-variants.csv
 .gitignore
 pt2.py
 .gitignore
+available_subject_codes.txt
