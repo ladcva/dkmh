@@ -63,12 +63,14 @@ def insert_latest_id(set):
             insert_new_class_codes = pg_insert(ClassCodesSnapshot).values(code=class_code).on_conflict_do_nothing()
             session.execute(insert_new_class_codes)
 
+# Get class codes from class_codes_snapshot table
 def get_class_codes():
     with Session() as session:
         query = select(ClassCodesSnapshot.code)
         class_codes = session.execute(query).fetchall()
     return class_codes
 
+# Insert to recent semester classes table
 def insert_to_lastest_sem(guids, subject_codes, subject_names, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
     with Session() as session:
         for i in range(len(guids)):
@@ -78,6 +80,7 @@ def insert_to_lastest_sem(guids, subject_codes, subject_names, course_codes, sem
             session.add(insert_lastest_sem)
             session.commit()
 
+# Insert to class table
 def insert_to_classes(subject_codes):
     with Session() as session:
         for item in set(subject_codes):
@@ -86,6 +89,7 @@ def insert_to_classes(subject_codes):
             session.add(insert_classes)
             session.commit()
 
+# Insert to semester table
 def insert_to_semester():
     details, sem_ids, sem_names = [], [], []
     with Session() as session:
