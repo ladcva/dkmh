@@ -131,4 +131,3 @@ class TempLists:
             self.lecturers.append(each[6])
             self.timeframes.append(each[7])
 
-print(get_semester_id())
