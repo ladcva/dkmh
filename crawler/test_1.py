@@ -62,9 +62,6 @@ if __name__ == "__main__":
  
 
     
-#TODO Refactor and use multiprocessing to speed up the process or think of a better way to optimize the process -> partially done, multiprocessing implemented
 #TODO Use a database to store the results
-#TODO Get all semester IDs and run the process for each semester ID -- DOING
 #TODO Re-design database - Doing
-#TODO Implement retry mechanism -> Implemented retry mechanism for ConnectionError - caused by bad internet
 #TODO 
