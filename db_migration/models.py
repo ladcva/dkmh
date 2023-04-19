@@ -51,3 +51,9 @@ class RecentSemesterClasses(base):
     time_slot = Column(String)
     lecturer = Column(String)
     from_to = Column(String)
+
+class UsersRegistratedClasses(base):
+    __tablename__ = 'users_registrated_classes'
+    name = Column(String)
+    cookie = Column(String)
+    classes_registered = Column(String)
