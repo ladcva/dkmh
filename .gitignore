@@ -199,3 +199,10 @@ covid-variants.csv
 pt2.py
 available_subject_codes.txt
 .env
+orchestrator/logs/scheduler/latest
+
+orchestrator/airflow-webserver.pid
+.gitignore
+orchestrator/airflow.cfg
+.env
+orchestrator/airflow-worker.pid

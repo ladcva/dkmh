@@ -7,3 +7,4 @@ bs4
 psycopg2==2.9.5
 requests
 sqlalchemy==1.4.0
+apache-airflow==2.5.3

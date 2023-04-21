@@ -115,7 +115,8 @@ services:
   airflow-webserver:
     <<: *airflow-common
     volumes:
-      - /home/tb24/projects/dkmh:/opt/airflow/dags
+      - /home/tb24/projects/dkmh/orchestrator:/opt/airflow
+      - /home/tb24/projects/dkmh/:/opt/airflow/dkmh
     command: webserver
     ports:
       - "8080:8080"
@@ -134,7 +135,7 @@ services:
   airflow-scheduler:
     <<: *airflow-common
     volumes:
-      - /home/tb24/projects/dkmh:/opt/airflow/dags
+      - /home/tb24/projects/dkmh/orchestrator:/opt/airflow
     command: scheduler
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
@@ -151,7 +152,8 @@ services:
   airflow-worker:
     <<: *airflow-common
     volumes:
-      - /home/tb24/projects/dkmh:/opt/airflow/dags
+      - /home/tb24/projects/dkmh/orchestrator:/opt/airflow
+      - /home/tb24/projects/dkmh/:/opt/airflow/dkmh
     command: celery worker
     healthcheck:
       test:
