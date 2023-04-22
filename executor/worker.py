@@ -3,6 +3,8 @@ from random import randrange
 from time import sleep
 from datetime import datetime
 from uuid import uuid4
+import requests
+
 
 
 class Worker(BaseProcess):
@@ -16,12 +18,28 @@ class Worker(BaseProcess):
     def task(cls, auth_user, value):
         task_uuid = uuid4()
 
+        dangky_url = 'https://sv.isvnu.vn/dang-ky-hoc-phan.html'
+
+        cookie = {'ASC.AUTH' : auth_user}
+        
+        payload = {
+            'IDDotDangKy' : 35,
+            'IDLoaiDangKy' : 1,
+            'GuidIDLopHocPhan': value
+        }
+
+        response = requests.post(dangky_url, cookies=cookie, data=payload)
+        
+
+
         datetime_now = datetime.now().strftime("%H:%M:%S")
         print(f'Task {task_uuid} with object {value} executing at {datetime_now}, auth_user = {auth_user}', flush=True)
 
-        execution_time = randrange(start=3, stop=7)
-        sleep(execution_time)
+        # execution_time = randrange(start=3, stop=7)
+        # sleep(execution_time)
         print(f"Completed - Task {task_uuid}")
-
-        return f"Successfully registered {value['className']} after {execution_time} seconds !"
+        if "Có lỗi xảy ra" in response.text:
+            return f"Failed to register {value} !"
+        else:
+            return f"Successfully registered {value} !"
 

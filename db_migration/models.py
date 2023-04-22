@@ -52,8 +52,8 @@ class RecentSemesterClasses(base):
     lecturer = Column(String)
     from_to = Column(String)
 
-class UsersRegistratedClasses(base):
-    __tablename__ = 'users_registrated_classes'
-    name = Column(String)
-    cookie = Column(String)
-    classes_registered = Column(String)
+# class UsersRegistratedClasses(base):          # Comment out for testing
+#     __tablename__ = 'users_registrated_classes'
+#     name = Column(String)
+#     cookie = Column(String)
+#     classes_registered = Column(String)
