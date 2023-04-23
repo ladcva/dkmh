@@ -96,14 +96,12 @@ def insert_to_semester():
         query = select(SemesterSnapshot.details).where(SemesterSnapshot.end_time == None)
         details.extend(session.execute(query).fetchall())
 
-        for key,value in details[0][0].items():
-            sem_ids.append(key)
-            sem_names.append(value)
-        
-        for i in range(len(sem_ids)):
-            insert_semester = pg_insert(Semester).values(id=sem_ids[i], name=sem_names[i]).on_conflict_do_nothing()
-            session.add(insert_semester)
-            session.commit()
+    for key,value in details[0][0].items():
+        sem_ids.append(key)
+        sem_names.append(value)
+    
+    query2 = pg_insert(Semester).values(id=sem_ids, name=sem_names).on_conflict_do_nothing()
+    engine.execute(query2)
 
 #TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
 
