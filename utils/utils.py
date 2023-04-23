@@ -99,9 +99,10 @@ def insert_to_semester():
     for key,value in details[0][0].items():
         sem_ids.append(key)
         sem_names.append(value)
-    
-    query2 = pg_insert(Semester).values(id=sem_ids, name=sem_names).on_conflict_do_nothing()
-    engine.execute(query2)
+        
+    for i in range(len(sem_ids)):
+        insert_semesters = pg_insert(Semester).values(id=sem_ids[i], name=sem_names[i]).on_conflict_do_nothing()
+        engine.execute(insert_semesters)
 
 #TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
 
@@ -129,3 +130,4 @@ class TempLists:
             self.lecturers.append(each[6])
             self.timeframes.append(each[7])
 
+insert_to_semester()
