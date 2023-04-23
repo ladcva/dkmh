@@ -42,7 +42,7 @@ if __name__ == "__main__":
     num_processes = DEFAULT_NUM_PROCESSES  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
 
-    for semester in [37]: # For id in semester ids
+    for semester in semester_ids: # For id in semester ids
         with Pool(processes=num_processes) as pool:
             func = partial(validate_subject_code, semester)   # Create a partial func to pass semester_id to validate_subject_code
             for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
