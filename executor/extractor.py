@@ -36,7 +36,6 @@ data2 = {
     'queuedGuids': get_guid_from_class_code()
 }
 
-
 # Send a POST request to the Receiver
 url = "http://localhost:5005"
 requests.post(url, json=data2)

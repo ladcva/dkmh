@@ -31,7 +31,6 @@ class Worker(BaseProcess):
         response = requests.post(dangky_url, cookies=cookie, data=payload)
         
 
-
         datetime_now = datetime.now().strftime("%H:%M:%S")
         print(f'Task {task_uuid} with object {value} executing at {datetime_now}, auth_user = {auth_user}', flush=True)
 
