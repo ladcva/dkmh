@@ -4,9 +4,6 @@ from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Sem
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert
 from sqlalchemy.dialects.postgresql import insert as pg_insert
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import Session
-
 # Get constants from config file
 from config.default import DEFAULT_NUM_PROCESSES, ASC_AUTH_STR, POSTGRES_CONN_STRING
 
