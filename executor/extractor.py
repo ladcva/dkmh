@@ -19,12 +19,7 @@ def insert_into_user_regsitered_classes():
     with engine.connect() as conn:
         query = insert(UsersRegistratedClasses).values(name=data['name'], cookie=data['cookie'], classes_registered=data['classes_registered'])
         conn.execute(query)
-
-        time.sleep(1)
-        query2 = select(UsersRegistratedClasses.classes_registered).where(UsersRegistratedClasses.name == data['name'])
-        print(conn.execute(query2).fetchall())
-
-       
+ 
 # Then we query the database to get the GUID
 def get_guid_from_class_code():
     guid_registered = []
@@ -40,7 +35,6 @@ data2 = {
     'workers': 12,
     'queuedGuids': get_guid_from_class_code()
 }
-
 
 
 # Send a POST request to the Receiver
