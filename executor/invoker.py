@@ -34,7 +34,7 @@ class Invoker:
         num_workers_requested = int(float(data['workers']))
         auth_user = data['auth']
 
-        iterable_queued_classes = [(auth_user, item) for item in data['queuedClasses']]
+        iterable_queued_classes = [(auth_user, item) for item in data['queuedGuids']]
         print(iterable_queued_classes)
 
         with cls.create_workers(num_workers_requested) as p:

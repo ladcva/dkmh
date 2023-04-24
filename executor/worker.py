@@ -23,7 +23,7 @@ class Worker(BaseProcess):
         cookie = {'ASC.AUTH' : auth_user}
         
         payload = {
-            'IDDotDangKy' : 35,
+            'IDDotDangKy' : 35, # Need to change this also
             'IDLoaiDangKy' : 1,
             'GuidIDLopHocPhan': value
         }
