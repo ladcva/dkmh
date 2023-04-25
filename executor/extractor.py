@@ -34,15 +34,10 @@ def get_guid_from_class_code(*args):
         guid_registered = result.fetchall()
         return guid_registered
     
-# Then combine the GUID with the cookie to send a POST request to the Receiver
-# data2 = {
-#     'auth': data['cookie'],
-#     'workers': DEFAULT_NUM_PROCESSES,
-#     'queuedGuids': get_guid_from_class_code()
-# }
+
 
 if __name__ == "__main__":
-    # Send a POST request to the Receiver
+    # Combine GUIDs with user's cookie and send a POST request to the Receiver
     url = "http://localhost:5005"
 
 
@@ -55,4 +50,7 @@ if __name__ == "__main__":
         }
         print(payload)
         requests.post(url, json=payload)
+
+
+
 #TODO - Implement logging
