@@ -29,15 +29,14 @@ class Worker(BaseProcess):
         }
 
         response = requests.post(dangky_url, cookies=cookie, data=payload)
-        
 
         datetime_now = datetime.now().strftime("%H:%M:%S")
         print(f'Task {task_uuid} with object {value} executing at {datetime_now}, auth_user = {auth_user}', flush=True)
 
-        # execution_time = randrange(start=3, stop=7)
-        # sleep(execution_time)
+        execution_time = randrange(start=3, stop=7)
+        sleep(execution_time)
         print(f"Completed - Task {task_uuid}")
-        if "Có lỗi xảy ra" in response.text:
+        if "Có lỗi xảy ra" or None in response.text:
             return f"Failed to register {value} !"
         else:
             return f"Successfully registered {value} !"
