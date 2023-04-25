@@ -45,18 +45,16 @@ engine = create_engine(POSTGRES_CONN_STRING, echo=False)
 
 # Get the semester ids
 def get_semester_id():
-    semester_ids = []
-    query = select(SemesterSnapshot.list_semester_id).where(SemesterSnapshot.end_time == None) 
+    query = select(SemesterSnapshot.list_semester_id).where(SemesterSnapshot.end_time == None)
     with engine.connect() as conn:
-        semester_ids.extend(conn.execute(query).fetchall())
-    return(sorted(semester_ids[0][0], reverse=True))
+        semester_ids = conn.execute(query).fetchall()[0][0]
+    return sorted(semester_ids, reverse=True)
 
 # Import the lastes id to class_codes_snapshot table
 def insert_latest_id(set):
-    for item in set:
-        class_code = item
-        insert_new_class_codes = insert(ClassCodesSnapshot).values(code=class_code)
-        engine.execute(insert_new_class_codes)
+    with engine.connect() as conn:
+        data = [{'code': item} for item in set]
+        conn.execute(insert(ClassCodesSnapshot), data)
 
 # Get class codes
 def get_class_codes():
@@ -67,32 +65,34 @@ def get_class_codes():
 
 # Insert to RecentSemesterClasses table
 def insert_to_lastest_sem(guids, subject_codes, subject_names, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
-    for i in range(len(guids)):
-        insert_lastest_sem = insert(RecentSemesterClasses).values(guid=guids[i], class_code=subject_codes[i], subject_name=subject_names[i],
-                                                                  course_code=course_codes[i], semester_id=semester_id, time_slot=schedules[i],
-                                                                  room=rooms[i], lecturer=lecturers[i], from_to=timeframes[i])
-        engine.execute(insert_lastest_sem)
+        with engine.connect() as conn:
+            data = [{'guid': guid,
+                    'class_code': subject_code,
+                    'subject_name': subject_name,
+                    'course_code': course_code,
+                    'semester_id': semester_id,
+                    'time_slot': schedule,
+                    'room': room,
+                    'lecturer': lecturer,
+                    'from_to': timeframe}
+                    for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe in zip(guids, subject_codes, subject_names, course_codes, schedules, rooms, lecturers, timeframes)]
+            conn.execute(insert(RecentSemesterClasses), data)
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
-    for item in set(subject_codes):
-        subject_code = item
-        insert_classes = insert(Class).values(code=subject_code)
-        engine.execute(insert_classes)
+    with engine.connect() as conn:
+        data = [{'code': item} for item in set(subject_codes)]
+        conn.execute(insert(Class), data)
 
 def insert_to_semester():
-    details, sem_ids, sem_names = [], [], []
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
     query = select(SemesterSnapshot.details).where(SemesterSnapshot.end_time == None)
     with engine.connect() as conn:
-        details.extend(conn.execute(query).fetchall())
-
-    for key,value in details[0][0].items():
-        sem_ids.append(key)
-        sem_names.append(value)
-    for i in range(len(sem_ids)):
-        query2 = pg_insert(Semester).values(id=sem_ids[i], name=sem_names[i]).on_conflict_do_nothing()
-        engine.execute(query2)
+        details = conn.execute(query).fetchall()[0][0]
+        sem_ids = list(details.keys())
+        sem_names = list(details.values())
+        for sem_id, sem_name in zip(sem_ids, sem_names):
+            query2 = pg_insert(Semester).values(id=sem_id, name=sem_name).on_conflict_do_nothing()
+            conn.execute(query2)
 
 #TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
 
