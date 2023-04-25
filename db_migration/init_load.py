@@ -1,5 +1,5 @@
 from db_migration.models import SemesterSnapshot, base
-from crawler.alpha import get_dict_semester_website
+from crawler.CDC import get_dict_semester_website
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert, update, func
 from sqlalchemy.orm import sessionmaker

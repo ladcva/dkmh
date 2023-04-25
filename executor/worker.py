@@ -4,7 +4,7 @@ from time import sleep
 from datetime import datetime
 from uuid import uuid4
 import requests
-
+from utils.utils import get_semester_id
 
 
 class Worker(BaseProcess):
@@ -23,7 +23,7 @@ class Worker(BaseProcess):
         cookie = {'ASC.AUTH' : auth_user}
         
         payload = {
-            'IDDotDangKy' : 35, # Need to change this also
+            'IDDotDangKy' : get_semester_id()[1], # index 1 for testing
             'IDLoaiDangKy' : 1, # Maybe this if our users stoopid
             'GuidIDLopHocPhan': value
         }
@@ -33,8 +33,7 @@ class Worker(BaseProcess):
         datetime_now = datetime.now().strftime("%H:%M:%S")
         print(f'Task {task_uuid} with object {value} executing at {datetime_now}, auth_user = {auth_user}', flush=True)
 
-        execution_time = randrange(start=3, stop=7)
-        sleep(execution_time)
+
         print(f"Completed - Task {task_uuid}")
         if "Có lỗi xảy ra" or None in response.text:
             return f"Failed to register {value} !"

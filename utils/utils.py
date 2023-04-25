@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 # Get constants from config file
-from config.default import DEFAULT_NUM_PROCESSES, ASC_AUTH_STR, POSTGRES_CONN_STRING
+from config.default import DEFAULT_NUM_PROCESSES, POSTGRES_CONN_STRING
 
 
 # Utility functions
