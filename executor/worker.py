@@ -24,7 +24,7 @@ class Worker(BaseProcess):
         
         payload = {
             'IDDotDangKy' : 35, # Need to change this also
-            'IDLoaiDangKy' : 1,
+            'IDLoaiDangKy' : 1, # Maybe this if our users stoopid
             'GuidIDLopHocPhan': value
         }
 
