@@ -9,10 +9,10 @@ from config.default import POSTGRES_CONN_STRING
 
 app = Flask(__name__)
 app.config.from_object('config.default.DefaultConfig')
+engine = create_engine(POSTGRES_CONN_STRING)
 
 @app.route('/getClasses', methods=['GET']) # GET method is used to query all classes from database.
 def get_classes():
-    engine = create_engine(POSTGRES_CONN_STRING)
     Session = sessionmaker(bind=engine)
     session = Session()
     connection = session.connection()
@@ -21,3 +21,31 @@ def get_classes():
     classes = [dict(row) for row in classes]
 
     return Response(json.dumps(classes), mimetype='application/json')
+
+@app.route('/register', methods=['POST']) # POST method is used to register classes.
+def register():
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    connection = session.connection()
+    data = json.loads(request.data)
+    print(data['name'])
+
+    query = (insert(UsersRegistratedClasses).
+             values(
+                    name=data['name'], 
+                    cookie=data['cookie'], 
+                    classes_registered=data['classes_registered']
+                    )
+    )
+    with session:
+        session.execute(query)
+        session.commit()
+    
+    return "Registration Successful"
+
+
+if __name__ == "__main__":
+    app.run(debug=True,
+            threaded=True,
+            host="0.0.0.0",
+            port=5000)
