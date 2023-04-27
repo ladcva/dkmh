@@ -98,6 +98,7 @@ def insert_to_semester():
 
 #TODO: Decide on_conflict strategy, do nothing or upsert
 
+#TODO: Change Engine execuion to Session execution, with session.connection() to get connection. Using raw Session execution with ORM return instances of classes, rather than database row
 class TempLists:
     def __init__(self):
         self.guids = []
@@ -119,4 +120,3 @@ class TempLists:
             self.rooms.append(each[5])
             self.lecturers.append(each[6])
             self.timeframes.append(each[7])
-
