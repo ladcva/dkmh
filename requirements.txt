@@ -4,7 +4,7 @@ jsonrpclib
 python-dotenv==0.21.0
 Werkzeug~=2.2.2
 bs4
-psycopg2==2.9.5
+psycopg2-binary==2.9.5 # change to avoid errors
 requests
 sqlalchemy==1.4.0
 apache-airflow==2.5.3
