@@ -58,9 +58,9 @@ def insert_latest_id(set):
     session = Session()
 
     data = [{'code': item} for item in set]
-    insert_id = ClassCodesSnapshot(data)
 
-    session.add(insert_id)
+    instances = [ClassCodesSnapshot(**item) for item in data]
+    session.add_all(instances)
     session.commit()
     
 
@@ -85,7 +85,8 @@ def insert_to_lastest_sem(guids, subject_codes, subject_names, course_codes, sem
             'lecturer': lecturer,
             'from_to': timeframe}
             for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe in zip(guids, subject_codes, subject_names, course_codes, schedules, rooms, lecturers, timeframes)]
-    session.add(RecentSemesterClasses(data))
+    instances = [RecentSemesterClasses(**item) for item in data]
+    session.add_all(instances)
     session.commit()
 
 # Insert to classes table
@@ -94,8 +95,10 @@ def insert_to_classes(subject_codes):
     session = Session()
     
     data = [{'code': item} for item in set(subject_codes)]
+    print(data)
     
-    session.add(Class(data))
+    instances = [Class(**item) for item in data]
+    session.add_all(instances)
     session.commit()
 
 def insert_to_semester():
@@ -135,5 +138,3 @@ class TempLists:
             self.rooms.append(each[5])
             self.lecturers.append(each[6])
             self.timeframes.append(each[7])
-
-

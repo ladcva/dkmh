@@ -64,7 +64,7 @@ if __name__ == "__main__":
     for result in results:
         temp_instance.add_data(result)
 
-    time.sleep(3)
+    time.sleep(1)
     insert_to_classes(temp_instance.subject_codes)
     insert_to_lastest_sem(temp_instance.guids, temp_instance.subject_codes, temp_instance.subject_names, temp_instance.course_codes, lastest_sem_id, 
                           temp_instance.schedules, temp_instance.rooms, temp_instance.lecturers, temp_instance.timeframes)  # Initially worked, needs more testing
