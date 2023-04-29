@@ -1,4 +1,4 @@
-decouple
+python-decouple==3.8
 flask==2.2.2
 jsonrpclib
 python-dotenv==0.21.0

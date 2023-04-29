@@ -137,4 +137,3 @@ class TempLists:
             self.timeframes.append(each[7])
 
 
-insert_to_semester()
