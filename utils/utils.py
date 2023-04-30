@@ -1,5 +1,5 @@
 import requests
-# Import nessary db modules
+# Import necessary db modules
 from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Semester, RecentSemesterClasses
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert
@@ -52,7 +52,7 @@ def get_semester_id():
     semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
     return sorted(semester_ids, reverse=True)
 
-# Import the lastes id to class_codes_snapshot table
+# Import the latest id to class_codes_snapshot table
 def insert_latest_id(set):
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -72,7 +72,7 @@ def get_class_codes():
     return class_codes
 
 # Insert to RecentSemesterClasses table
-def insert_to_lastest_sem(guids, subject_codes, subject_names, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
+def insert_to_latest_sem(guids, subject_codes, subject_names, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
     Session = sessionmaker(bind=engine)
     session = Session()
     data = [{'guid': guid,

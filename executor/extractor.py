@@ -1,6 +1,6 @@
 # This is the Extractor that will extract the data from the database and send it to the Receiver
 # Extractor
-from db_migration.models import UsersRegistratedClasses, RecentSemesterClasses
+from db_migration.models import UsersRegisteredClasses, RecentSemesterClasses
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert
 from config.default import POSTGRES_CONN_STRING, DEFAULT_NUM_PROCESSES
@@ -18,13 +18,13 @@ engine = create_engine(POSTGRES_CONN_STRING, echo=False)
 
 # def insert_into_user_regsitered_classes():  # This function belongs to the API Gateway
 #     with engine.connect() as conn:
-#         query = insert(UsersRegistratedClasses).values(name=data['name'], cookie=data['cookie'], classes_registered=data['classes_registered'])
+#         query = insert(UsersRegisteredClasses).values(name=data['name'], cookie=data['cookie'], classes_registered=data['classes_registered'])
 #         conn.execute(query)
  
 # Query the Queue
 def query_queue():
     with engine.connect() as conn:
-        query = select(UsersRegistratedClasses)
+        query = select(UsersRegisteredClasses)
         return(conn.execute(query).fetchall())
 
 # Then we query the database to get the GUID

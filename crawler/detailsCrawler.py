@@ -1,14 +1,14 @@
 import requests, time
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
-from utils.utils import get_semester_id, get_class_codes, insert_to_lastest_sem, insert_to_classes, TempLists
+from utils.utils import get_semester_id, get_class_codes, insert_to_latest_sem, insert_to_classes, TempLists
 from config.default import ASC_AUTH_STR, DKHP_URL, LH_URL, DEFAULT_NUM_PROCESSES
 
 def crawl_lhp_data(code):
     temp, temp2, temp3 = [], [], []
     attributes = []
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
-    url = DKHP_URL.format(lastest_sem_id, code, code)
+    url = DKHP_URL.format(latest_sem_id, code, code)
     response = requests.post(url, cookies=cookie)
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     time.sleep(1)
     insert_to_classes(temp_instance.subject_codes)
-    insert_to_lastest_sem(temp_instance.guids, temp_instance.subject_codes, temp_instance.subject_names, temp_instance.course_codes, lastest_sem_id, 
+    insert_to_latest_sem(temp_instance.guids, temp_instance.subject_codes, temp_instance.subject_names, temp_instance.course_codes, latest_sem_id,
                           temp_instance.schedules, temp_instance.rooms, temp_instance.lecturers, temp_instance.timeframes)  # Initially worked, needs more testing
     print("Task completed")
 
