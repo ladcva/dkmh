@@ -55,7 +55,7 @@ def crawl_lhp_data(code):
 
 if __name__ == "__main__":
     temp_instance = TempLists()
-    lastest_sem_id = get_semester_id()[1] # index 1 is for testing purpose, the lastest sem ID doesn't have any codes yet
+    latest_sem_id = get_semester_id()[0] # index 1 is for testing purpose, the latest sem ID doesn't have any codes yet
     class_codes = [item[0] for item in get_class_codes()]
     chunk_size = len(class_codes) // DEFAULT_NUM_PROCESSES
 
