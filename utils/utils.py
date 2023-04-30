@@ -2,7 +2,6 @@ import requests
 # Import necessary db modules
 from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Semester, RecentSemesterClasses
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import select, insert
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import sessionmaker
 # Get constants from config file
@@ -53,11 +52,11 @@ def get_semester_id():
     return sorted(semester_ids, reverse=True)
 
 # Import the latest id to class_codes_snapshot table
-def insert_latest_id(set):
+def insert_latest_id(set_subject_codes):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    data = [{'code': item} for item in set]
+    data = [{'code': item} for item in set_subject_codes]
 
     instances = [ClassCodesSnapshot(**item) for item in data]
     session.add_all(instances)
