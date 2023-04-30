@@ -1,6 +1,4 @@
 from multiprocessing.process import BaseProcess
-from random import randrange
-from time import sleep
 from datetime import datetime
 from uuid import uuid4
 import requests

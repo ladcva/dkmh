@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, BigInteger, Column, DateTime, Identity, Integer, PrimaryKeyConstraint, Column, Integer, String, ForeignKey, Date
+from sqlalchemy import ARRAY, BigInteger, DateTime, Identity, PrimaryKeyConstraint, Column, Integer, String, ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base, relationship
 

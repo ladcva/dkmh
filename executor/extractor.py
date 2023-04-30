@@ -2,7 +2,7 @@
 # Extractor
 from db_migration.models import UsersRegisteredClasses, RecentSemesterClasses
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import select, insert
+from sqlalchemy.sql.expression import select
 from config.default import POSTGRES_CONN_STRING, DEFAULT_NUM_PROCESSES
 import requests, time, json
 
@@ -25,7 +25,7 @@ engine = create_engine(POSTGRES_CONN_STRING, echo=False)
 def query_queue():
     with engine.connect() as conn:
         query = select(UsersRegisteredClasses)
-        return(conn.execute(query).fetchall())
+        return conn.execute(query).fetchall()
 
 # Then we query the database to get the GUID
 def get_guid_from_class_code(*args):

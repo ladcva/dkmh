@@ -1,5 +1,4 @@
 from multiprocessing import Pool
-from random import random
 from executor.worker import Worker
 from utils.utils import get_num_workers
 
