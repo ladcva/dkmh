@@ -39,7 +39,7 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
 if __name__ == "__main__":
     start_time = time.time()
     codes_list = get_all_subjects()
-    num_processes = DEFAULT_NUM_PROCESSES  # Get number of CPU cores available
+    num_processes = DEFAULT_NUM_PROCESSES*3  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
 
     for semester in semester_ids: # For id in semester ids
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         print(available_subject_codes)
         end_time = time.time()
         print(f"Processing time: {end_time - start_time} seconds")
-        time.sleep(5)
+        time.sleep(2)
         
     set_subject_codes = set(available_subject_codes)
     # create_classes_snapshot_table() # Deprecated in next version, ClassesSnapshot table already included in init_load
