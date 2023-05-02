@@ -16,11 +16,12 @@
 - **testing**: contains unit tests
 
 ## Tech stack
-- Flask: for web server, REST API and registration processes.
-- Airflow: for orchestrating the whole process.
-- PostgreSQL: the database of choice.
-- Docker: for containerization.
-- Python's Requests and BeautifulSoup: for web crawling.
+- ***Flask***: for web server, REST API and registration processes.
+- ***Python's Requests and BeautifulSoup***: for web crawling.
+- ***PostgreSQL***: the database of choice.
+- ***SQLAlchemy***: for database access and ORM - Object Relational Mapping.
+- ***Airflow***: for orchestrating the whole process.
+- ***Docker***: for containerization.
 
 ## Execution flow for Crawler
 1. Create a virtual environment and install the dependencies.
