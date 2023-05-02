@@ -3,5 +3,5 @@
 
 ## Overall Architecture
 
-![Overall Architecture]("C:\Users\binhy\Downloads\dkmh.drawio.png")
+![Overall Architecture](dkmh.drawio.png)
 

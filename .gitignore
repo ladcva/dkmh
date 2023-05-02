@@ -206,3 +206,4 @@ orchestrator/airflow-webserver.pid
 orchestrator/airflow.cfg
 .env
 orchestrator/airflow-worker.pid
+dkmh.drawio.png:Zone.Identifier
