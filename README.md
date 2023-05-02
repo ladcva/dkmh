@@ -16,3 +16,17 @@
 - **testing**: contains unit tests
 
 ## Tech stack
+- Flask: for web server, REST API and registration processes.
+- Airflow: for orchestrating the whole process.
+- PostgreSQL: the database of choice.
+- Docker: for containerization.
+- Python's Requests and BeautifulSoup: for web crawling.
+
+## Execution flow for Crawler
+1. Create a virtual environment and install the dependencies.
+2. Run the database migration scripts, including
+> * Create the database schema.
+> * Load the initial data.
+3. CDC - Change Data Capture process is run prediodically to update the database with the latest data.
+> * ***IF*** there is a new semester, the CDC process will load the new semester's data into the database and run the Classes and Class Details crawlers.
+> * ***ELSE*** there is no new semester, the CDC ready to run for the next schedule.
