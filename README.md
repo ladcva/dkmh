@@ -3,5 +3,5 @@
 
 ## Overall Architecture
 
-![Overall Architecture](https://drive.google.com/file/d/1gCyVcyDxL2xaBK3wuFPHUzdH4sBEKCkX/view?usp=sharing)
+![Overall Architecture]("C:\Users\binhy\Downloads\dkmh.drawio.png")
 
