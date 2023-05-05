@@ -2,7 +2,7 @@ from airflow.utils import dates
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 with DAG(
-    "test_orches_1",
+    "orches_1",
 
     default_args={
         "owner": "Binh",
@@ -10,7 +10,7 @@ with DAG(
         "retry_delay": dates.timedelta(minutes=5),
         "do_xcom_push": True,
     },
-    description="Test DAG",
+    description="Orchestrator",
     schedule='@daily',
     start_date=dates.days_ago(2),
     tags=["test"],
