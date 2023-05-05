@@ -1,14 +1,23 @@
 from airflow.utils import dates
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, BranchPythonOperator
+
+def determine_next_task(**kwargs):
+    ti = kwargs['ti']
+    check_output = ti.xcom_pull(task_ids='task1')
+    if check_output == 'Hello World':
+        return "task2"
+    else:
+        return False
+
 with DAG(
     "orches_test",
 
     default_args={
         "owner": "Binh",
         "retries" :1,
-        "retry_delay": dates.timedelta(minutes=5),
+        "retry_delay": dates.timedelta(seconds=3),
     },
     description="Test DAG",
     schedule='@daily',
@@ -22,17 +31,17 @@ with DAG(
         do_xcom_push=True,
     )
 
-    def pull_xcom(**kwargs):
-        ti = kwargs['ti']
-        xcom_value = ti.xcom_pull(task_ids='task1')
-        if xcom_value == "Hello World":
-            print("XCOM works")
-        else:
-            print("XCOM doesn't work")
-
-    task2 = PythonOperator(
-        task_id = "task2",
-        python_callable=pull_xcom,
+    task2 = BashOperator(
+        task_id="task2",
+        bash_command="cd /opt/airflow/dkmh && source venv/bin/activate && python test2.py",
     )
 
-task1 >> task2
+    branch_task = BranchPythonOperator(
+        task_id='branch_task',
+        python_callable=determine_next_task,
+        provide_context=True,
+        dag=dag
+    )
+
+    task1 >> branch_task >> task2
+

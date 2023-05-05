@@ -57,3 +57,4 @@ if __name__ == '__main__':
     
     time.sleep(2)
     insert_to_semester()
+    print("Sucessfully initialized database and loaded semester data")
