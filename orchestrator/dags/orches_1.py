@@ -8,7 +8,7 @@ with DAG(
         "owner": "Binh",
         "retries" :1,
         "retry_delay": dates.timedelta(minutes=5),
-        "xcom_push": True,
+        "do_xcom_push": True,
     },
     description="Test DAG",
     schedule='@daily',
