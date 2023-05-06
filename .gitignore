@@ -207,3 +207,6 @@ orchestrator/airflow.cfg
 .env
 orchestrator/airflow-worker.pid
 dkmh.drawio.png:Zone.Identifier
+DKMH - Executor.drawio.png:Zone.Identifier
+DKMH - Executor.drawio.png
+executor.drawio.png

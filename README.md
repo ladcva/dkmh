@@ -61,3 +61,17 @@
 ```python crawler/classes.py```
 
 ```python crawler/class_details.py```
+
+## Execution flow for Executor
+
+![Executor Architecture](executor.drawio.png)
+
+# The Executor will run as follow
+
+1. Users will send a request though the Extension to register for a class - or a bunch of classes - classes will be chosen from the list of classes that are available for registration.
+2. The Extension will check if the request is valid, and if User's credentials are valid.
+3. User's data, including classes and credentials, will be saved to a queue.
+4. At the time of Registration, the Extractor processes will processes the data from the queue - one by one - query all the matched GUIDs from the database, and send the requests to the Registration API - the Receiver.
+5. The Receiver receives the requests, spawns coressponding threads and triggers the Invoker to execute the requests.
+6. The Invoker spawns a process pool, and send them to the Workers to execute.
+7. The Workers will execute the requests, and send the results back to Users and save the results to logs.
