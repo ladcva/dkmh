@@ -66,7 +66,7 @@
 
 ![Executor Architecture](executor.drawio.png)
 
-# The Executor will run as follow
+# The Executor will run as follow:
 
 1. Users will send a request though the Extension to register for a class - or a bunch of classes - classes will be chosen from the list of classes that are available for registration.
 
