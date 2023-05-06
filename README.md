@@ -38,7 +38,7 @@
 > - ***IF*** there is a new semester, the CDC process will load the new semester's data into the database and run the Classes and Class Details crawlers.
 > - ***ELSE*** there is no new semester, the CDC ready to run for the next schedule.
 
-## Manual execution flow
+## Manual execution flow for Crawler
 
 1. To create a virtual environment and install the dependencies, first clone the repo, cd into the directory and run:
 
@@ -59,6 +59,5 @@
 4. To run the Classes and Class Details crawlers, run:
 
 ```python crawler/classes.py```
-and
 
 ```python crawler/class_details.py```
