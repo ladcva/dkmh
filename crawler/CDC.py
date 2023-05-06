@@ -103,7 +103,8 @@ if __name__ == '__main__':
 
         if diff:
             ingest_new_semester(engine)
-            print(f'Successfully added semester {diff} to db.')
+            print(f'Found new semester {diff}, added to db.')
+            print("Successfully loaded changed data")
             # Call beta job
         else:
             print('No changes on website. Latest record in db is already up-to-date.')

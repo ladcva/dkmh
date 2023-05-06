@@ -56,12 +56,10 @@ def insert_latest_id(set_subject_codes):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    data = [{'code': item} for item in set_subject_codes]
-
-    instances = [ClassCodesSnapshot(**item) for item in data]
-    session.add_all(instances)
+    for code in set_subject_codes:
+        query = (pg_insert(ClassCodesSnapshot).values(code=code).on_conflict_do_nothing())
+        session.execute(query)
     session.commit()
-    
 
 # Get class codes
 def get_class_codes():
@@ -84,8 +82,9 @@ def insert_to_latest_sem(guids, subject_codes, subject_names, course_codes, seme
             'lecturer': lecturer,
             'from_to': timeframe}
             for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe in zip(guids, subject_codes, subject_names, course_codes, schedules, rooms, lecturers, timeframes)]
-    instances = [RecentSemesterClasses(**item) for item in data]
-    session.add_all(instances)
+    for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe in data:
+        query = (pg_insert(RecentSemesterClasses).values(guid=guid, class_code=subject_code, subject_name=subject_name, course_code=course_code, semester_id=semester_id, time_slot=schedule, room=room, lecturer=lecturer, from_to=timeframe).on_conflict_do_nothing())
+        session.execute(query)
     session.commit()
 
 # Insert to classes table
@@ -93,11 +92,9 @@ def insert_to_classes(subject_codes):
     Session = sessionmaker(bind=engine)
     session = Session()
     
-    data = [{'code': item} for item in set(subject_codes)]
-    print(data)
-    
-    instances = [Class(**item) for item in data]
-    session.add_all(instances)
+    for code in subject_codes:
+        query = (pg_insert(Class).values(code=code).on_conflict_do_nothing())
+        session.execute(query)
     session.commit()
 
 def insert_to_semester():

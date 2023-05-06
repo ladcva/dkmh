@@ -1,16 +1,24 @@
 from airflow.utils import dates
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, BranchPythonOperator
 
 # Xcom pull functions
-def pull_xcom_init_load(**kwargs):
+# def determine_next_task_init_load(**kwargs):
+#     ti = kwargs['ti']
+#     xcom_value = ti.xcom_pull(task_ids='create_database')
+#     if xcom_value == "Sucessfully initialized database and loaded semester data":
+#         return "cdc"
+#     else:
+#         return False
+    
+def determine_next_task_cdc(**kwargs):
     ti = kwargs['ti']
-    xcom_value = ti.xcom_pull(task_ids='create_database')
-    if xcom_value == "Sucessfully initialized database and loaded semester data":
-        print("Database initialized and semester data loaded")
+    xcom_value = ti.xcom_pull(task_ids='cdc')
+    if xcom_value == "Successfully loaded changed data":
+        return "crawl_classes"
     else:
-        print("XCOM doesn't work")
+        return False
 
 with DAG(
     "orches_1",
@@ -29,7 +37,7 @@ with DAG(
 )as dag:
     initialize_env = BashOperator(
         task_id="activate_environment",
-        bash_command="cd /opt/airflow/dkmh && source venv/bin/activate",  # Maybe for now we should install all dependencies beforehand and then use this DAG
+        bash_command="cd /opt/airflow/dkmh && source venv/bin/activate",  # Manually install dependencies, create Virtual Environment and Create db
     )
 
     create_db = BashOperator(
@@ -38,15 +46,22 @@ with DAG(
         do_xcom_push=True,
     )
     
-    check_init_load = PythonOperator(
-        task_id = "check_init_load",
-        python_callable=pull_xcom_init_load,
-    )
+    # check_init_load = BranchPythonOperator(
+    #     task_id = "check_init_load",
+    #     python_callable=determine_next_task_init_load,
+    #     provide_context=True,
+    # )
 
     cdc = BashOperator(
         task_id="CDC_for_semester",
         bash_command = "python -m crawler.CDC",
         do_xcom_push=True,
+    )
+
+    track_cdc = BranchPythonOperator(
+        task_id = "track_cdc",
+        python_callable=determine_next_task_cdc,
+        provide_context=True,
     )
 
     crawl_classes = BashOperator(
@@ -60,6 +75,6 @@ with DAG(
         bash_command = "python -m crawler.detailsCrawler",
     )
 
-    initialize_env >> create_db >> cdc >> crawl_classes >> crawl_class_details
+    initialize_env >> create_db >> cdc >> track_cdc >> crawl_classes >> crawl_class_details
 
 # TODO: use XCOM to add conditions to the DAG

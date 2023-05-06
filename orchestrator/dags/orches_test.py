@@ -40,7 +40,6 @@ with DAG(
         task_id='branch_task',
         python_callable=determine_next_task,
         provide_context=True,
-        dag=dag
     )
 
     task1 >> branch_task >> task2
