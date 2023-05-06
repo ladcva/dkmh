@@ -37,3 +37,28 @@
 
 > - ***IF*** there is a new semester, the CDC process will load the new semester's data into the database and run the Classes and Class Details crawlers.
 > - ***ELSE*** there is no new semester, the CDC ready to run for the next schedule.
+
+## Manual execution flow
+
+1. To create a virtual environment and install the dependencies, first clone the repo, cd into the directory and run:
+
+```python3 -m venv/venv```
+
+```source venv/bin/activate```
+
+```pip install -r requirements.txt```
+
+2. To run the database migration scripts, run:
+
+```python db_migration/init_load.py```
+
+3. To run the CDC process, run:
+
+```python crawler/cdc.py```
+
+4. To run the Classes and Class Details crawlers, run:
+
+```python crawler/classes.py```
+and
+
+```python crawler/class_details.py```
