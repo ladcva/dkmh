@@ -33,15 +33,7 @@
         {
             "classCode": "INS101029",
             "className": "Vật lí 1",
-            "guidlhp": "Gbvc2yzx-O7bTUfubBYz3w",
-            "semesterData": {
-                "classSemesterId": 35,
-                "classSemesterString": "HK1"
-            },
-            "classCapacity":{
-                "registeredCount": 40,
-                "remainingCount": 50
-            } 
+            "guidlhp": "Gbvc2yzx-O7bTUfubBYz3w"
         }
     ]
 }

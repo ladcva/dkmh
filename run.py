@@ -10,6 +10,6 @@
 
 # run.py
 from werkzeug.serving import run_simple # werkzeug development server
-from app import application
+from executor.receiver import app
 if __name__ == '__main__':
-    run_simple('localhost', 5005, application, use_reloader=True, use_debugger=True, use_evalex=True)
+    run_simple('0.0.0.0', 5005, app, use_reloader=True, use_debugger=True, use_evalex=True)
