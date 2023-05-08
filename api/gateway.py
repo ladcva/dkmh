@@ -47,4 +47,3 @@ if __name__ == "__main__":
             port=5050)
 
 # TODO: Implementing multithreading for the API.
-# How to implement multithreading in Flask?
