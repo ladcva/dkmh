@@ -3,7 +3,7 @@ import threading
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import select, insert
-from db_connection.models import RecentSemesterClasses, UsersRegistratedClasses
+from db_migration.models import RecentSemesterClasses, UsersRegisteredClasses
 from config.default import POSTGRES_CONN_STRING
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def register():
     session = Session()
     data = json.loads(request.data)
 
-    query = (insert(UsersRegistratedClasses).
+    query = (insert(UsersRegisteredClasses).
              values(
                     name=data['name'], 
                     cookie=data['cookie'], 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     app.run(debug=True,
             threaded=True,
             host="0.0.0.0",
-            port=5000)
+            port=5050)
 
 # TODO: Implementing multithreading for the API.
 # How to implement multithreading in Flask?
