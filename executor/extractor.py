@@ -2,7 +2,7 @@
 # Extractor
 from db_migration.models import UsersRegisteredClasses, RecentSemesterClasses
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import select
+from sqlalchemy.sql.expression import select, text
 from config.default import POSTGRES_CONN_STRING, DEFAULT_NUM_PROCESSES
 import requests, time, json
 
@@ -33,25 +33,29 @@ def get_guid_from_class_code(*args):
         result = conn.execute(select(RecentSemesterClasses.guid).where(RecentSemesterClasses.course_code.in_(args)))
         guid_registered = result.fetchall()
         return guid_registered
-    
+
+# List to individual GUIDs
+def convert_to_string(guids):
+    for guid in guids :
+        return guid
+
 
 
 if __name__ == "__main__":
     # Combine GUIDs with user's cookie and send a POST request to the Receiver
     url = "http://localhost:5005"
 
-
     for row in query_queue():
         payload = {
             'name': row.name,
             'auth': row.cookie,
             'workers': DEFAULT_NUM_PROCESSES,
-            'queuedGuids': get_guid_from_class_code(row.classes_registered.strip('{}').split(',')[0])[0][0]
+            'queuedGuids': [guid for (guid,) in get_guid_from_class_code(*row.classes_registered.strip('{}').split(','))]
         }
         print(payload)
-        requests.post(url, json=payload)
+        # requests.post(url, json=payload)
 
 
 
 #TODO - Implement logging
-#TODO - Keep the beat goin
+# row.classes_registered.strip('{}').split(',')
