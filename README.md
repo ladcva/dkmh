@@ -65,6 +65,7 @@
 ## Setting up prediodic execution for Crawler with Airflow with Docker
 
 1. Setting up environment (Linux only, if you are runnng this on Windows or MacOs, you can safely skip this step), run:
+
 ``` mkdir -p ./dags ./logs ./plugins ```
 ``` echo -e "AIRFLOW_UID=$(id -u)" > .env ```
 
@@ -80,6 +81,7 @@ airflow-init_1       | Admin user airflow created
 airflow-init_1       | 2.6.0
 start_airflow-init_1 exited with code 0
 ```
+The account created has the login **airflow** and the password **airflow**.
 
 ## Execution flow for Executor
 
