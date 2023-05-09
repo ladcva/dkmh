@@ -66,8 +66,8 @@ if __name__ == "__main__":
 
     time.sleep(1)
     insert_to_classes(temp_instance.subject_codes)
-    insert_to_latest_sem(temp_instance.guids, temp_instance.subject_codes, temp_instance.subject_names, temp_instance.course_codes, latest_sem_id,
-                          temp_instance.schedules, temp_instance.rooms, temp_instance.lecturers, temp_instance.timeframes)  # Initially worked, needs more testing
+    insert_to_latest_sem(guids=temp_instance.guids, subject_codes=temp_instance.subject_codes, subject_names=temp_instance.subject_names, course_codes=temp_instance.course_codes, 
+                         semester_id=latest_sem_id, schedules=temp_instance.schedules, rooms=temp_instance.rooms, lecturers=temp_instance.lecturers, timeframes=temp_instance.timeframes)
     print("Task completed")
 
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism -> Partially done

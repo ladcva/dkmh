@@ -59,6 +59,7 @@ def insert_latest_id(set_subject_codes):
     for code in set_subject_codes:
         query = (pg_insert(ClassCodesSnapshot).values(code=code).on_conflict_do_nothing())
         session.execute(query)
+   
     session.commit()
 
 # Get class codes
@@ -69,24 +70,23 @@ def get_class_codes():
     return class_codes
 
 # Insert to RecentSemesterClasses table
-def insert_to_latest_sem(guids, subject_codes, subject_names, course_codes, semester_id, schedules, rooms, lecturers, timeframes):
+def insert_to_latest_sem(**kwargs):
     Session = sessionmaker(bind=engine)
     session = Session()
-    data = [{'guid': guid,
-            'class_code': subject_code,
-            'subject_name': subject_name,
-            'course_code': course_code,
-            'semester_id': semester_id,
-            'time_slot': schedule,
-            'room': room,
-            'lecturer': lecturer,
-            'from_to': timeframe}
-            for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe
-            in zip(guids, subject_codes, subject_names, course_codes, schedules, rooms, lecturers, timeframes)]
+    
+    keys = ['guid', 'class_code', 'subject_name', 'course_code', 'time_slot', 'room', 'lecturer', 'from_to']
+    data = [dict(zip(keys, values)) for values in 
+            zip(kwargs['guids'], kwargs['subject_codes'], kwargs['subject_names'], kwargs['course_codes'], 
+                kwargs['schedules'], kwargs['rooms'], kwargs['lecturers'], kwargs['timeframes'])]
+    
     for row in data:
+        row['semester_id'] = kwargs['semester_id']
         query = (pg_insert(RecentSemesterClasses).values(**row).on_conflict_do_nothing())
         session.execute(query)
+
     session.commit()
+
+
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
@@ -96,6 +96,7 @@ def insert_to_classes(subject_codes):
     for code in subject_codes:
         query = (pg_insert(Class).values(code=code).on_conflict_do_nothing())
         session.execute(query)
+    
     session.commit()
 
 def insert_to_semester():
