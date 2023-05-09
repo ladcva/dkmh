@@ -33,7 +33,7 @@ class Invoker:
         num_workers_requested = len(data['queuedGuids'])     # Number of workers requested - count the numbers of GUIDs needed to be registered
         auth_user = data['auth']
 
-        iterable_queued_classes = [(auth_user, item) for item in data['queuedGuids']]
+        iterable_queued_classes = [(auth_user, queued_guid, queued_class) for queued_guid, queued_class in zip(data['queuedGuids'], data['queuedClasses'])]
 
         with cls.create_workers(num_workers_requested) as p:
             result = p.starmap_async(Worker.task, iterable_queued_classes)

@@ -13,7 +13,7 @@ class Worker(BaseProcess):
         super().__init__()
 
     @classmethod
-    def task(cls, auth_user, guid):
+    def task(cls, auth_user, guid, queuedClass):
         start_time = datetime.now()
         task_uuid = uuid4()
 
@@ -22,6 +22,7 @@ class Worker(BaseProcess):
         payload = {
             'IDDotDangKy' : get_semester_id()[1], # index 1 for testing
             'IDLoaiDangKy' : 1, # Maybe this if our users stoopid
+            'LHP': queuedClass,
             'GuidIDLopHocPhan': guid
         }
         response = requests.post(dangky_url, cookies=cookie, data=payload)
@@ -30,8 +31,11 @@ class Worker(BaseProcess):
         print(f'Task {task_uuid} with object {guid} executing at {datetime_now}, auth_user = {auth_user}', flush=True)
 
         print(f"Completed - Task {task_uuid}, in {datetime.now() - start_time} seconds")
+        
+        print(payload)              # For debugging
+        print(response.text)
         if "Có lỗi xảy ra" or None in response.text:
-            return f"Failed to register {guid} !"
+            return f"Failed to register class {queuedClass} {guid} !"
         else:
-            return f"Successfully registered {guid} !"
+            return f"Successfully registered class{queuedClass} {guid} !"
 
