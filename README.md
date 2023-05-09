@@ -50,23 +50,42 @@
 
 2. To run the database migration scripts, run:
 
-```python db_migration/init_load.py```
+```python -m db_migration.init_load.py```
 
 3. To run the CDC process, run:
 
-```python crawler/cdc.py```
+```python -m crawler.cdc.py```
 
 4. To run the Classes and Class Details crawlers, run:
 
-```python crawler/classes.py```
+```python -m crawler.classes.py```
 
-```python crawler/class_details.py```
+```python -m crawler.class_details.py```
+
+## Setting up prediodic execution for Crawler with Airflow with Docker
+
+1. Setting up environment (Linux only, if you are runnng this on Windows or MacOs, you can safely skip this step), run:
+``` mkdir -p ./dags ./logs ./plugins ```
+``` echo -e "AIRFLOW_UID=$(id -u)" > .env ```
+
+2. CD in to Orchestrator directory and run:
+
+```docker compose up airflow-init```
+
+3. After initialization is complete, you should see a message like this:
+
+```
+airflow-init_1       | Upgrades done
+airflow-init_1       | Admin user airflow created
+airflow-init_1       | 2.6.0
+start_airflow-init_1 exited with code 0
+```
 
 ## Execution flow for Executor
 
 ![Executor Architecture](executor.drawio.png)
 
-# The Executor will run as follow:
+# The Executor will run as follow
 
 1. Users will send a request though the Extension to register for a class - or a bunch of classes - classes will be chosen from the list of classes that are available for registration.
 

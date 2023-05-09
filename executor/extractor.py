@@ -31,6 +31,7 @@ if __name__ == "__main__":
         payload = {
             'name': row.name,
             'auth': row.cookie,
+            'queuedClasses': row.classes_registered.strip('{}').split(','),
             'queuedGuids': [guid for (guid,) in get_guid_from_class_code(*row.classes_registered.strip('{}').split(','))]
         }
         print(payload)
