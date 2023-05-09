@@ -31,9 +31,10 @@ class Worker(BaseProcess):
         print(f'Task {task_uuid} with object {guid} executing at {datetime_now}, auth_user = {auth_user}', flush=True)
 
         print(f"Completed - Task {task_uuid}, in {datetime.now() - start_time} seconds")
-        
+
         print(payload)              # For debugging
         print(response.text)
+        
         if "Có lỗi xảy ra" or None in response.text:
             return f"Failed to register class {queuedClass} {guid} !"
         else:

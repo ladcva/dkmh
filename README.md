@@ -83,6 +83,10 @@ start_airflow-init_1 exited with code 0
 ```
 The account created has the login **airflow** and the password **airflow**.
 
+4. Go to Airflow Webserver at: http://localhost:8080/ and login with the account created.
+After that, you should see the Airflow UI and all the DAGs.
+Search for "orches_1" and turn it on.
+
 ## Execution flow for Executor
 
 ![Executor Architecture](executor.drawio.png)
