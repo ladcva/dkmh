@@ -81,9 +81,10 @@ def insert_to_latest_sem(guids, subject_codes, subject_names, course_codes, seme
             'room': room,
             'lecturer': lecturer,
             'from_to': timeframe}
-            for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe in zip(guids, subject_codes, subject_names, course_codes, schedules, rooms, lecturers, timeframes)]
-    for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe in data:
-        query = (pg_insert(RecentSemesterClasses).values(guid=guid, class_code=subject_code, subject_name=subject_name, course_code=course_code, semester_id=semester_id, time_slot=schedule, room=room, lecturer=lecturer, from_to=timeframe).on_conflict_do_nothing())
+            for guid, subject_code, subject_name, course_code, schedule, room, lecturer, timeframe
+            in zip(guids, subject_codes, subject_names, course_codes, schedules, rooms, lecturers, timeframes)]
+    for row in data:
+        query = (pg_insert(RecentSemesterClasses).values(**row).on_conflict_do_nothing())
         session.execute(query)
     session.commit()
 

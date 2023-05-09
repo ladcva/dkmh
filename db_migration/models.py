@@ -28,23 +28,23 @@ class Class(base):
     __tablename__ = 'classes'
     code = Column(String,primary_key=True)
     name = Column(String)
-    semesters = relationship('Semester', secondary='class_semester_association')
+    semesters = Column(String, ForeignKey('semesters.id'))
 
 class Semester(base):
     __tablename__ = 'semesters'
     id = Column(String, primary_key=True)
     name = Column(String)
 
-class ClassSemesterAssociation(base):
-    __tablename__ = 'class_semester_association'
-    class_id = Column(String, ForeignKey('classes.code'), primary_key=True)
-    semester_id = Column(String, ForeignKey('semesters.id'), primary_key=True)
+# class ClassSemesterAssociation(base):
+#     __tablename__ = 'class_semester_association'
+#     class_id = Column(String, ForeignKey('classes.code'), primary_key=True)
+#     semester_id = Column(String, ForeignKey('semesters.id'), primary_key=True)
 
 class RecentSemesterClasses(base):
     __tablename__ = 'recent_semester_classes'
-    class_code = Column(String, ForeignKey('classes.code'), primary_key=True)
+    class_code = Column(String)
     subject_name = Column(String)
-    course_code = Column(String, primary_key=True)
+    course_code = Column(String)
     guid = Column(String, primary_key=True)
     semester_id = Column(String, ForeignKey('semesters.id'))
     room = Column(String)
@@ -53,7 +53,7 @@ class RecentSemesterClasses(base):
     from_to = Column(String)
 
 class UsersRegisteredClasses(base):
-    __tablename__ = 'users_registrated_classes'     # fix loi chinh ta
+    __tablename__ = 'users_registered_classes'     # fix loi chinh ta
     id = Column(BigInteger, Identity(always=True, start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
     name = Column(String)
     cookie = Column(String)

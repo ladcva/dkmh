@@ -42,7 +42,7 @@ if __name__ == "__main__":
     num_processes = DEFAULT_NUM_PROCESSES*3  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
 
-    for semester in semester_ids: # For id in semester ids
+    for semester in semester_ids:
         with Pool(processes=num_processes) as pool:
             func = partial(validate_subject_code, semester)   # Create a partial func to pass semester_id to validate_subject_code
             for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
@@ -55,9 +55,8 @@ if __name__ == "__main__":
         time.sleep(2)
         
     set_subject_codes = set(available_subject_codes)
-    # create_classes_snapshot_table() # Deprecated in next version, ClassesSnapshot table already included in init_load
-    insert_latest_id(set_subject_codes)    # Testing insertion to database - worked
-    print("Task run sucessfully !")  
+    insert_latest_id(set_subject_codes)
+    print("Task run successfully !")
 
  
 
