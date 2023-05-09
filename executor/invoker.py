@@ -30,19 +30,18 @@ class Invoker:
 
     @classmethod
     def invoke_processes(cls, **data):
-        num_workers_requested = int(float(data['workers']))
+        num_workers_requested = len(data['queuedGuids'])     # Number of workers requested - count the numbers of GUIDs needed to be registered
         auth_user = data['auth']
 
         iterable_queued_classes = [(auth_user, item) for item in data['queuedGuids']]
-        print(iterable_queued_classes)
 
         with cls.create_workers(num_workers_requested) as p:
-            # items = [(i, random()) for i in range(num_workers_requested)]
             result = p.starmap_async(Worker.task, iterable_queued_classes)
             for result in result.get():
                 print(f'Got result: {result}', flush=True)
             # process pool is closed automatically
             log_message = f"Successfully run {num_workers_requested} functions asynchronously !"
             print(log_message)
+
         return log_message
 

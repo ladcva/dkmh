@@ -29,8 +29,8 @@ def receive_param():
         invoker_response.start()
 
         response_msg = {
-            'num_worker_requested': int(float(data['workers'])),
-            'num_worker_allocated': get_num_workers(data['workers']),
+            'num_worker_requested': len(data['queuedGuids']),
+            'num_worker_allocated': len(data['queuedGuids']),          # CHange Worker initialization to the numbers of GUIDs requested
             'invoker_is_alive': invoker_response.is_alive(),
             'invoker_thread_name': invoker_response.getName()
         }
