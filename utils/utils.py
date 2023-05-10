@@ -57,7 +57,7 @@ def insert_latest_id(set_subject_codes):
     session = Session()
 
     for code in set_subject_codes:
-        query = (pg_insert(ClassCodesSnapshot).values(code=code).on_conflict_do_nothing())
+        query = (pg_insert(ClassCodesSnapshot).values(code=code).on_conflict_do_update())
         session.execute(query)
    
     session.commit()
@@ -81,12 +81,10 @@ def insert_to_latest_sem(**kwargs):
     
     for row in data:
         row['semester_id'] = kwargs['semester_id']
-        query = (pg_insert(RecentSemesterClasses).values(**row).on_conflict_do_nothing())
+        query = (pg_insert(RecentSemesterClasses).values(**row).on_conflict_do_update())
         session.execute(query)
 
     session.commit()
-
-
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
@@ -94,7 +92,7 @@ def insert_to_classes(subject_codes):
     session = Session()
     
     for code in subject_codes:
-        query = (pg_insert(Class).values(code=code).on_conflict_do_nothing())
+        query = (pg_insert(Class).values(code=code).on_conflict_do_update())
         session.execute(query)
     
     session.commit()
@@ -107,7 +105,7 @@ def insert_to_semester():
     sem_ids = list(details.keys())
     sem_names = list(details.values())
     for sem_id, sem_name in zip(sem_ids, sem_names):
-        query = (pg_insert(Semester).values(id=sem_id, name=sem_name).on_conflict_do_nothing())
+        query = (pg_insert(Semester).values(id=sem_id, name=sem_name).on_conflict_do_update())
         session.execute(query)
 
     session.commit()
