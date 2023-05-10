@@ -50,12 +50,12 @@ if __name__ == "__main__":
                     available_subject_codes.append(result)
 
         print(available_subject_codes)
-        end_time = time.time()
-        print(f"Processing time: {end_time - start_time} seconds")
-        time.sleep(2)
+        time.sleep(1)
         
     set_subject_codes = set(available_subject_codes)
     insert_latest_id(set_subject_codes)
+    end_time = time.time()
+    print(f"Processing time: {end_time - start_time - 1} seconds")
     print("Task run successfully !")
 
  
@@ -63,4 +63,3 @@ if __name__ == "__main__":
     
 #TODO Use a database to store the results
 #TODO Re-design database - Doing
-#TODO 

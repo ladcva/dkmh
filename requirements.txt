@@ -8,3 +8,4 @@ psycopg2-binary==2.9.5 # change to avoid errors
 requests
 sqlalchemy==1.4.0
 apache-airflow==2.5.3
+pyngrok==6.0.0

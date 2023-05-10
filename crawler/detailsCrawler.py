@@ -54,21 +54,23 @@ def crawl_lhp_data(code):
     return temp4
 
 if __name__ == "__main__":
+    start_time = time.time()
     temp_instance = TempLists()
     latest_sem_id = get_semester_id()[1] # index 1 is for testing purpose, the latest sem ID doesn't have any codes yet
     class_codes = [item[0] for item in get_class_codes()]
-    num_processes = DEFAULT_NUM_PROCESSES*3         # *3
+    num_processes = DEFAULT_NUM_PROCESSES        # *3
     chunk_size = len(class_codes) // num_processes  # Determine chunk size for each process
 
     with Pool(processes=num_processes) as p:
         results = p.map(crawl_lhp_data, class_codes, chunksize=chunk_size)
     for result in results:
         temp_instance.add_data(result)
-
+    end_time = time.time()
     time.sleep(1)
     insert_to_classes(temp_instance.subject_codes)
     insert_to_latest_sem(guids=temp_instance.guids, subject_codes=temp_instance.subject_codes, subject_names=temp_instance.subject_names, course_codes=temp_instance.course_codes, 
                          semester_id=latest_sem_id, schedules=temp_instance.schedules, rooms=temp_instance.rooms, lecturers=temp_instance.lecturers, timeframes=temp_instance.timeframes)
+    print(f"Processing time: {end_time - start_time - 1} seconds")
     print("Task completed")
 
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism -> Partially done
