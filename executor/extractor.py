@@ -2,9 +2,9 @@
 # Extractor
 from db_migration.models import UsersRegisteredClasses, RecentSemesterClasses
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import select, text
-from config.default import POSTGRES_CONN_STRING, DEFAULT_NUM_PROCESSES
-import requests, time, json
+from sqlalchemy.sql.expression import select
+from config.default import POSTGRES_CONN_STRING
+import requests, time
 
 
 engine = create_engine(POSTGRES_CONN_STRING, echo=False)

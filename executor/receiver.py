@@ -1,8 +1,6 @@
 from flask import Flask, request, Response, json
 import threading
 from executor.invoker import Invoker
-from utils.utils import get_num_workers
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import select, insert
