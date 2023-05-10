@@ -57,9 +57,10 @@ if __name__ == "__main__":
     temp_instance = TempLists()
     latest_sem_id = get_semester_id()[1] # index 1 is for testing purpose, the latest sem ID doesn't have any codes yet
     class_codes = [item[0] for item in get_class_codes()]
-    chunk_size = len(class_codes) // DEFAULT_NUM_PROCESSES
+    num_processes = DEFAULT_NUM_PROCESSES*3         # *3
+    chunk_size = len(class_codes) // num_processes  # Determine chunk size for each process
 
-    with Pool(DEFAULT_NUM_PROCESSES) as p:
+    with Pool(processes=num_processes) as p:
         results = p.map(crawl_lhp_data, class_codes, chunksize=chunk_size)
     for result in results:
         temp_instance.add_data(result)
