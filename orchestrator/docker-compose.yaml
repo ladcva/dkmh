@@ -113,7 +113,7 @@ services:
     restart: always
 
   airflow-webserver:
-    <<: *airflow-commons
+    <<: *airflow-common
     volumes:
       - ${HOME}/projects/dkmh/orchestrator:/opt/airflow
       - ${HOME}/projects/dkmh/:/opt/airflow/dkmh

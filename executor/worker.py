@@ -1,9 +1,8 @@
 from multiprocessing.process import BaseProcess
 from datetime import datetime
 from uuid import uuid4
+from utils.utils import get_semester_id, file_logger
 import requests
-from utils.utils import get_semester_id
-
 
 class Worker(BaseProcess):
     """
@@ -36,7 +35,9 @@ class Worker(BaseProcess):
         print(response.text)
         
         if "Có lỗi xảy ra" or None in response.text:
+            file_logger.error("Failed to register class {queuedClass} with GUID: {guid} !}")
             return f"Failed to register class {queuedClass} {guid} !"
         else:
+            file_logger.info("Successfully registered class")
             return f"Successfully registered class{queuedClass} {guid} !"
 

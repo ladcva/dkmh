@@ -70,8 +70,12 @@ if __name__ == "__main__":
     insert_to_classes(temp_instance.subject_codes)
     insert_to_latest_sem(guids=temp_instance.guids, subject_codes=temp_instance.subject_codes, subject_names=temp_instance.subject_names, course_codes=temp_instance.course_codes, 
                          semester_id=latest_sem_id, schedules=temp_instance.schedules, rooms=temp_instance.rooms, lecturers=temp_instance.lecturers, timeframes=temp_instance.timeframes)
+    print(len(temp_instance.guids))
     print(f"Processing time: {end_time - start_time - 1} seconds")
-    print("Task completed")
+    if len(temp_instance.guids) > 0:
+        print("Task completed")
+    else:
+        print("Task failed")
 
 #TODO: Create a function to check subject availability for the semester, implement retry mechanism -> Partially done
 #TODO: When a new semester detected, replace the data in the current RecentSemesterClasses table

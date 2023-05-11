@@ -43,19 +43,20 @@ def job():
             'status': row.status
         }
         print(payload)
-        if payload['status'] == 'pending':
-            requests.post(url, json=payload)
-            update_status()
-            print(payload)
-        else:
-            continue
-        # requests.post(url, json=payload)
+        requests.post(url, json=payload)
+        # if payload['status'] == 'pending':
+        #     requests.post(url, json=payload)
+        #     update_status()
+        #     print(payload)
+        # else:
+        #     continue
 
 if __name__ == "__main__":
-    schedule.every(2).seconds.do(job)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # schedule.every(2).seconds.do(job)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
+    job()
 
 
 

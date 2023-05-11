@@ -1,4 +1,5 @@
 import requests
+import logging
 # Import necessary db modules
 from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Semester, RecentSemesterClasses
 from sqlalchemy import create_engine
@@ -97,6 +98,7 @@ def insert_to_classes(subject_codes):
     
     session.commit()
 
+# Insert to semesters table
 def insert_to_semester():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -109,7 +111,6 @@ def insert_to_semester():
         session.execute(query)
 
     session.commit()
-        
 
 #TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
 
@@ -134,3 +135,13 @@ class TempLists:
             self.rooms.append(each[5])
             self.lecturers.append(each[6])
             self.timeframes.append(each[7])
+
+# Loggers
+# Set up a formatter to include timestamp for logs
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# Set up a logger to write logs to a file
+file_logger = logging.getLogger('file_logger')
+file_logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler('executor/logging.log')      
+file_handler.setFormatter(formatter)
+file_logger.addHandler(file_handler)
