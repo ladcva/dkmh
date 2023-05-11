@@ -2,9 +2,10 @@
 # Extractor
 from db_migration.models import UsersRegisteredClasses, RecentSemesterClasses
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import select
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.expression import select, update
 from config.default import POSTGRES_CONN_STRING
-import requests, time
+import requests, schedule, time
 
 
 engine = create_engine(POSTGRES_CONN_STRING, echo=False)
@@ -22,8 +23,14 @@ def get_guid_from_class_code(*args):
         guid_registered = result.fetchall()
         return guid_registered
 
+def update_status():
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    query = update(UsersRegisteredClasses).where(UsersRegisteredClasses.status == 'pending').values(status='processed')
+    session.execute(query)
+    session.commit()
 
-if __name__ == "__main__":
+def job():
     # Combine GUIDs with user's cookie and send a POST request to the Receiver
     url = "http://localhost:5005"
 
@@ -32,11 +39,46 @@ if __name__ == "__main__":
             'name': row.name,
             'auth': row.cookie,
             'queuedClasses': row.classes_registered.strip('{}').split(','),
-            'queuedGuids': [guid for (guid,) in get_guid_from_class_code(*row.classes_registered.strip('{}').split(','))]
+            'queuedGuids': [guid for (guid,) in get_guid_from_class_code(*row.classes_registered.strip('{}').split(','))],
+            'status': row.status
         }
         print(payload)
-        requests.post(url, json=payload)
+        if payload['status'] == 'pending':
+            requests.post(url, json=payload)
+            update_status()
+            print(payload)
+        else:
+            continue
+        # requests.post(url, json=payload)
+
+if __name__ == "__main__":
+    schedule.every(2).seconds.do(job)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+
+    # # Combine GUIDs with user's cookie and send a POST request to the Receiver
+    # url = "http://localhost:5005"
+
+    # for row in query_queue():
+    #     payload = {
+    #         'name': row.name,
+    #         'auth': row.cookie,
+    #         'queuedClasses': row.classes_registered.strip('{}').split(','),
+    #         'queuedGuids': [guid for (guid,) in get_guid_from_class_code(*row.classes_registered.strip('{}').split(','))],
+    #         'status': row.status
+    #     }
+    #     if payload['status'] == 'pending':
+    #         requests.post(url, json=payload)
+    #         update_status()
+    #         print(payload)
+    #     else:
+    #         continue
+    #     requests.post(url, json=payload)
 
 
 
 #TODO - Implement logging
+#TODO - make the extractor actively scanning the database for data change
+#TODO - write the logic for the extractor

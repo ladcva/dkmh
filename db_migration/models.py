@@ -35,11 +35,6 @@ class Semester(base):
     id = Column(String, primary_key=True)
     name = Column(String)
 
-# class ClassSemesterAssociation(base):
-#     __tablename__ = 'class_semester_association'
-#     class_id = Column(String, ForeignKey('classes.code'), primary_key=True)
-#     semester_id = Column(String, ForeignKey('semesters.id'), primary_key=True)
-
 class RecentSemesterClasses(base):
     __tablename__ = 'recent_semester_classes'
     class_code = Column(String)
@@ -58,3 +53,4 @@ class UsersRegisteredClasses(base):
     name = Column(String)
     cookie = Column(String)
     classes_registered = Column(String)
+    status = Column(String, default='pending')

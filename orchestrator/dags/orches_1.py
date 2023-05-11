@@ -1,7 +1,7 @@
 from airflow.utils import dates
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator, BranchPythonOperator
+from airflow.operators.python import BranchPythonOperator
 
 # Xcom pull functions
 # def determine_next_task_init_load(**kwargs):
@@ -32,7 +32,7 @@ with DAG(
     description="Orchestrator",
     schedule='@daily',
     start_date=dates.days_ago(2),
-    tags=["test"],
+    tags=["orchestrator"],
 
 )as dag:
     initialize_env = BashOperator(
