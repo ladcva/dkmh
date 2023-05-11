@@ -7,10 +7,19 @@ from airflow.operators.python import BranchPythonOperator
 def determine_next_task_cdc(**kwargs):
     ti = kwargs['ti']
     xcom_value = ti.xcom_pull(task_ids='cdc')
+    print(xcom_value)
     if xcom_value == "Successfully loaded changed data":
         return "crawl_classes"
     else:
-        return False
+        return None
+
+def determine_next_task_crawl_classes(**kwargs):  
+    ti = kwargs['ti']
+    xcom_value = ti.xcom_pull(task_ids='crawl_classes')
+    if xcom_value == "Task completed":
+        return "crawl_class_details"
+    else:
+        return None
 
 def determine_next_task_crawl_classes(**kwargs):  
     ti = kwargs['ti']
@@ -42,13 +51,13 @@ with DAG(
 
     create_db = BashOperator(
         task_id="create_database",
-        bash_command = "cd /opt/airflow/dkmh && source venv/bin/activate && python -m db_migration.init_load",
+        bash_command = "cd /opt/airflow/dkmh && python -m db_migration.init_load",
         do_xcom_push=True,
     )
     
     cdc = BashOperator(
         task_id="CDC_for_semester",
-        bash_command = "cd /opt/airflow/dkmh && source venv/bin/activate && python -m crawler.CDC",
+        bash_command = "cd /opt/airflow/dkmh && python -m crawler.CDC",
         do_xcom_push=True,
     )
 
@@ -66,13 +75,13 @@ with DAG(
 
     crawl_classes = BashOperator(
         task_id="crawl_all_classes",
-        bash_command = "cd /opt/airflow/dkmh && source venv/bin/activate && python -m crawler.classesCrawler",
+        bash_command = "cd /opt/airflow/dkmh && python -m crawler.classesCrawler",
         do_xcom_push=True,
     )
 
     crawl_class_details = BashOperator(
         task_id="crawl_details_for_all_classes",
-        bash_command = "cd /opt/airflow/dkmh && source venv/bin/activate && python -m crawler.detailsCrawler",
+        bash_command = "cd /opt/airflow/dkmh && python -m crawler.detailsCrawler",
     )
     # success -> activate extractor
     activate_extractor = BashOperator(

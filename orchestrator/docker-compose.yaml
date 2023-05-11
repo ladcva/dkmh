@@ -55,10 +55,10 @@ x-airflow-common:
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:1@postgres/airflow
     # For backward compatibility, with Airflow <2.3
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:1@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://admin:1@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
@@ -88,11 +88,13 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1
       POSTGRES_DB: airflow
+    ports:
+      - "5433:5432"
     volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
+      - /var/lib/postgresql/data:/Users/anhducle/Library/Application Support/Postgres/var-15
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -115,8 +117,8 @@ services:
   airflow-webserver:
     <<: *airflow-common
     volumes:
-      - ${HOME}/projects/dkmh/orchestrator:/opt/airflow
-      - ${HOME}/projects/dkmh/:/opt/airflow/dkmh
+      - /Users/anhducle/PycharmProjects/dkmh/orchestrator:/opt/airflow
+      - /Users/anhducle/PycharmProjects/dkmh/:/opt/airflow/dkmh
     command: webserver
     ports:
       - "8080:8080"
@@ -135,7 +137,7 @@ services:
   airflow-scheduler:
     <<: *airflow-common
     volumes:
-      - ${HOME}/projects/dkmh/orchestrator:/opt/airflow
+      - /Users/anhducle/PycharmProjects/dkmh/orchestrator:/opt/airflow
     command: scheduler
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
@@ -152,8 +154,8 @@ services:
   airflow-worker:
     <<: *airflow-common
     volumes:
-      - ${HOME}/projects/dkmh/orchestrator:/opt/airflow
-      - ${HOME}/projects/dkmh/:/opt/airflow/dkmh
+      - /Users/anhducle/PycharmProjects/dkmh/orchestrator:/opt/airflow
+      - /Users/anhducle/PycharmProjects/dkmh/:/opt/airflow/dkmh
     command: celery worker
     healthcheck:
       test:
@@ -260,8 +262,8 @@ services:
       <<: *airflow-common-env
       _AIRFLOW_DB_UPGRADE: 'true'
       _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
-      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-admin}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-1}
       _PIP_ADDITIONAL_REQUIREMENTS: ''
     user: "0:0"
     volumes:
@@ -302,5 +304,3 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-volumes:
-  postgres-db-volume:
