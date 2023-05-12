@@ -60,9 +60,10 @@ def register():
 
     query = (insert(UsersRegisteredClasses).
              values(
-                    name=data['name'], 
+                    # name=data['name'], 
                     cookie=data['cookie'], 
-                    classes_registered=data['classes_registered']
+                    classes_registered=data['classes_registered'],
+                    guids_registered=data['guids_registered']       #GUID here
                     )
     )
     with session:

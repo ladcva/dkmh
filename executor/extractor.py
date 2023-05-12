@@ -16,13 +16,6 @@ def query_queue():
         query = select(UsersRegisteredClasses)
         return conn.execute(query).fetchall()
 
-# Then we query the database to get the GUID
-def get_guid_from_class_code(*args):
-    with engine.connect() as conn:
-        result = conn.execute(select(RecentSemesterClasses.guid).where(RecentSemesterClasses.course_code.in_(args)))
-        guid_registered = result.fetchall()
-        return guid_registered
-
 def update_status():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -36,10 +29,10 @@ def job():
 
     for row in query_queue():
         payload = {
-            'name': row.name,
+            # 'name': row.name,
             'auth': row.cookie,
             'queuedClasses': row.classes_registered.strip('{}').split(','),
-            'queuedGuids': [guid for (guid,) in get_guid_from_class_code(*row.classes_registered.strip('{}').split(','))],
+            'queuedGuids': row.guids_registered.strip('{}').split(','),
             'status': row.status
         }
         print(payload)
@@ -52,10 +45,11 @@ def job():
         #     continue
 
 if __name__ == "__main__":
-    # schedule.every(2).seconds.do(job)
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(1)
+    schedule.every(2).seconds.do(job)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+    
     job()
 
 

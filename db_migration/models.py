@@ -53,4 +53,5 @@ class UsersRegisteredClasses(base):
     name = Column(String)
     cookie = Column(String)
     classes_registered = Column(String)
+    guids_registered = Column(String)
     status = Column(String, default='pending')
