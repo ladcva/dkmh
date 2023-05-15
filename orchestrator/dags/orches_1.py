@@ -1,7 +1,8 @@
 from airflow.utils import dates
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import BranchPythonOperator
+from airflow.operators.python import PythonOperator,BranchPythonOperator
+
 
 
 def determine_next_task_cdc(**kwargs):
@@ -84,11 +85,17 @@ with DAG(
         bash_command = "cd /opt/airflow/dkmh && python -m crawler.detailsCrawler",
     )
     # success -> activate extractor
+
+    # track_portal = PythonOperator(
+    #     task_id="check_portal_open",
+    #     python_callable=check_portal_open,
+    # )
+
     activate_extractor = BashOperator(
         task_id="activate_extractor",
-        bash_command="cd /opt/airflow/dkmh && source venv/bin/activate && python -m executor.extractor"
+        bash_command="cd /opt/airflow/dkmh && python -m executor.extractor"
     )
 
     initialize_env >> create_db >> cdc >> track_cdc >> crawl_classes >> crawl_class_details >> track_crawl_classes >> activate_extractor
 
-# TODO: use XCOM to add conditions to the DAG
+# TODO: add check portal open

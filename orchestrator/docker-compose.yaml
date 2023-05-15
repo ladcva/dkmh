@@ -88,13 +88,13 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
-    ports:
+      ports:
       - "5433:5432"
     volumes:
-      - /var/lib/postgresql/data:/Users/anhducle/Library/Application Support/Postgres/var-15
+      - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -117,8 +117,8 @@ services:
   airflow-webserver:
     <<: *airflow-common
     volumes:
-      - /Users/anhducle/PycharmProjects/dkmh/orchestrator:/opt/airflow
-      - /Users/anhducle/PycharmProjects/dkmh/:/opt/airflow/dkmh
+      - /home/tb24/projects/dkmh/orchestrator:/opt/airflow
+      - /home/tb24/projects/dkmh/:/opt/airflow/dkmh
     command: webserver
     ports:
       - "8080:8080"
@@ -137,7 +137,7 @@ services:
   airflow-scheduler:
     <<: *airflow-common
     volumes:
-      - /Users/anhducle/PycharmProjects/dkmh/orchestrator:/opt/airflow
+      - /home/tb24/projects/dkmh/orchestrator:/opt/airflow
     command: scheduler
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
@@ -154,8 +154,8 @@ services:
   airflow-worker:
     <<: *airflow-common
     volumes:
-      - /Users/anhducle/PycharmProjects/dkmh/orchestrator:/opt/airflow
-      - /Users/anhducle/PycharmProjects/dkmh/:/opt/airflow/dkmh
+      - /home/tb24/projects/dkmh/orchestrator:/opt/airflow
+      - /home/tb24/projects/dkmh/:/opt/airflow/dkmh
     command: celery worker
     healthcheck:
       test:
@@ -262,8 +262,8 @@ services:
       <<: *airflow-common-env
       _AIRFLOW_DB_UPGRADE: 'true'
       _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-admin}
-      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-1}
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
       _PIP_ADDITIONAL_REQUIREMENTS: ''
     user: "0:0"
     volumes:
@@ -304,3 +304,5 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+volumes:
+  postgres-db-volume:

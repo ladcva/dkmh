@@ -208,3 +208,4 @@ orchestrator/airflow.cfg
 orchestrator/airflow-worker.pid
 dkmh.drawio.png:Zone.Identifier
 DKMH - Executor.drawio.png:Zone.Identifier
+orchestrator/docker-compose.yaml
