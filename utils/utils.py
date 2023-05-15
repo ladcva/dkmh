@@ -52,16 +52,6 @@ def get_semester_id():
     semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
     return sorted(semester_ids, reverse=True)
 
-def check_portal_open():
-    url = "https://sv.isvnu.vn/SinhVienDangKy/CheckDotChoPhepDangKy"
-    cookie = {'ASC.AUTH': ASC_AUTH_STR}
-    payload = {'param%5BIDDotDangKy%5D': get_semester_id()[0]}
-    response = requests.post(url, cookies=cookie, data=payload)
-    if "không hợp lệ" in response.text:
-        return False
-    else:
-        return True
-
 # Import the latest id to class_codes_snapshot table
 def insert_latest_id(set_subject_codes):
     Session = sessionmaker(bind=engine)
