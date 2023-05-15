@@ -35,7 +35,7 @@ with DAG(
     default_args={
         "owner": "Binh",
         "retries" :10,
-        "retry_delay": dates.timedelta(minutes=5),
+        "retry_delay": dates.timedelta(seconds=30),
         "do_xcom_push": True,
     },
     description="Orchestrator",
