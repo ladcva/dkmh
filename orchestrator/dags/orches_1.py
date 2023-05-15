@@ -3,28 +3,28 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import BranchPythonOperator
 
-
 def determine_next_task_cdc(**kwargs):
     ti = kwargs['ti']
-    xcom_value = ti.xcom_pull(task_ids='cdc')
+    xcom_value = ti.xcom_pull(task_ids='CDC_for_semester')
     print(xcom_value)
     if xcom_value == "Successfully loaded changed data":
-        return "crawl_classes"
+        return "crawl_all_classes"
     else:
         return None
 
 def determine_next_task_crawl_classes(**kwargs):  
     ti = kwargs['ti']
-    xcom_value = ti.xcom_pull(task_ids='crawl_classes')
-    if xcom_value == "Task completed":
-        return "crawl_class_details"
+    xcom_value = ti.xcom_pull(task_ids='crawl_all_classes')
+    print(xcom_value)
+    if "Task run successfully !" in xcom_value:
+        return "crawl_details_for_all_classes"
     else:
         return None
 
 def determine_next_task_portal(**kwargs):  
     ti = kwargs['ti']
     xcom_value = ti.xcom_pull(task_ids='track_portal')
-    if xcom_value == "Portal is open":
+    if xcom_value != None and "Portal is open" in xcom_value:
         return "activate_extractor"
     else:
         return None
@@ -36,7 +36,6 @@ with DAG(
         "owner": "Binh",
         "retries" :10,
         "retry_delay": dates.timedelta(seconds=30),
-        "do_xcom_push": True,
     },
     description="Orchestrator",
     schedule='@daily',
@@ -67,9 +66,9 @@ with DAG(
         provide_context=True,
     )
 
-    crawl_classes = BashOperator(
+    crawl_classes = BashOperator( 
         task_id="crawl_all_classes",
-        bash_command="cd /opt/airflow/dkmh && python -m crawler.classesCrawler",
+        bash_command="cd /opt/airflow/dkmh && python -m crawler.classesCrawler && echo 'INFO - Task run successfully !' ",
         do_xcom_push=True,
     )
 
@@ -90,11 +89,17 @@ with DAG(
         bash_command="cd /opt/airflow/dkmh && python -m utils.portal_tracking",
     )
 
+    track_portal_open = BranchPythonOperator(
+        task_id = "track_portal_open",
+        python_callable=determine_next_task_portal,
+        provide_context=True,
+    )
+
     activate_extractor = BashOperator(
         task_id="activate_extractor",
         bash_command="cd /opt/airflow/dkmh && python -m executor.extractor"
     )
 
-    initialize_env >> create_db >> cdc >> track_cdc >> crawl_classes >> track_crawl_classes >> crawl_class_details >> track_portal >>activate_extractor
+    initialize_env >> create_db >> cdc >> track_cdc >> crawl_classes >> track_crawl_classes >> crawl_class_details >> track_portal >> track_portal_open >> activate_extractor
 
-# TODO: add check portal open
+# TODO: add check portal open >> track_cdc
