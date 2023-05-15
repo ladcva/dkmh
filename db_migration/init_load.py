@@ -55,6 +55,6 @@ if __name__ == '__main__':
         base.metadata.create_all(engine, checkfirst=True)
         init_load(engine)
     
-    time.sleep(2)
+    time.sleep(1)
     insert_to_semester()
     print("Sucessfully initialized database and loaded semester data")
