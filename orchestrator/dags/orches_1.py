@@ -68,7 +68,7 @@ with DAG(
 
     crawl_classes = BashOperator( 
         task_id="crawl_all_classes",
-        bash_command="cd /opt/airflow/dkmh && python -m crawler.classesCrawler && echo 'INFO - Task run successfully !' ",
+        bash_command="cd /opt/airflow/dkmh && python -m crawler.classesCrawler ",
         do_xcom_push=True,
     )
 
