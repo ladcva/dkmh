@@ -9,7 +9,7 @@ available_subject_codes = []
 
 def get_all_subjects():
     list1 = ['INS']
-    list2 = range(1, 2)
+    list2 = range(1, 5)
     list3 = range(0, 200)
     codes = ([f"{i}{j}{k:03d}" for i, j, k in itertools.product(list1, list2, list3)])
     return codes

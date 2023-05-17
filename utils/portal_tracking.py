@@ -8,9 +8,9 @@ def check_portal_open():
     payload = {'param%5BIDDotDangKy%5D': get_semester_id()[0]}
     response = requests.post(url, cookies=cookie, data=payload)
     if "không hợp lệ" in response.text:
-        return "Portal is closed"
+        print("Portal is closed")
     else:
-        return "Portal is open"
+        print("Portal is open")
 
 if __name__ == "__main__":    
     check_portal_open()
