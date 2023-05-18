@@ -1,14 +1,14 @@
 # This is the Extractor that will extract the data from the database and send it to the Receiver
 # Extractor
-from db_migration.models import UsersRegisteredClasses, RecentSemesterClasses
+import requests, schedule, time, re
+from db_migration.models import UsersRegisteredClasses
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import select, update
 from config.default import POSTGRES_CONN_STRING
-import re
-import requests, schedule, time
 
 
+# Engine for connecting to the database
 engine = create_engine(POSTGRES_CONN_STRING, echo=False)
 
 # Query the Queue
@@ -26,21 +26,11 @@ def update_status(guid, cookie):
     session.execute(query)
     session.commit()
 
-def update_status2(cookie, guid):
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    query = update(UsersRegisteredClasses).where(UsersRegisteredClasses.cookie == cookie and UsersRegisteredClasses.guid == guid and UsersRegisteredClasses.status == 'pending').values(status='up_for_retry')
-    
-    session.execute(query)
-    session.commit()
-
 def job():
     # Combine GUIDs with user's cookie and send a POST request to the Receiver
     url = "http://localhost:5005"
 
     records = query_queue()
-
     records.sort(key=lambda record: record.cookie)
 
     # Group records by cookie, class_code, guid, status into one payload, class codes and guids are lists
@@ -59,7 +49,6 @@ def job():
         grouped_record[auth]['queuedGuids'].append(queued_guid)
 
     grouped_records = list(grouped_record.values())
-    print(grouped_records)
 
     # Send the payload to the Receiver
     for record in grouped_records:
