@@ -32,12 +32,11 @@ class Worker(BaseProcess):
         print(f"Completed - Task {task_uuid}, in {datetime.now() - start_time} seconds")
 
         print(payload)              # For debugging
-        print(response.text)
         
         if "Có lỗi xảy ra" or None in response.text:
-            file_logger.error("Failed to register class {queuedClass} with GUID: {guid} !}")
+            file_logger.error(f"Failed to register class {queuedClass} with GUID: {guid} for user with auth: {auth_user} !")
             return f"Failed to register class {queuedClass} {guid} !"
         else:
-            file_logger.info("Successfully registered class")
+            file_logger.info(f"Successfully registered class {queuedClass} with GUID: {guid} for user with auth: {auth_user} !")
             return f"Successfully registered class{queuedClass} {guid} !"
 

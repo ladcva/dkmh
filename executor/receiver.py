@@ -6,9 +6,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import select, insert
 from db_migration.models import RecentSemesterClasses, UsersRegisteredClasses
 from config.default import POSTGRES_CONN_STRING
+from flask_cors import CORS
 
 app = Flask(__name__)
-app.config.from_object('config.default.DefaultConfig')
+app.config.from_object('config.default.DefaultConfig') 
+
+CORS(app, resources=r'/*')
 
 engine = create_engine(POSTGRES_CONN_STRING)
 
@@ -40,7 +43,6 @@ def receive_param():
     else:
         return 'Not found', 404
 
-
 @app.route('/getClasses', methods=['GET']) # GET method is used to query all classes from database.
 def get_classes():
     Session = sessionmaker(bind=engine)
@@ -58,18 +60,14 @@ def register():
     session = Session()
     data = json.loads(request.data)
 
-    query = (insert(UsersRegisteredClasses).
-             values(
-                    # name=data['name'], 
-                    cookie=data['cookie'], 
-                    classes_registered=data['classes_registered'],
-                    guids_registered=data['guids_registered']       #GUID here
-                    )
-    )
-    with session:
+    parsed_data = [{"cookie":data["cookie"], "class_code":data["classes_registered"][i], "guid":data["guids_registered"][i]} 
+               for i in range(len(data["classes_registered"]))]
+
+    for i in parsed_data:
+        query = (insert(UsersRegisteredClasses).values(**i))
         session.execute(query)
         session.commit()
-    
+
     return "Registration Successful"
 
 

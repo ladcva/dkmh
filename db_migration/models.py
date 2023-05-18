@@ -52,6 +52,6 @@ class UsersRegisteredClasses(base):
     id = Column(BigInteger, Identity(always=True, start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
     name = Column(String)
     cookie = Column(String)
-    classes_registered = Column(String)
-    guids_registered = Column(String)
+    class_code = Column(String)
+    guid = Column(String)
     status = Column(String, default='pending')
