@@ -1,32 +1,10 @@
 # This is the Extractor that will extract the data from the database and send it to the Receiver
 # Extractor
 import requests, schedule, time, re
-from db_migration.models import UsersRegisteredClasses
-from sqlalchemy import create_engine, and_
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql.expression import select, update
-from config.default import POSTGRES_CONN_STRING
+from utils.utils import query_queue, update_status
 
 
-# Engine for connecting to the database
-engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-
-# Query the Queue
-def query_queue():
-    with engine.connect() as conn:
-        query = select(UsersRegisteredClasses).where(UsersRegisteredClasses.status == 'pending')
-        return conn.execute(query).fetchall()
-
-def update_status(guid, cookie):
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    print(f'guid: {guid}')
-    print(f'cookie: {cookie}')
-    query = update(UsersRegisteredClasses).where(and_(UsersRegisteredClasses.cookie == cookie, UsersRegisteredClasses.guid == guid, UsersRegisteredClasses.status == 'pending')).values(status='processed')
-    session.execute(query)
-    session.commit()
-
-def job():
+def extract():
     # Combine GUIDs with user's cookie and send a POST request to the Receiver
     url = "http://localhost:5005"
 
@@ -71,12 +49,13 @@ def job():
             else:
                 continue
 
+
 if __name__ == "__main__":
-    schedule.every(2).seconds.do(job)
+    schedule.every(2).seconds.do(extract)
     while True:
         schedule.run_pending()
         time.sleep(1)
-    job()
+    extract()
 
 
 

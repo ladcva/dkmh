@@ -1,8 +1,9 @@
 import requests
 import logging
 # Import necessary db modules
-from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Semester, RecentSemesterClasses
+from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Semester, RecentSemesterClasses, UsersRegisteredClasses
 from sqlalchemy import create_engine
+from sqlalchemy.sql.expression import select, update, and_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import sessionmaker
 # Get constants from config file
@@ -110,6 +111,22 @@ def insert_to_semester():
         query = (pg_insert(Semester).values(id=sem_id, name=sem_name).on_conflict_do_nothing())
         session.execute(query)
 
+    session.commit()
+
+
+# Query the Queue
+def query_queue():
+    with engine.connect() as conn:
+        query = select(UsersRegisteredClasses).where(UsersRegisteredClasses.status == 'pending')
+        return conn.execute(query).fetchall()
+
+def update_status(guid, cookie):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    print(f'guid: {guid}')
+    print(f'cookie: {cookie}')
+    query = update(UsersRegisteredClasses).where(and_(UsersRegisteredClasses.cookie == cookie, UsersRegisteredClasses.guid == guid, UsersRegisteredClasses.status == 'pending')).values(status='processed')
+    session.execute(query)
     session.commit()
 
 #TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
