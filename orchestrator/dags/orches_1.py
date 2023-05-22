@@ -34,8 +34,8 @@ with DAG(
 
     default_args={
         "owner": "Binh",
-        "retries" :10,
-        "retry_delay": dates.timedelta(seconds=30),
+        "retries": 30,
+        "retry_delay": dates.timedelta(seconds=10),
     },
     description="Orchestrator",
     schedule='@daily',
