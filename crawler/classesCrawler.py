@@ -50,8 +50,8 @@ if __name__ == "__main__":
                     available_subject_codes.append(result)
 
         print(available_subject_codes)
-        time.sleep(1)
         
+    time.sleep(1)    
     set_subject_codes = set(available_subject_codes)
     insert_latest_id(set_subject_codes)
     end_time = time.time()
