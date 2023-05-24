@@ -10,7 +10,7 @@ def determine_next_task_cdc(**kwargs):
     if xcom_value == "Successfully loaded changed data":
         return "crawl_all_classes"
     else:
-        return "crawl_all_classes"
+        return "crawl_all_classes"      #Change in Production
 
 def determine_next_task_crawl_classes(**kwargs):  
     ti = kwargs['ti']
@@ -24,7 +24,7 @@ def determine_next_task_crawl_classes(**kwargs):
 def determine_next_task_portal(**kwargs):  
     ti = kwargs['ti']
     xcom_value = ti.xcom_pull(task_ids='track_portal')
-    if xcom_value != None and "Portal is open" in xcom_value:
+    if "Portal is open" in xcom_value:
         return "activate_extractor"
     else:
         return None
@@ -34,8 +34,8 @@ with DAG(
 
     default_args={
         "owner": "Binh",
-        "retries": 30,
-        "retry_delay": dates.timedelta(seconds=10),
+        "retries": 10,
+        "retry_delay": dates.timedelta(minutes=5),
     },
     description="Orchestrator",
     schedule='@daily',
