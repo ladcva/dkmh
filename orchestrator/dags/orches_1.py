@@ -10,7 +10,7 @@ def determine_next_task_cdc(**kwargs):
     if xcom_value == "Successfully loaded changed data":
         return "crawl_all_classes"
     else:
-        return None
+        return "crawl_all_classes"
 
 def determine_next_task_crawl_classes(**kwargs):  
     ti = kwargs['ti']

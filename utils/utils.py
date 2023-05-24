@@ -7,7 +7,7 @@ from sqlalchemy.sql.expression import select, update, and_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import sessionmaker
 # Get constants from config file
-from config.default import DEFAULT_NUM_PROCESSES, POSTGRES_CONN_STRING, ASC_AUTH_STR
+from config.default import DEFAULT_NUM_PROCESSES, POSTGRES_CONN_STRING
 
 
 # Utility functions
