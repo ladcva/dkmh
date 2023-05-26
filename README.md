@@ -64,16 +64,19 @@
 
 ## Setting up prediodic execution for Crawler with Airflow with Docker
 
-1. Setting up environment (Linux only, if you are runnng this on Windows or MacOs, you can safely skip this step), run:
+1. Set the path where you store the directory as the **HOME** environment variable
+Ideally you should store the directory under the path: **${HOME}/projects/dkmh** as it is the volumes mapped inside Docker compose.
+
+2. Setting up environment (Linux only, if you are runnng this on Windows or MacOs, you can safely skip this step), run:
 
 ``` mkdir -p ./dags ./logs ./plugins ```
 ``` echo -e "AIRFLOW_UID=$(id -u)" > .env ```
 
-2. CD in to Orchestrator directory and run:
+3. CD in to Orchestrator directory and run:
 
 ```docker compose up airflow-init```
 
-3. After initialization is complete, you should see a message like this:
+4. After initialization is complete, you should see a message like this:
 
 ```
 airflow-init_1       | Upgrades done
@@ -83,7 +86,7 @@ start_airflow-init_1 exited with code 0
 ```
 The account created has the login **airflow** and the password **airflow**.
 
-4. Go to Airflow Webserver at: http://localhost:8080/ and login with the account created.
+5. Go to Airflow Webserver at: http://localhost:8080/ and login with the account created.
 After that, you should see the Airflow UI and all the DAGs.
 Search for "orches_1" and turn it on.
 
