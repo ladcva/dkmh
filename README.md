@@ -70,6 +70,7 @@ Ideally you should store the directory under the path: **${HOME}/projects/dkmh**
 2. Setting up environment (Linux only, if you are runnng this on Windows or MacOs, you can safely skip this step), run:
 
 ``` mkdir -p ./dags ./logs ./plugins ```
+
 ``` echo -e "AIRFLOW_UID=$(id -u)" > .env ```
 
 3. CD in to Orchestrator directory and run:
