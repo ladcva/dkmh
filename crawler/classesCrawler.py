@@ -1,5 +1,5 @@
 import requests, itertools, time
-from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES
+from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES, HP_URL
 from multiprocessing import Pool
 from utils.utils import get_semester_id, insert_latest_id
 from functools import partial
@@ -8,15 +8,15 @@ semester_ids = get_semester_id()
 available_subject_codes = []
 
 def get_all_subjects():
-    list1 = ['INS']
+    list1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT', 'FLF', 'VLF', 'ENG', 'LIN', 'MNS', 'BSA']
     list2 = range(1, 5)
-    list3 = range(0, 200)
+    list3 = range(0, 500)
     codes = ([f"{i}{j}{k:03d}" for i, j, k in itertools.product(list1, list2, list3)])
     return codes
 
 
 def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_delay=1):
-    url = f"https://sv.isvnu.vn/SinhVienDangKy/LopHocPhanChoDangKy?IDDotDangKy={semester_id}&MaMonHoc={subject_code}&DSHocPhanDuocHoc={subject_code}&IsLHPKhongTrungLich=false&LoaiDKHP=1"  #test with a fixed IDDotdangky
+    url = HP_URL.format(semester_id, subject_code, subject_code)  #test with a fixed IDDotdangky
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
     
     while retry_limit > 0:

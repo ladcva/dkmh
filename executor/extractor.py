@@ -43,7 +43,7 @@ def extract():
     # Read from log file and update the status of the request
     with open('executor/logging.log', 'r') as f:
         for line in f:  # only find in line that is relative to the payload
-            match = re.search(r'GUID: (\w+) for user with auth: (\w+)', line)
+            match = re.search(r'GUID: ([\w\-_]+) for user with auth: ([\w\-_]+)', line)
             if match and "Successfully" in line:
                 update_status(match.group(1), match.group(2))
             else:
@@ -51,15 +51,9 @@ def extract():
 
 
 if __name__ == "__main__":
-    schedule.every(2).seconds.do(extract)
+    schedule.every(5).seconds.do(extract)
     while True:
         schedule.run_pending()
-        time.sleep(1)
-    extract()
-
-
-
-#TODO - Implement logging
-#TODO - make the extractor actively scanning the database for data change
-#TODO - write the logic for the extractor
-#TODO - track the status of the request and update the database accordingly
+        time.sleep(2)
+        
+#TODO: Redo the retry mechanism, no need to read from logging

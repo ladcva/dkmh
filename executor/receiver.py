@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import select, insert
 from db_migration.models import RecentSemesterClasses, UsersRegisteredClasses
-from config.default import POSTGRES_CONN_STRING
+from config.default import POSTGRES_CONN_STRING_SERVER
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -13,7 +13,7 @@ app.config.from_object('config.default.DefaultConfig')
 
 CORS(app, resources=r'/*')
 
-engine = create_engine(POSTGRES_CONN_STRING)
+engine = create_engine(POSTGRES_CONN_STRING_SERVER)
 
 @app.route('/', methods=['POST', 'GET'])
 def receive_param():
@@ -68,7 +68,7 @@ def register():
         session.execute(query)
         session.commit()
 
-    return "Registration Successful"
+    return "Bạn đã đăng ký thành công !"
 
 
 if __name__ == "__main__":

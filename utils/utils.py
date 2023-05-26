@@ -7,7 +7,7 @@ from sqlalchemy.sql.expression import select, update, and_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import sessionmaker
 # Get constants from config file
-from config.default import DEFAULT_NUM_PROCESSES, POSTGRES_CONN_STRING
+from config.default import DEFAULT_NUM_PROCESSES, POSTGRES_CONN_STRING, POSTGRES_CONN_STRING_SERVER
 
 
 # Utility functions
@@ -44,6 +44,7 @@ def validate_cookie(url, cookie):
 
 # Create Engine for these SQLAlchemy functions
 engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+engine2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False)
 
 # Get the semester ids
 def get_semester_id():
@@ -114,14 +115,21 @@ def insert_to_semester():
     session.commit()
 
 
-# Query the Queue
+# Queries for server
+def get_semester_id_worker():
+    Session = sessionmaker(bind=engine2)
+    session = Session()
+
+    semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
+    return sorted(semester_ids, reverse=True)
+print(get_semester_id_worker())
 def query_queue():
-    with engine.connect() as conn:
+    with engine2.connect() as conn:
         query = select(UsersRegisteredClasses).where(UsersRegisteredClasses.status == 'pending')
         return conn.execute(query).fetchall()
 
 def update_status(guid, cookie):
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine2)
     session = Session()
     print(f'guid: {guid}')
     print(f'cookie: {cookie}')
