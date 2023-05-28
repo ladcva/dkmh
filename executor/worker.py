@@ -1,7 +1,8 @@
 from multiprocessing.process import BaseProcess
-from datetime import datetime, time
+from datetime import datetime
+import time
 from uuid import uuid4
-from utils.utils import get_semester_id_worker, file_logger
+from utils.utils import get_semester_id_worker, file_logger, update_status
 from config.default import DKHP_URL
 import requests
 
@@ -37,13 +38,19 @@ class Worker(BaseProcess):
             print(payload)              # For debugging
             print(response.text)
             
-            if "Có lỗi xảy ra" in response.text: # retries, but if ko có trong ctrinh khung thì thôi
+            if "Code" and "01" in response.text: # retries, but if ko có trong ctrinh khung thì thôi
                 file_logger.error(f"Failed to register class {queuedClass} with GUID: {guid} for user with auth: {auth_user} !")
                 retries += 1
                 time.sleep(retry_delay)
-                 
+            
+            elif "Không tìm thấy thông tin môn học phần" in response.text:
+                file_logger.error(f"Wrong class, {queuedClass} does not exists in curriculum")
+                update_status(guid, auth_user)
+
             elif "Bạn đã đăng ký thành công" in response.text: # code:01 means success
                 file_logger.info(f"Successfully registered class {queuedClass} with GUID: {guid} for user with auth: {auth_user} !")
+                update_status(guid, auth_user)
                 return f"Successfully registered class{queuedClass} {guid} !"
-
+        
+        update_status(guid, auth_user)
         return f'Failed to register class{queuedClass} with GUID: {guid} for user with auth {auth_user} after {retry_limit}'

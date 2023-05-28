@@ -1,7 +1,7 @@
 # This is the Extractor that will extract the data from the database and send it to the Receiver
 # Extractor
 import requests, schedule, time, re
-from utils.utils import query_queue, update_status
+from utils.utils import query_queue
 
 
 def extract():
