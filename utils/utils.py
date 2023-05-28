@@ -42,13 +42,13 @@ def validate_cookie(url, cookie):
     else:
         return True
 
-# Create Engine for these SQLAlchemy functions
-engine = create_engine(POSTGRES_CONN_STRING, echo=False)
-engine2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False)
+# Create engine_1 for these SQLAlchemy functions
+engine_1 = create_engine(POSTGRES_CONN_STRING, echo=False) # for Airflow
+engine_2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False) # for Server and Localhost
 
 # Get the semester ids
-def get_semester_id():
-    Session = sessionmaker(bind=engine)
+def get_semester_id(engine_1):
+    Session = sessionmaker(bind=engine_1)
     session = Session()
 
     semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
@@ -56,7 +56,7 @@ def get_semester_id():
 
 # Import the latest id to class_codes_snapshot table
 def insert_latest_id(set_subject_codes):
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine_1)
     session = Session()
 
     for code in set_subject_codes:
@@ -67,14 +67,14 @@ def insert_latest_id(set_subject_codes):
 
 # Get class codes
 def get_class_codes():
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine_1)
     session = Session()
     class_codes = session.query(ClassCodesSnapshot.code).all()
     return class_codes
 
 # Insert to RecentSemesterClasses table
 def insert_to_latest_sem(**kwargs):
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine_1)
     session = Session()
     
     keys = ['guid', 'class_code', 'subject_name', 'course_code', 'time_slot', 'room', 'lecturer', 'from_to']
@@ -91,7 +91,7 @@ def insert_to_latest_sem(**kwargs):
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine_1)
     session = Session()
     
     for code in subject_codes:
@@ -102,7 +102,7 @@ def insert_to_classes(subject_codes):
 
 # Insert to semesters table
 def insert_to_semester():
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine_1)
     session = Session()
 
     details = session.query(SemesterSnapshot.details).filter(SemesterSnapshot.end_time == None).all()[0][0]
@@ -117,19 +117,19 @@ def insert_to_semester():
 
 # Queries for server
 def get_semester_id_worker():
-    Session = sessionmaker(bind=engine2)
+    Session = sessionmaker(bind=engine_2)
     session = Session()
 
     semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
     return sorted(semester_ids, reverse=True)
-print(get_semester_id_worker())
+
 def query_queue():
-    with engine2.connect() as conn:
+    with engine_2.connect() as conn:
         query = select(UsersRegisteredClasses).where(UsersRegisteredClasses.status == 'pending')
         return conn.execute(query).fetchall()
 
 def update_status(guid, cookie):
-    Session = sessionmaker(bind=engine2)
+    Session = sessionmaker(bind=engine_2)
     session = Session()
     print(f'guid: {guid}')
     print(f'cookie: {cookie}')

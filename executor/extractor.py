@@ -40,15 +40,6 @@ def extract():
 
         requests.post(url, json=payload)
 
-    # Read from log file and update the status of the request
-    with open('executor/logging.log', 'r') as f:
-        for line in f:  # only find in line that is relative to the payload
-            match = re.search(r'GUID: ([\w\-_]+) for user with auth: ([\w\-_]+)', line)
-            if match and "Successfully" in line:
-                update_status(match.group(1), match.group(2))
-            else:
-                continue
-
 
 if __name__ == "__main__":
     schedule.every(5).seconds.do(extract)
