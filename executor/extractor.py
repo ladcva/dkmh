@@ -46,5 +46,3 @@ if __name__ == "__main__":
     while True:
         schedule.run_pending()
         time.sleep(2)
-        
-#TODO: Redo the retry mechanism, no need to read from logging

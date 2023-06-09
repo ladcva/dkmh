@@ -54,3 +54,5 @@ class Worker(BaseProcess):
         
         update_status(guid, auth_user)
         return f'Failed to register class{queuedClass} with GUID: {guid} for user with auth {auth_user} after {retry_limit}'
+
+#TODO: test the retry mechanism

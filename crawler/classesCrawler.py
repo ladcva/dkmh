@@ -57,9 +57,3 @@ if __name__ == "__main__":
     end_time = time.time()
     print(f"Processing time: {end_time - start_time - 1} seconds")
     print("Task run successfully !")
-
- 
-
-    
-#TODO Use a database to store the results
-#TODO Re-design database - Doing
