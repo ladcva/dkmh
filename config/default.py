@@ -2,7 +2,6 @@ import os
 
 DEFAULT_NUM_PROCESSES = os.cpu_count()  # e.g. Apple M1 -> DEFAULT_NUM_PROCESSES = 8
 POSTGRES_CONN_STRING = "postgresql+psycopg2://admin:1@postgres:5432/dkmh"  # This is for Airflow DB
-# For localhost:  "postgresql+psycopg2://admin:1@localhost:5432/dkmh"
 POSTGRES_CONN_STRING_SERVER = "postgresql+psycopg2://admin:1@localhost:5433/dkmh"
 
 ISVNU_DASHBOARD_URL = 'https://sv.isvnu.vn/dashboard.html'
