@@ -33,8 +33,7 @@ def crawl_lhp_data(code):
 
     for item in temp:
         guid = item[0]
-        url2= LH_URL
-        response2 = requests.post(url2, cookies=cookie, data={'GuidIDLopHocPhan': guid})
+        response2 = requests.post(LH_URL, cookies=cookie, data={'GuidIDLopHocPhan': guid})
         soup2 = BeautifulSoup(response2.text, 'html.parser')
         tag = soup2.find_all('td')
         schedule = tag[1].text
@@ -48,7 +47,7 @@ def crawl_lhp_data(code):
 if __name__ == "__main__":
     start_time = time.time()
     temp_instance = TempLists()
-    latest_sem_id = get_semester_id()[0] # index 1 is for testing purpose, the latest sem ID doesn't have any codes yet
+    latest_sem_id = get_semester_id()[0] # 0 = newest semester
     class_codes = [item[0] for item in get_class_codes()]
     num_processes = DEFAULT_NUM_PROCESSES*3        # *3
     chunk_size = len(class_codes) // num_processes  # Determine chunk size for each process
