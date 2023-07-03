@@ -44,11 +44,11 @@ def validate_cookie(url, cookie):
 
 # Create engine_1 for these SQLAlchemy functions
 engine_1 = create_engine(POSTGRES_CONN_STRING, echo=False) # for Airflow
-engine_2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False) # for Server and Localhost
+engine_2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False) # for Server and Localhost testing
 
 # Get the semester ids
-def get_semester_id(engine_1):
-    Session = sessionmaker(bind=engine_1)
+def get_semester_id():
+    Session = sessionmaker(bind=engine_2) # FOR TESTING, change to engine_1 for production
     session = Session()
 
     semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
@@ -65,9 +65,9 @@ def insert_latest_id(set_subject_codes):
    
     session.commit()
 
-# Get class codes
+# Get class codes, engine_2 for local testing, change to engine_1 for production
 def get_class_codes():
-    Session = sessionmaker(bind=engine_1)
+    Session = sessionmaker(bind=engine_2)
     session = Session()
     class_codes = session.query(ClassCodesSnapshot.code).all()
     return class_codes
