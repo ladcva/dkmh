@@ -6,7 +6,6 @@ from config.default import ASC_AUTH_STR, HP_URL, LH_URL, DEFAULT_NUM_PROCESSES
 
 def crawl_lhp_data(code):
     temp, temp2, temp3 = [], [], []
-    attributes = []
     cookie = {'ASC.AUTH': ASC_AUTH_STR}
     url = HP_URL.format(latest_sem_id, code, code)
     response = requests.post(url, cookies=cookie)
@@ -17,29 +16,22 @@ def crawl_lhp_data(code):
             tag = soup.find_all('tr')[i]
             try:
                     print('Trying to access data-guidlhp attribute')
-                    attribute = tag['data-guidlhp']
+                    guid = tag['data-guidlhp']
                     print('data-guidlhp attribute accessed successfully')
-                    attributes.append(attribute)
             except KeyError:
                     # The data-guidlhp attribute was not found, skip to the next iteration
                     print('KeyError occurred, skipping to next iteration')
                     continue
             span_element = tag.find('span', attrs={'lang': 'dkhp-malhp'})
-            attribute2 = span_element.next_sibling.strip()
-            attribute3 = soup.find_all('div', class_='name')[0].text
-            print(attribute, attribute2, attribute3)
-            temp.append((attribute, attribute2, attribute3)) 
+            class_code = span_element.next_sibling.strip().split(' - ')[0].split(': ')[1]
+            subject_code = span_element.next_sibling.strip().split(' - ')[1]
+            subject_name = soup.find_all('div', class_='name')[0].text
+            print(guid, '-', class_code, '-',subject_code, '-',subject_name)
+            temp.append((guid, class_code, subject_code, subject_name))
         except IndexError:
             break
 
     for item in temp:
-        guid = item[0]
-        specific_class_code = item[1].split(' - ')[0].split(': ')[1]
-        general_class_code = item[1].split(' - ')[1]
-        subject_name = item[2]
-        temp2.append((guid, general_class_code, subject_name, specific_class_code))
-
-    for item in temp2:
         guid = item[0]
         url2= LH_URL
         response2 = requests.post(url2, cookies=cookie, data={'GuidIDLopHocPhan': guid})
@@ -49,9 +41,9 @@ def crawl_lhp_data(code):
         room = tag[3].text
         lecturer = tag[6].text
         timeframe = tag[7].text
-        temp3.append((schedule, room, lecturer, timeframe))
-    temp4 = [x + y for x, y in zip(temp2, temp3)]
-    return temp4
+        temp2.append((schedule, room, lecturer, timeframe))
+    temp3 = [x + y for x, y in zip(temp, temp2)]
+    return(temp3)
 
 if __name__ == "__main__":
     start_time = time.time()
