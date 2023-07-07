@@ -63,6 +63,7 @@ if __name__ == "__main__":
     #                      semester_id=latest_sem_id, schedules=temp_instance.schedules, rooms=temp_instance.rooms, lecturers=temp_instance.lecturers, timeframes=temp_instance.timeframes)
     print('The number of classes scheduled is:',len(temp_instance.guids))
     print(f"Processing time: {end_time - start_time - 1} seconds")
+    
     if len(temp_instance.guids) > 0:
         print("Task completed")
     else:
