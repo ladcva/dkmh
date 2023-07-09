@@ -133,7 +133,8 @@ def update_status(guid, cookie):
     session = Session()
     print(f'guid: {guid}')
     print(f'cookie: {cookie}')
-    query = update(UsersRegisteredClasses).where(and_(UsersRegisteredClasses.cookie == cookie, UsersRegisteredClasses.guid == guid, UsersRegisteredClasses.status == 'pending')).values(status='processed')
+    query = update(UsersRegisteredClasses).where(and_(UsersRegisteredClasses.cookie == cookie, UsersRegisteredClasses.guid == guid, UsersRegisteredClasses.status == 'pending'))\
+                                            .values(status='processed')
     session.execute(query)
     session.commit()
 
