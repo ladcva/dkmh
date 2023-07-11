@@ -38,6 +38,7 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
 
 if __name__ == "__main__":
     start_time = time.time()
+    
     codes_list = get_all_subjects()
     num_processes = DEFAULT_NUM_PROCESSES*3  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
@@ -55,5 +56,6 @@ if __name__ == "__main__":
     set_subject_codes = set(available_subject_codes)
     insert_latest_id(set_subject_codes)
     end_time = time.time()
+    
     print(f"Processing time: {end_time - start_time - 1} seconds")
     print("Task run successfully !")
