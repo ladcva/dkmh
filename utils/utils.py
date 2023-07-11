@@ -74,8 +74,11 @@ def get_class_codes():
 
 # Insert to RecentSemesterClasses table
 def insert_to_latest_sem(**kwargs):
-    Session = sessionmaker(bind=engine_1)
+    Session = sessionmaker(bind=engine_2)   # engine_2 for testing
     session = Session()
+    
+    # Truncate the table before inserting new data
+    session.execute('TRUNCATE TABLE recent_semester_classes')
     
     keys = ['guid', 'class_code', 'subject_name', 'course_code', 'time_slot', 'room', 'lecturer', 'from_to']
     data = [dict(zip(keys, values)) for values in 
@@ -91,7 +94,7 @@ def insert_to_latest_sem(**kwargs):
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
-    Session = sessionmaker(bind=engine_1)
+    Session = sessionmaker(bind=engine_2)   # engine_2 for testing
     session = Session()
     
     for code in subject_codes:
