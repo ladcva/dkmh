@@ -46,6 +46,7 @@ def crawl_lhp_data(code):
 
 if __name__ == "__main__":
     start_time = time.time()
+    
     temp_instance = TempLists()
     latest_sem_id = get_semester_id()[0] # 0 = newest semester
     class_codes = [item[0] for item in get_class_codes()]
@@ -58,9 +59,11 @@ if __name__ == "__main__":
         temp_instance.add_data(result)
     end_time = time.time()
     time.sleep(1)
+    
     insert_to_classes(temp_instance.subject_codes)
     insert_to_latest_sem(guids=temp_instance.guids, subject_codes=temp_instance.subject_codes, subject_names=temp_instance.subject_names, course_codes=temp_instance.course_codes,
                          semester_id=latest_sem_id, schedules=temp_instance.schedules, rooms=temp_instance.rooms, lecturers=temp_instance.lecturers, timeframes=temp_instance.timeframes)
+    
     print('The number of classes scheduled is:',len(temp_instance.guids))
     print(f"Processing time: {end_time - start_time - 1} seconds")
     
