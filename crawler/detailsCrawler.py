@@ -49,7 +49,7 @@ if __name__ == "__main__":
     
     # Initialize variables
     temp_instance = TempLists()
-    latest_sem_id = get_semester_id()[0] # 0 = newest semester
+    latest_sem_id = get_semester_id()[1] # 0 = newest semester
     class_codes = [item[0] for item in get_class_codes()]
     num_processes = DEFAULT_NUM_PROCESSES*3        # *3
     chunk_size = len(class_codes) // num_processes  # Determine chunk size for each process

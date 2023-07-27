@@ -80,7 +80,7 @@ def insert_to_latest_sem(**kwargs):
     # Truncate the table before inserting new data
     session.execute('TRUNCATE TABLE recent_semester_classes')
     
-    keys = ['guid', 'class_code', 'subject_name', 'course_code', 'time_slot', 'room', 'lecturer', 'from_to']
+    keys = ['guid', 'class_code', 'course_code', 'subject_name', 'time_slot', 'room', 'lecturer', 'from_to']
     data = [dict(zip(keys, values)) for values in 
             zip(kwargs['guids'], kwargs['subject_codes'], kwargs['subject_names'], kwargs['course_codes'], 
                 kwargs['schedules'], kwargs['rooms'], kwargs['lecturers'], kwargs['timeframes'])]

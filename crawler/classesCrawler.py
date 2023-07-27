@@ -36,21 +36,21 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
     return None
 
 
-if __name__ == "__main__":
-    start_time = time.time()
+if __name__ == "__main__":      # Only crawl the lastest semester from the 2nd run onward
+    start_time = time.time()    
     
     codes_list = get_all_subjects()
     num_processes = DEFAULT_NUM_PROCESSES*3  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
 
-    for semester in semester_ids:
-        with Pool(processes=num_processes) as pool:
-            func = partial(validate_subject_code, semester)   # Create a partial func to pass semester_id to validate_subject_code
-            for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
-                if result:
-                    available_subject_codes.append(result)
+    # for semester in semester_ids:
+    with Pool(processes=num_processes) as pool:
+        func = partial(validate_subject_code, 36)   # Create a partial func to pass semester_id to validate_subject_code
+        for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
+            if result:
+                available_subject_codes.append(result)
 
-        print(available_subject_codes)
+    print(available_subject_codes)
 
     time.sleep(1)    
     set_subject_codes = set(available_subject_codes)
