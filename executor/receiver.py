@@ -7,10 +7,12 @@ from sqlalchemy.sql.expression import select, insert
 from db_migration.models import RecentSemesterClasses, UsersRegisteredClasses
 from config.default import POSTGRES_CONN_STRING_SERVER
 from flask_cors import CORS
+from flask_caching import Cache
 
 app = Flask(__name__)
-app.config.from_object('config.default.DefaultConfig') 
-
+cache = Cache()
+cache.init_app(app)
+app.config.from_object('config.default.DefaultConfig')
 CORS(app, resources=r'/*')
 
 engine = create_engine(POSTGRES_CONN_STRING_SERVER)
@@ -44,6 +46,7 @@ def receive_param():
         return 'Not found', 404
 
 @app.route('/getClasses', methods=['GET']) # GET method is used to query all classes from database.
+@cache.cached(timeout=300)      # Cache the return classes
 def get_classes():
     Session = sessionmaker(bind=engine)
     session = Session()

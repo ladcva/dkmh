@@ -1,5 +1,5 @@
 python-decouple==3.8
-flask==2.2.2
+flask==2.2.2 # seems like version 2.2.2 is deprecated from Pip, install newer version is OKAY
 jsonrpclib
 python-dotenv==0.21.0
 Werkzeug~=2.2.2

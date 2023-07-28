@@ -17,6 +17,7 @@ class DefaultConfig(object):
     DEBUG = True
     ENV = 'development'
     SECRET_KEY = 'GDtfDCFYjD'
+    CACHE_TYPE = 'simple'
 
 class PgConnection:
     def __init__(self, username, password, host, port, database):
