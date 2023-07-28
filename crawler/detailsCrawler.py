@@ -42,7 +42,7 @@ def crawl_lhp_data(code):
         timeframe = tag[7].text
         class_schedule_list.append((schedule, room, lecturer, timeframe))
     combined_list = [x + y for x, y in zip(class_info_list, class_schedule_list)]
-    return(combined_list)
+    return combined_list
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -51,7 +51,8 @@ if __name__ == "__main__":
     temp_instance = TempLists()
     latest_sem_id = get_semester_id()[1] # 0 = newest semester
     class_codes = [item[0] for item in get_class_codes()]
-    num_processes = DEFAULT_NUM_PROCESSES*3        # *3
+    processes_factor = 3
+    num_processes = DEFAULT_NUM_PROCESSES * processes_factor        # *3
     chunk_size = len(class_codes) // num_processes  # Determine chunk size for each process
 
     # Crawl data
