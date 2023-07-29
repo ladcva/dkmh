@@ -1,5 +1,5 @@
 import requests, itertools, time
-from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES, HP_URL
+from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES, PROCESSES_FACTOR, HP_URL
 from multiprocessing import Pool
 from utils.utils import get_semester_id, insert_latest_id
 from functools import partial
@@ -8,12 +8,11 @@ semester_ids = get_semester_id()
 available_subject_codes = []
 
 def get_all_subjects():
-    list1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT', 'FLF', 'VLF', 'ENG', 'LIN', 'MNS', 'BSA']
-    list2 = range(1, 5)
-    list3 = range(0, 500)
-    codes = ([f"{i}{j}{k:03d}" for i, j, k in itertools.product(list1, list2, list3)])
+    list_1 = ['INS', 'MAT', 'RUS', 'PSY', 'SOC', 'INE', 'THL', 'FIB', 'PHI', 'PEC', 'HIS', 'POL', 'INT', 'FLF', 'VLF', 'ENG', 'LIN', 'MNS', 'BSA']
+    list_2 = range(1, 5)
+    list_3 = range(0, 500)
+    codes = ([f"{i}{j}{k:03d}" for i, j, k in itertools.product(list_1, list_2, list_3)])
     return codes
-
 
 def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_delay=1):
     url = HP_URL.format(semester_id, subject_code, subject_code)  #test with a fixed IDDotdangky
@@ -35,12 +34,11 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
 
     return None
 
-
 if __name__ == "__main__":      # Only crawl the lastest semester from the 2nd run onward
     start_time = time.time()    
     
     codes_list = get_all_subjects()
-    num_processes = DEFAULT_NUM_PROCESSES*3  # Get number of CPU cores available
+    num_processes = DEFAULT_NUM_PROCESSES * PROCESSES_FACTOR  # Get number of CPU cores available
     chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
 
     # for semester in semester_ids:

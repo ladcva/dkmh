@@ -2,7 +2,7 @@ import requests, time
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 from utils.utils import get_semester_id, get_class_codes, insert_to_latest_sem, insert_to_classes, TempLists
-from config.default import ASC_AUTH_STR, HP_URL, LH_URL, DEFAULT_NUM_PROCESSES
+from config.default import ASC_AUTH_STR, HP_URL, LH_URL, DEFAULT_NUM_PROCESSES, PROCESSES_FACTOR
 
 def crawl_lhp_data(code):
     class_info_list, class_schedule_list = [], []
@@ -33,9 +33,9 @@ def crawl_lhp_data(code):
 
     for item in class_info_list:
         guid = item[0]
-        response2 = requests.post(LH_URL, cookies=cookie, data={'GuidIDLopHocPhan': guid})
-        soup2 = BeautifulSoup(response2.text, 'html.parser')
-        tag = soup2.find_all('td')
+        response_2 = requests.post(LH_URL, cookies=cookie, data={'GuidIDLopHocPhan': guid})
+        soup_2 = BeautifulSoup(response_2.text, 'html.parser')
+        tag = soup_2.find_all('td')
         schedule = tag[1].text
         room = tag[3].text
         lecturer = tag[6].text
@@ -51,8 +51,7 @@ if __name__ == "__main__":
     temp_instance = TempLists()
     latest_sem_id = get_semester_id()[1] # 0 = newest semester
     class_codes = [item[0] for item in get_class_codes()]
-    processes_factor = 3
-    num_processes = DEFAULT_NUM_PROCESSES * processes_factor        # *3
+    num_processes = DEFAULT_NUM_PROCESSES * PROCESSES_FACTOR        # *3
     chunk_size = len(class_codes) // num_processes  # Determine chunk size for each process
 
     # Crawl data

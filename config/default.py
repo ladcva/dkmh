@@ -1,6 +1,7 @@
 import os
 
 DEFAULT_NUM_PROCESSES = os.cpu_count()  # e.g. Apple M1 -> DEFAULT_NUM_PROCESSES = 8
+PROCESSES_FACTOR = 3 # Number of processes to run in parallel e.g. Apple M1 has 8 cores -> 8*3 = 24 processes
 POSTGRES_CONN_STRING = "postgresql+psycopg2://admin:1@postgres:5432/dkmh"  # This is for Airflow DB
 POSTGRES_CONN_STRING_SERVER = "postgresql+psycopg2://admin:1@localhost:5433/dkmh"
 

@@ -117,7 +117,6 @@ def insert_to_semester():
 
     session.commit()
 
-
 # Queries for server
 def get_semester_id_worker():
     Session = sessionmaker(bind=engine_2)
