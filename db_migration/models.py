@@ -48,7 +48,7 @@ class RecentSemesterClasses(base):
     from_to = Column(String)
 
 class UsersRegisteredClasses(base):
-    __tablename__ = 'users_registered_classes'     # fix loi chinh ta
+    __tablename__ = 'users_registered_classes'  
     id = Column(BigInteger, Identity(always=True, start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
     name = Column(String)
     cookie = Column(String)
