@@ -67,14 +67,14 @@ def insert_latest_id(set_subject_codes):
 
 # Get class codes, engine_2 for local testing, change to engine_1 for production
 def get_class_codes():
-    Session = sessionmaker(bind=engine_2)
+    Session = sessionmaker(bind=engine_1)
     session = Session()
     class_codes = session.query(ClassCodesSnapshot.code).all()
     return class_codes
 
 # Insert to RecentSemesterClasses table
 def insert_to_latest_sem(**kwargs):
-    Session = sessionmaker(bind=engine_2)   # engine_2 for testing
+    Session = sessionmaker(bind=engine_1)   # engine_2 for testing
     session = Session()
     
     # Truncate the table before inserting new data
@@ -94,7 +94,7 @@ def insert_to_latest_sem(**kwargs):
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
-    Session = sessionmaker(bind=engine_2)   # engine_2 for testing
+    Session = sessionmaker(bind=engine_1)   # engine_2 for testing
     session = Session()
     
     for code in subject_codes:
@@ -116,6 +116,27 @@ def insert_to_semester():
         session.execute(query)
 
     session.commit()
+    
+# Query penultimate Semester Snapshot record to filter out only the lastest Semester
+def diff_with_penultimate_semester_snapshot():
+    Session = sessionmaker(bind=engine_2)
+    session = Session() 
+    
+    penultimate_snapshot = session.query(SemesterSnapshot.list_semester_id)\
+                                    .order_by(SemesterSnapshot.end_time.desc())\
+                                    .offset(1).limit(1).all()[0][0]
+                         
+    if penultimate_snapshot is not None:           
+        new_sem = set(get_semester_id()) - set(penultimate_snapshot)
+        if new_sem:
+            new_sem = new_sem.pop()
+            return new_sem
+        else:
+            return None
+    else:
+        return None
+
+print(diff_with_penultimate_semester_snapshot())
 
 # Queries for server
 def get_semester_id_worker():

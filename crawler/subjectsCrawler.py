@@ -22,10 +22,10 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
         try:
             response = requests.post(url, cookies=cookie, timeout=5)
             if response.status_code == 200:
-                if "lhpchodangky-notfound" in response.text:    # Only return codes that are existed
+                if "lhpchodangky-notfound" in response.text:
                     return None
                 else:
-                    print(f"{subject_code} exists") #fetch the code to database
+                    print(f"{subject_code} exists") 
                     return subject_code
         except Exception as e:
             print(f"{subject_code} - Request exception occurred: {str(e)}")
@@ -34,19 +34,19 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
 
     return None
 
-if __name__ == "__main__":      # Only crawl the lastest semester from the 2nd run onward
+if __name__ == "__main__":
     start_time = time.time()    
     
     codes_list = get_all_subjects()
-    num_processes = DEFAULT_NUM_PROCESSES * PROCESSES_FACTOR  # Get number of CPU cores available
-    chunk_size = len(codes_list) // num_processes  # Determine chunk size for each process
+    num_processes = DEFAULT_NUM_PROCESSES * PROCESSES_FACTOR  
+    chunk_size = len(codes_list) // num_processes  
 
-    # for semester in semester_ids:
-    with Pool(processes=num_processes) as pool:
-        func = partial(validate_subject_code, 36)   # Create a partial func to pass semester_id to validate_subject_code    # Only crawl the lastest sem for local testing, crawl ALL in prod
-        for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
-            if result:
-                available_subject_codes.append(result)
+    for semester in semester_ids:
+        with Pool(processes=num_processes) as pool:
+            func = partial(validate_subject_code, semester)   # Only crawl all the semesters for 1st run
+            for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
+                if result:
+                    available_subject_codes.append(result)
 
     print(available_subject_codes)
 
