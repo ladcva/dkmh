@@ -1,13 +1,14 @@
 import requests
 import logging
 # Import necessary db modules
+from multiprocessing import Pool
 from db_migration.models import SemesterSnapshot, ClassCodesSnapshot, Class, Semester, RecentSemesterClasses, UsersRegisteredClasses
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, update, and_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import sessionmaker
 # Get constants from config file
-from config.default import DEFAULT_NUM_PROCESSES, POSTGRES_CONN_STRING, POSTGRES_CONN_STRING_SERVER
+from config.default import DEFAULT_NUM_PROCESSES, NUM_PROCESSES, POSTGRES_CONN_STRING, POSTGRES_CONN_STRING_SERVER
 
 
 # Utility functions
@@ -48,7 +49,7 @@ engine_2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False) # for Server a
 
 # Get the semester ids
 def get_semester_id():
-    Session = sessionmaker(bind=engine_2) # FOR TESTING, change to engine_1 for production
+    Session = sessionmaker(bind=engine_1) # FOR TESTING, change to engine_1 for production
     session = Session()
 
     semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
@@ -119,7 +120,7 @@ def insert_to_semester():
     
 # Query penultimate Semester Snapshot record to filter out only the lastest Semester
 def diff_with_penultimate_semester_snapshot():
-    Session = sessionmaker(bind=engine_2)
+    Session = sessionmaker(bind=engine_1)   #Change to 1 for prod
     session = Session() 
     
     penultimate_snapshot = session.query(SemesterSnapshot.list_semester_id)\
@@ -135,8 +136,6 @@ def diff_with_penultimate_semester_snapshot():
             return None
     else:
         return None
-
-print(diff_with_penultimate_semester_snapshot())
 
 # Queries for server
 def get_semester_id_worker():

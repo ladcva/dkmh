@@ -1,5 +1,5 @@
 import requests, itertools, time
-from config.default import ASC_AUTH_STR, DEFAULT_NUM_PROCESSES, PROCESSES_FACTOR, HP_URL
+from config.default import ASC_AUTH_STR, NUM_PROCESSES, HP_URL
 from multiprocessing import Pool
 from utils.utils import get_semester_id, insert_latest_id, diff_with_penultimate_semester_snapshot
 from functools import partial
@@ -34,27 +34,28 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
 
     return None
 
+def crawl_subject_codes(semester_id, codes_list, chunk_size):
+    available_subject_codes = []
+    with Pool(processes=NUM_PROCESSES) as pool:
+        func = partial(validate_subject_code, semester_id)
+        for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size):
+            if result:
+                available_subject_codes.append(result)
+    return available_subject_codes
+
 if __name__ == "__main__":
     start_time = time.time()    
     
     codes_list = get_all_subjects()
-    num_processes = DEFAULT_NUM_PROCESSES * PROCESSES_FACTOR  
-    chunk_size = len(codes_list) // num_processes  
+    chunk_size = len(codes_list) // NUM_PROCESSES  
     diff_sem = diff_with_penultimate_semester_snapshot()
     
     if diff_sem:
-        with Pool(processes=num_processes) as pool:
-            func = partial(validate_subject_code, diff_sem)   # Crawl the lastest semester
-            for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
-                if result:
-                    available_subject_codes.append(result)
+        available_subject_codes = crawl_subject_codes(diff_sem, codes_list, chunk_size)
     else:
+        available_subject_codes = []
         for semester in semester_ids:
-            with Pool(processes=num_processes) as pool:
-                func = partial(validate_subject_code, semester)   # Crawl all of the semesters
-                for result in pool.imap_unordered(func, codes_list, chunksize=chunk_size): # Don't need ordered results, so imap_unordered will gain performance
-                    if result:
-                        available_subject_codes.append(result)
+            available_subject_codes += crawl_subject_codes(semester, codes_list, chunk_size)
 
     print(available_subject_codes)
 
