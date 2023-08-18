@@ -32,7 +32,6 @@ def determine_next_task_portal(**kwargs):
 
 @dag(
     "orches_1",
-
     default_args={
         "owner": "Binh",
         "retries": 10,
@@ -45,7 +44,6 @@ def determine_next_task_portal(**kwargs):
 
 )   
 def dkmh_orchestrator():
-    
     @task
     def initialize_env():
         BashOperator(
@@ -69,15 +67,15 @@ def dkmh_orchestrator():
             do_xcom_push=True,
     )
 
-    @task.branch(task_id="track_cdc")
+    @task.branch
     def determine_next_task_cdc(**kwargs):
         ti = kwargs['ti']
         xcom_value = ti.xcom_pull(task_ids='CDC_for_semester')
         print(xcom_value)
         if xcom_value == "Successfully loaded changed data":
-            return "crawl_all_classes"
+            return "crawl_classes"
         else:
-            return "crawl_all_classes"
+            return "crawl_classes"
     # track_cdc = BranchPythonOperator(
     #     task_id = "track_cdc",
     #     python_callable=determine_next_task_cdc,
@@ -98,7 +96,7 @@ def dkmh_orchestrator():
         xcom_value = ti.xcom_pull(task_ids='crawl_all_classes')
         print(xcom_value)
         if "Task run successfully !" in xcom_value:
-            return "crawl_details_for_all_classes"
+            return "crawl_classes_details"
         else:
             return None
         
@@ -109,9 +107,9 @@ def dkmh_orchestrator():
     # )
 
     @task
-    def crawl_class_details():
+    def crawl_classes_details():
         BashOperator(
-            task_id="crawl_details_for_all_classes",
+            task_id="crawl_classes_details",
             bash_command="cd /opt/airflow/dkmh && python -m crawler.detailsCrawler",
         )
     # success -> activate extractor
@@ -146,6 +144,6 @@ def dkmh_orchestrator():
 
     # initialize_env >> create_db >> cdc >> track_cdc >> crawl_classes >> track_crawl_classes >> crawl_class_details >> track_portal >> track_portal_open >> activate_extractor
 
-    initialize_env() >> create_db() >> cdc() >> determine_next_task_cdc() >> crawl_classes() >> determine_next_task_crawl_classes() >> crawl_class_details() >> track_portal() >> determine_next_task_portal() >> activate_extractor()
+    initialize_env() >> create_db() >> cdc() >> determine_next_task_cdc() >> crawl_classes() >> determine_next_task_crawl_classes() >> crawl_classes_details() >> track_portal() >> determine_next_task_portal() >> activate_extractor()
     
 dag = dkmh_orchestrator()
