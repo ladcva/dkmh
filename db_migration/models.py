@@ -1,6 +1,6 @@
 from sqlalchemy import ARRAY, BigInteger, DateTime, Identity, PrimaryKeyConstraint, Column, Integer, String, ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base
 
 
 base = declarative_base()
