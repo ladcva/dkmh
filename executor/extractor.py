@@ -16,15 +16,18 @@ def extract():
 
     grouped_record = {}
     for d in records:
-        auth = d['cookie']
-        status = d['status']
-        queued_class = d['class_code']
-        queued_guid = d['guid']
-    
-        grouped_record.setdefault(auth, {'auth': auth, 'status': status, 'queuedClasses': [], 'queuedGuids': []})
-        
-        grouped_record[auth]['queuedClasses'].append(queued_class)
-        grouped_record[auth]['queuedGuids'].append(queued_guid)
+        auth = d["cookie"]
+        status = d["status"]
+        queued_class = d["class_code"]
+        queued_guid = d["guid"]
+
+        grouped_record.setdefault(
+            auth,
+            {"auth": auth, "status": status, "queuedClasses": [], "queuedGuids": []},
+        )
+
+        grouped_record[auth]["queuedClasses"].append(queued_class)
+        grouped_record[auth]["queuedGuids"].append(queued_guid)
 
     grouped_records = list(grouped_record.values())
 
@@ -32,10 +35,10 @@ def extract():
     for record in grouped_records:
         payload = {
             # 'name': row.name,
-            'auth': record['auth'],
-            'queuedClasses': record['queuedClasses'],
-            'queuedGuids': record['queuedGuids'],
-            'status': record['status']
+            "auth": record["auth"],
+            "queuedClasses": record["queuedClasses"],
+            "queuedGuids": record["queuedGuids"],
+            "status": record["status"],
         }
 
         requests.post(url, json=payload)
