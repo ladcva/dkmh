@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import select, insert, update, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
-from config.default import POSTGRES_CONN_STRING
+from config.default import POSTGRES_CONN_STRING_SERVER
 from datetime import datetime
 from utils.utils import insert_to_semester
 import time
@@ -44,7 +44,7 @@ def init_load(engine):
 
 if __name__ == '__main__':
     # To create table and database dkmh
-    engine = create_engine(POSTGRES_CONN_STRING, echo=False)
+    engine = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False)
     # base.metadata.create_all(engine, checkfirst=True)
 
     if not database_exists(engine.url):

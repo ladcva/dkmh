@@ -49,7 +49,7 @@ engine_2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False) # for Server a
 
 # Get the semester ids
 def get_semester_id():
-    Session = sessionmaker(bind=engine_1) # FOR TESTING, change to engine_1 for production
+    Session = sessionmaker(bind=engine_2) # FOR TESTING, change to engine_2 for production
     session = Session()
 
     semester_ids = session.query(SemesterSnapshot.list_semester_id).filter(SemesterSnapshot.end_time == None).all()[0][0]
@@ -57,7 +57,7 @@ def get_semester_id():
 
 # Import the latest id to class_codes_snapshot table
 def insert_latest_id(set_subject_codes):
-    Session = sessionmaker(bind=engine_1)
+    Session = sessionmaker(bind=engine_2)
     session = Session()
 
     for code in set_subject_codes:
@@ -66,16 +66,16 @@ def insert_latest_id(set_subject_codes):
    
     session.commit()
 
-# Get class codes, engine_2 for local testing, change to engine_1 for production
+# Get class codes, engine_2 for local testing, change to engine_2 for production
 def get_class_codes():
-    Session = sessionmaker(bind=engine_1)
+    Session = sessionmaker(bind=engine_2)
     session = Session()
     class_codes = session.query(ClassCodesSnapshot.code).all()
     return class_codes
 
 # Insert to RecentSemesterClasses table
 def insert_to_latest_sem(**kwargs):
-    Session = sessionmaker(bind=engine_1)   # engine_2 for testing
+    Session = sessionmaker(bind=engine_2)   # engine_2 for testing
     session = Session()
     
     # Truncate the table before inserting new data
@@ -95,7 +95,7 @@ def insert_to_latest_sem(**kwargs):
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
-    Session = sessionmaker(bind=engine_1)   # engine_2 for testing
+    Session = sessionmaker(bind=engine_2)   # engine_2 for testing
     session = Session()
     
     for code in subject_codes:
@@ -106,7 +106,7 @@ def insert_to_classes(subject_codes):
 
 # Insert to semesters table
 def insert_to_semester():
-    Session = sessionmaker(bind=engine_1)
+    Session = sessionmaker(bind=engine_2)
     session = Session()
 
     details = session.query(SemesterSnapshot.details).filter(SemesterSnapshot.end_time == None).all()[0][0]
@@ -120,7 +120,7 @@ def insert_to_semester():
     
 # Query penultimate Semester Snapshot record to filter out only the lastest Semester
 def diff_with_penultimate_semester_snapshot():
-    Session = sessionmaker(bind=engine_1)   #Change to 1 for prod
+    Session = sessionmaker(bind=engine_2)   #Change to 1 for prod
     session = Session() 
     
     penultimate_snapshot = session.query(SemesterSnapshot.list_semester_id)\
