@@ -1,4 +1,5 @@
-import requests, time
+import requests
+import time
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 from utils.utils import (

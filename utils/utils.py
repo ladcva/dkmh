@@ -1,5 +1,6 @@
 import requests
 import logging
+import os
 
 # Import necessary db modules
 from db_migration.models import (
@@ -21,6 +22,9 @@ from config.default import (
     POSTGRES_CONN_STRING,
     POSTGRES_CONN_STRING_SERVER,
 )
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 
 # Utility functions
@@ -64,6 +68,12 @@ engine_2 = create_engine(
     POSTGRES_CONN_STRING_SERVER, echo=False
 )  # for Server and Localhost testing
 
+# Operating Context
+OPERATING_ENV = os.environ["ENVIRONMENT"]
+if OPERATING_ENV == "dev":
+    DEFAULT_ENGINE = engine_2
+else:
+    DEFAULT_ENGINE = engine_1
 
 # Get the semester ids
 def get_semester_id():
@@ -82,7 +92,7 @@ def get_semester_id():
 
 # Import the latest id to class_codes_snapshot table
 def insert_latest_id(set_subject_codes):
-    Session = sessionmaker(bind=engine_2)
+    Session = sessionmaker(bind=DEFAULT_ENGINE)
     session = Session()
 
     for code in set_subject_codes:
@@ -92,9 +102,9 @@ def insert_latest_id(set_subject_codes):
     session.commit()
 
 
-# Get class codes, engine_2 for local testing, change to engine_2 for production
+# Get class codes, engine_2 for local testing, change to engine_1 for production
 def get_class_codes():
-    Session = sessionmaker(bind=engine_2)
+    Session = sessionmaker(bind=DEFAULT_ENGINE)
     session = Session()
     class_codes = session.query(ClassCodesSnapshot.code).all()
     return class_codes
@@ -102,7 +112,7 @@ def get_class_codes():
 
 # Insert to RecentSemesterClasses table
 def insert_to_latest_sem(**kwargs):
-    Session = sessionmaker(bind=engine_2)  # engine_2 for testing
+    Session = sessionmaker(bind=DEFAULT_ENGINE)  # engine_2 for testing
     session = Session()
 
     # Truncate the table before inserting new data
@@ -142,7 +152,7 @@ def insert_to_latest_sem(**kwargs):
 
 # Insert to classes table
 def insert_to_classes(subject_codes):
-    Session = sessionmaker(bind=engine_2)  # engine_2 for testing
+    Session = sessionmaker(bind=DEFAULT_ENGINE)  # engine_2 for testing
     session = Session()
 
     for code in subject_codes:
@@ -154,7 +164,7 @@ def insert_to_classes(subject_codes):
 
 # Insert to semesters table
 def insert_to_semester():
-    Session = sessionmaker(bind=engine_2)
+    Session = sessionmaker(bind=DEFAULT_ENGINE)
     session = Session()
 
     details = (
@@ -177,7 +187,7 @@ def insert_to_semester():
 
 # Query penultimate Semester Snapshot record to filter out only the lastest Semester
 def diff_with_penultimate_semester_snapshot():
-    Session = sessionmaker(bind=engine_2)  # Change to 1 for prod
+    Session = sessionmaker(bind=DEFAULT_ENGINE)  # Change to 1 for prod
     session = Session()
 
     penultimate_snapshot = (
@@ -199,7 +209,7 @@ def diff_with_penultimate_semester_snapshot():
         return None
 
 
-# Queries for server
+# Server - side Queries, always is engine_2
 def get_semester_id_worker():
     Session = sessionmaker(bind=engine_2)
     session = Session()
