@@ -6,7 +6,7 @@ from config.default import (
     NUM_PROCESSES,
     HP_URL,
     POSTGRES_CONN_STRING_SERVER,
-) # Change to POSTGRES_CONN_STRING when deploy in prod
+)  # Change to POSTGRES_CONN_STRING when deploy in prod
 from db_migration.init_load import Initialize
 from multiprocessing import Pool
 from utils.utils import (
@@ -84,7 +84,7 @@ def crawl_subject_codes(semester_id, codes_list, chunk_size):
 if __name__ == "__main__":
     # Initialize database
     Initialize(POSTGRES_CONN_STRING_SERVER)
-    
+
     start_time = time.time()
 
     codes_list = get_all_subjects()
