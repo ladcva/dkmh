@@ -2,7 +2,6 @@ import requests
 import logging
 
 # Import necessary db modules
-from multiprocessing import Pool
 from db_migration.models import (
     SemesterSnapshot,
     ClassCodesSnapshot,
@@ -75,7 +74,7 @@ def get_semester_id():
 
     semester_ids = (
         session.query(SemesterSnapshot.list_semester_id)
-        .filter(SemesterSnapshot.end_time == None)
+        .filter(SemesterSnapshot.end_time is None)
         .all()[0][0]
     )
     return sorted(semester_ids, reverse=True)
@@ -160,7 +159,7 @@ def insert_to_semester():
 
     details = (
         session.query(SemesterSnapshot.details)
-        .filter(SemesterSnapshot.end_time == None)
+        .filter(SemesterSnapshot.end_time is None)
         .all()[0][0]
     )
     sem_ids = list(details.keys())
@@ -207,7 +206,7 @@ def get_semester_id_worker():
 
     semester_ids = (
         session.query(SemesterSnapshot.list_semester_id)
-        .filter(SemesterSnapshot.end_time == None)
+        .filter(SemesterSnapshot.end_time is None)
         .all()[0][0]
     )
     return sorted(semester_ids, reverse=True)

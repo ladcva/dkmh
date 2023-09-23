@@ -16,7 +16,6 @@ class Initialize:
     def __init__(self, conn_str: str) -> None:
         self.engine = create_engine(conn_str)
         self.init_db()
-        # self.init_load()
 
     def init_db(self):
         if not database_exists(self.engine.url):
