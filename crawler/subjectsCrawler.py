@@ -1,5 +1,13 @@
-import requests, itertools, time
-from config.default import ASC_AUTH_STR, NUM_PROCESSES, HP_URL
+import requests
+import itertools
+import time
+from config.default import (
+    ASC_AUTH_STR,
+    NUM_PROCESSES,
+    HP_URL,
+    POSTGRES_CONN_STRING_SERVER,
+) # Change to POSTGRES_CONN_STRING when deploy in prod
+from db_migration.init_load import Initialize
 from multiprocessing import Pool
 from utils.utils import (
     get_semester_id,
@@ -74,6 +82,9 @@ def crawl_subject_codes(semester_id, codes_list, chunk_size):
 
 
 if __name__ == "__main__":
+    # Initialize database
+    Initialize(POSTGRES_CONN_STRING_SERVER)
+    
     start_time = time.time()
 
     codes_list = get_all_subjects()
