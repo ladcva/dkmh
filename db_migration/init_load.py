@@ -10,6 +10,7 @@ from config.default import (
 from datetime import datetime
 from utils.utils import insert_to_semester
 import time
+import logging
 
 
 class Initialize:
@@ -28,7 +29,7 @@ class Initialize:
 
         time.sleep(1)
         insert_to_semester()
-        print("Sucessfully initialized database and loaded semester data")
+        logging.info("Sucessfully initialized database and loaded semester data")
 
     def init_load(self):
         Session = sessionmaker(bind=self.engine)

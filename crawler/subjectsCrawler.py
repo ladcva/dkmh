@@ -1,6 +1,7 @@
 import requests
 import itertools
 import time
+import logging
 from config.default import (
     ASC_AUTH_STR,
     NUM_PROCESSES,
@@ -48,7 +49,7 @@ def get_all_subjects():
     return codes
 
 
-def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_delay=1):
+def validate_subject_code(semester_id: int, subject_code: str, retry_limit=3, retry_delay=1):
     url = HP_URL.format(
         semester_id, subject_code, subject_code
     )  # test with a fixed IDDotdangky
@@ -64,14 +65,14 @@ def validate_subject_code(semester_id, subject_code: str, retry_limit=3, retry_d
                     print(f"{subject_code} exists")
                     return subject_code
         except Exception as e:
-            print(f"{subject_code} - Request exception occurred: {str(e)}")
+            logging.error(f"{subject_code} - Request exception occurred:", repr(e))
             time.sleep(retry_delay)
             retry_limit -= 1
 
     return None
 
 
-def crawl_subject_codes(semester_id, codes_list, chunk_size):
+def crawl_subject_codes(semester_id: int, codes_list: list, chunk_size: int) -> list:
     available_subject_codes = []
     with Pool(processes=NUM_PROCESSES) as pool:
         func = partial(validate_subject_code, semester_id)
@@ -100,12 +101,12 @@ if __name__ == "__main__":
                 semester, codes_list, chunk_size
             )
 
-    print(available_subject_codes)
+    logging.info(f"Available subject codes are: {available_subject_codes}")
 
     time.sleep(1)
     set_subject_codes = set(available_subject_codes)
     insert_latest_id(set_subject_codes)
     end_time = time.time()
 
-    print(f"Processing time: {end_time - start_time - 1} seconds")
-    print("Task run successfully !")
+    logging.info(f"Processing time: {end_time - start_time - 1} seconds")
+    logging.info("Task run successfully !")

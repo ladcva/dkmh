@@ -1,5 +1,6 @@
 import requests
 import time
+import logging
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 from utils.utils import (
@@ -18,7 +19,7 @@ from config.default import (
 )
 
 
-def crawl_lhp_data(code):
+def crawl_lhp_data(code: str) -> list:
     class_info_list, class_schedule_list = [], []
     cookie = {"ASC.AUTH": ASC_AUTH_STR}
     url = HP_URL.format(latest_sem_id, code, code)
@@ -29,12 +30,12 @@ def crawl_lhp_data(code):
         try:
             tag = soup.find_all("tr")[i]
             try:
-                print("Trying to access data-guidlhp attribute")
+                logging.info("Trying to access data-guidlhp attribute")
                 guid = tag["data-guidlhp"]
-                print("data-guidlhp attribute accessed successfully")
-            except KeyError:
+                logging.info("data-guidlhp attribute accessed successfully")
+            except KeyError as e:
                 # The data-guidlhp attribute was not found, skip to the next iteration
-                print("KeyError occurred, skipping to next iteration")
+                logging.error("KeyError occurred, skipping to next iteration", repr(e))
                 continue
             span_element = tag.find("span", attrs={"lang": "dkhp-malhp"})
             class_code = (
@@ -42,7 +43,7 @@ def crawl_lhp_data(code):
             )
             subject_code = span_element.next_sibling.strip().split(" - ")[1]
             subject_name = soup.find_all("div", class_="name")[0].text
-            print(guid, "-", class_code, "-", subject_code, "-", subject_name)
+            logging.info(f"Found: {guid}-{class_code}-{subject_code}-{subject_name}")
             class_info_list.append((guid, class_code, subject_code, subject_name))
         except IndexError:
             break
@@ -83,7 +84,7 @@ if __name__ == "__main__":
     time.sleep(1)
 
     # Insert data into database
-    print("Inserting data into classes...")
+    logging("Inserting data into classes...")
     insert_to_classes(temp_instance.subject_codes)
     print("Data inserted into classes.")
 
