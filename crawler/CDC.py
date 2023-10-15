@@ -99,4 +99,6 @@ if __name__ == "__main__":
             logging.info("Successfully loaded changed data")
             # Call beta job
         else:
-            logging.info("No changes on website. Latest record in db is already up-to-date.")
+            logging.info(
+                "No changes on website. Latest record in db is already up-to-date."
+            )

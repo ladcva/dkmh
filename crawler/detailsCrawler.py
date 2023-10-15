@@ -111,7 +111,7 @@ if __name__ == "__main__":
     else:
         print("Task failed")
 
-# TODO: Create a function to check subject availability for the semester, implement retry mechanism -> Partially done
-# TODO: When a new semester detected, replace the data in the current RecentSemesterClasses table
-# TODO: Add constraints to subject_names so it can be updated to the classes_snapshot table
+# TODO: When a new semester detected,\
+# replace the data in the current RecentSemesterClasses
+# TODO: Add constraints to subject_names so it can be updated to the classes_snapshot
 # TODO: Refactor the scraping method
