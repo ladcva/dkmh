@@ -3,14 +3,14 @@
 import requests
 import schedule 
 import time
-from utils.utils import query_queue
+from utils.utils import WebServing
 
 
 def extract():
     # Combine GUIDs with user's cookie and send a POST request to the Receiver
     url = "http://localhost:5005"
 
-    records = query_queue()
+    records = WebServing.query_queue()
     records.sort(key=lambda record: record.cookie)
 
     # Group records by cookie, class_code, guid, status into one payload, class codes and guids are lists

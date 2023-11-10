@@ -23,6 +23,7 @@ from config.default import (
     POSTGRES_CONN_STRING_SERVER,
 )
 from dotenv import load_dotenv
+from dataclasses import dataclass
 
 load_dotenv(".env")
 
@@ -74,6 +75,7 @@ if OPERATING_ENV == "dev":
     DEFAULT_ENGINE = engine_2
 else:
     DEFAULT_ENGINE = engine_1
+
 
 # Get the semester ids
 def get_semester_id():
@@ -210,44 +212,46 @@ def diff_with_penultimate_semester_snapshot():
 
 
 # Server - side Queries, always is engine_2
-def get_semester_id_worker():
-    Session = sessionmaker(bind=engine_2)
+@dataclass
+class WebServing:
+    engine_2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False)
+    Session = sessionmaker(engine_2)
     session = Session()
-
-    semester_ids = (
-        session.query(SemesterSnapshot.list_semester_id)
-        .filter(SemesterSnapshot.end_time is None)
-        .all()[0][0]
-    )
-    return sorted(semester_ids, reverse=True)
-
-
-def query_queue():
-    with engine_2.connect() as conn:
-        query = select(UsersRegisteredClasses).where(
-            UsersRegisteredClasses.status == "pending"
+    
+    @classmethod
+    def get_semester_id_worker(cls) -> list: #Int or string idk
+        semester_ids = (
+            cls.session.query(SemesterSnapshot.list_semester_id)
+            .filter(SemesterSnapshot.end_time is None)
+            .all()[0][0]
         )
-        return conn.execute(query).fetchall()
+        return sorted(semester_ids, reverse=True)
 
-
-def update_status(guid, cookie):
-    Session = sessionmaker(bind=engine_2)
-    session = Session()
-    print(f"guid: {guid}")
-    print(f"cookie: {cookie}")
-    query = (
-        update(UsersRegisteredClasses)
-        .where(
-            and_(
-                UsersRegisteredClasses.cookie == cookie,
-                UsersRegisteredClasses.guid == guid,
-                UsersRegisteredClasses.status == "pending",
+    @classmethod
+    def query_queue(cls) -> list:
+        with cls.engine_2.connect() as conn:
+            query = select(UsersRegisteredClasses).where(
+                UsersRegisteredClasses.status == "pending"
             )
+            return conn.execute(query).fetchall()
+
+    @classmethod
+    def update_status(cls, guid: str, cookie: str):
+        print(f"guid: {guid}")
+        print(f"cookie: {cookie}")
+        query = (
+            update(UsersRegisteredClasses)
+            .where(
+                and_(
+                    UsersRegisteredClasses.cookie == cookie,
+                    UsersRegisteredClasses.guid == guid,
+                    UsersRegisteredClasses.status == "pending",
+                )
+            )
+            .values(status="processed")
         )
-        .values(status="processed")
-    )
-    session.execute(query)
-    session.commit()
+        cls.session.execute(query)
+        cls.session.commit()
 
 
 # TODO: Add DATETIME to insert_to_semester so we can know which is the latest semester
