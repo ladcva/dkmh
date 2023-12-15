@@ -22,10 +22,12 @@ from config.default import (
     POSTGRES_CONN_STRING,
     POSTGRES_CONN_STRING_SERVER,
 )
+from utils.default_logging import setup_logging
 from dotenv import load_dotenv
 from dataclasses import dataclass
 
 load_dotenv(".env")
+setup_logging()
 
 
 # Utility functions
@@ -57,7 +59,7 @@ def validate_cookie(url, cookie):
     # Get all <option> tags
     tag_items = soup.select("option[value]")
     if "HK" not in tag_items[1].text:
-        print("Invalid cookie, maybe expired ?")
+        logging.error("Invalid cookie, maybe expired ?")
         return False
     else:
         return True
@@ -217,9 +219,9 @@ class WebServing:
     engine_2 = create_engine(POSTGRES_CONN_STRING_SERVER, echo=False)
     Session = sessionmaker(engine_2)
     session = Session()
-    
+
     @classmethod
-    def get_semester_id_worker(cls) -> list: #Int or string idk
+    def get_semester_id_worker(cls) -> list:  # Int or string idk
         semester_ids = (
             cls.session.query(SemesterSnapshot.list_semester_id)
             .filter(SemesterSnapshot.end_time is None)
@@ -283,6 +285,7 @@ class TempLists:
 # Loggers
 # Set up a formatter to include timestamp for logs
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
 # Set up a logger to write logs to a file
 file_logger = logging.getLogger("file_logger")
 file_logger.setLevel(logging.INFO)

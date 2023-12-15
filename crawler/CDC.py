@@ -3,6 +3,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from utils.utils import sort_by_key, validate_cookie
+from utils.default_logging import setup_logging
 import logging
 
 from sqlalchemy import create_engine
@@ -76,6 +77,7 @@ def ingest_new_semester(engine):
 
 
 if __name__ == "__main__":
+    setup_logging()
     url = ISVNU_DASHBOARD_URL
     cookie = {"ASC.AUTH": ASC_AUTH_STR}
 

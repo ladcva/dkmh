@@ -8,6 +8,7 @@ from config.default import (
     HP_URL,
     POSTGRES_CONN_STRING_SERVER,
 )  # Change to POSTGRES_CONN_STRING when deploy in prod
+from utils.default_logging import setup_logging
 from db_migration.init_load import Initialize
 from multiprocessing import Pool
 from utils.utils import (
@@ -62,7 +63,7 @@ def validate_subject_code(semester_id: int, subject_code: str, retry_limit=3, re
                 if "lhpchodangky-notfound" in response.text:
                     return None
                 else:
-                    print(f"{subject_code} exists")
+                    logging.info(f"{subject_code} exists")
                     return subject_code
         except Exception as e:
             logging.error(f"{subject_code} - Request exception occurred:", repr(e))
@@ -83,6 +84,7 @@ def crawl_subject_codes(semester_id: int, codes_list: list, chunk_size: int) -> 
 
 
 if __name__ == "__main__":
+    setup_logging()
     # Initialize database
     Initialize(POSTGRES_CONN_STRING_SERVER)
 

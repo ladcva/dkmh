@@ -8,7 +8,7 @@ from config.default import (
     POSTGRES_CONN_STRING_SERVER,
 )  # Change to POSTGRES_CONN_STRING when deploy in prod
 from datetime import datetime
-from dataclasses import dataclass
+from utils.default_logging import setup_logging
 from utils.utils import insert_to_semester
 import time
 import logging
@@ -59,4 +59,5 @@ class Initialize:
 
 
 if __name__ == "__main__":
+    setup_logging()
     Initialize(POSTGRES_CONN_STRING_SERVER)

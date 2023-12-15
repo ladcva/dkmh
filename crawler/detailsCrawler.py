@@ -10,6 +10,7 @@ from utils.utils import (
     insert_to_classes,
     TempLists,
 )
+from utils.default_logging import setup_logging
 from config.default import (
     ASC_AUTH_STR,
     HP_URL,
@@ -65,6 +66,7 @@ def crawl_lhp_data(code: str) -> list:
 
 
 if __name__ == "__main__":
+    setup_logging()
     start_time = time.time()
 
     # Initialize variables
@@ -86,9 +88,9 @@ if __name__ == "__main__":
     # Insert data into database
     logging("Inserting data into classes...")
     insert_to_classes(temp_instance.subject_codes)
-    print("Data inserted into classes.")
+    logging.info("Data inserted into classes.")
 
-    print("Inserting data into latest semester...")
+    logging.info("Inserting data into latest semester...")
     insert_to_latest_sem(
         guids=temp_instance.guids,
         subject_codes=temp_instance.subject_codes,
@@ -100,16 +102,16 @@ if __name__ == "__main__":
         lecturers=temp_instance.lecturers,
         timeframes=temp_instance.timeframes,
     )
-    print("Data inserted into latest semester.")
+    logging.info("Data inserted into latest semester.")
 
     # Results
     end_time = time.time()
-    print("The number of classes scheduled is:", len(temp_instance.guids))
-    print(f"Processing time: {end_time - start_time - 1} seconds")
+    logging.info("The number of classes scheduled is:", len(temp_instance.guids))
+    logging.info(f"Processing time: {end_time - start_time - 1} seconds")
     if len(temp_instance.guids) > 0:
-        print("Task completed")
+        logging.info("Task completed")
     else:
-        print("Task failed")
+        logging.info("Task failed")
 
 # TODO: When a new semester detected,\
 # replace the data in the current RecentSemesterClasses
