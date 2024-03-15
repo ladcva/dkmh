@@ -8,17 +8,15 @@ from config.default import (
     HP_URL,
     POSTGRES_CONN_STRING_SERVER,
 )  # Change to POSTGRES_CONN_STRING when deploy in prod
-from utils.default_logging import setup_logging
+from config.default_logging import setup_logging
 from db_migration.init_load import Initialize
 from multiprocessing import Pool
-from utils.utils import (
-    get_semester_id,
-    insert_latest_id,
-    diff_with_penultimate_semester_snapshot,
-)
+from utils.utils import engine_1, DbUtils
 from functools import partial
 
-semester_ids = get_semester_id()
+db_utils = DbUtils(engine_1)
+
+semester_ids = db_utils.get_semester_id()
 available_subject_codes = []
 
 
@@ -50,7 +48,9 @@ def get_all_subjects():
     return codes
 
 
-def validate_subject_code(semester_id: int, subject_code: str, retry_limit=3, retry_delay=1):
+def validate_subject_code(
+    semester_id: int, subject_code: str, retry_limit=3, retry_delay=1
+):
     url = HP_URL.format(
         semester_id, subject_code, subject_code
     )  # test with a fixed IDDotdangky
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
     codes_list = get_all_subjects()
     chunk_size = len(codes_list) // NUM_PROCESSES
-    diff_sem = diff_with_penultimate_semester_snapshot()
+    diff_sem = db_utils.diff_with_penultimate_semester_snapshot()
 
     if diff_sem:
         available_subject_codes = crawl_subject_codes(diff_sem, codes_list, chunk_size)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     time.sleep(1)
     set_subject_codes = set(available_subject_codes)
-    insert_latest_id(set_subject_codes)
+    db_utils.insert_latest_id(set_subject_codes)
     end_time = time.time()
 
     logging.info(f"Processing time: {end_time - start_time - 1} seconds")

@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from utils.utils import sort_by_key, validate_cookie
-from utils.default_logging import setup_logging
+from config.default_logging import setup_logging
 import logging
 
 from sqlalchemy import create_engine

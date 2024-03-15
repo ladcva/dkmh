@@ -1,8 +1,7 @@
 import requests
 import logging
 import os
-
-# Import necessary db modules
+from dataclasses import dataclass
 from db_migration.models import (
     SemesterSnapshot,
     ClassCodesSnapshot,
@@ -12,19 +11,17 @@ from db_migration.models import (
     UsersRegisteredClasses,
 )
 from sqlalchemy import create_engine
+from sqlalchemy.engine.base import Engine
 from sqlalchemy.sql.expression import select, update, and_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import sessionmaker
-
-# Get constants from config file
 from config.default import (
     DEFAULT_NUM_PROCESSES,
     POSTGRES_CONN_STRING,
     POSTGRES_CONN_STRING_SERVER,
 )
-from utils.default_logging import setup_logging
+from config.default_logging import setup_logging
 from dotenv import load_dotenv
-from dataclasses import dataclass
 
 load_dotenv(".env")
 setup_logging()
@@ -35,8 +32,8 @@ def get_num_workers(provided_num_workers):
     try:
         provided_num_workers = int(float(provided_num_workers))
     except TypeError or ValueError:
-        print('Invalid value, "workers" must be int.')
-        print(f"Using DEFAULT_NUM_PROCESSES={DEFAULT_NUM_PROCESSES} instead.")
+        logging.info('Invalid value, "workers" must be int.')
+        logging.info(f"Using DEFAULT_NUM_PROCESSES={DEFAULT_NUM_PROCESSES} instead.")
         provided_num_workers = DEFAULT_NUM_PROCESSES
     finally:
         if provided_num_workers < DEFAULT_NUM_PROCESSES:
@@ -66,151 +63,131 @@ def validate_cookie(url, cookie):
 
 
 # Create engine_1 for these SQLAlchemy functions
-engine_1 = create_engine(POSTGRES_CONN_STRING, echo=False)  # for Airflow
-engine_2 = create_engine(
-    POSTGRES_CONN_STRING_SERVER, echo=False
-)  # for Server and Localhost testing
-
+engine_1 = POSTGRES_CONN_STRING  # for Airflow
+engine_2 = POSTGRES_CONN_STRING_SERVER  # for local testing
 # Operating Context
 OPERATING_ENV = os.environ["ENVIRONMENT"]
 if OPERATING_ENV == "dev":
-    DEFAULT_ENGINE = engine_2
+    DEFAULT_CONN_STR = POSTGRES_CONN_STRING
 else:
-    DEFAULT_ENGINE = engine_1
+    DEFAULT_CONN_STR = POSTGRES_CONN_STRING_SERVER
 
 
-# Get the semester ids
-def get_semester_id():
-    Session = sessionmaker(
-        bind=engine_2
-    )  # FOR TESTING, change to engine_2 for production
-    session = Session()
+# New database utility class
+class DbUtils:
+    def __init__(self, conn_str: str) -> None:
+        self.engine = create_engine(conn_str)
+        self.session = sessionmaker(bind=self.engine)()
 
-    semester_ids = (
-        session.query(SemesterSnapshot.list_semester_id)
-        .filter(SemesterSnapshot.end_time is None)
-        .all()[0][0]
-    )
-    return sorted(semester_ids, reverse=True)
-
-
-# Import the latest id to class_codes_snapshot table
-def insert_latest_id(set_subject_codes):
-    Session = sessionmaker(bind=DEFAULT_ENGINE)
-    session = Session()
-
-    for code in set_subject_codes:
-        query = pg_insert(ClassCodesSnapshot).values(code=code).on_conflict_do_nothing()
-        session.execute(query)
-
-    session.commit()
-
-
-# Get class codes, engine_2 for local testing, change to engine_1 for production
-def get_class_codes():
-    Session = sessionmaker(bind=DEFAULT_ENGINE)
-    session = Session()
-    class_codes = session.query(ClassCodesSnapshot.code).all()
-    return class_codes
-
-
-# Insert to RecentSemesterClasses table
-def insert_to_latest_sem(**kwargs):
-    Session = sessionmaker(bind=DEFAULT_ENGINE)  # engine_2 for testing
-    session = Session()
-
-    # Truncate the table before inserting new data
-    session.execute("TRUNCATE TABLE recent_semester_classes")
-
-    keys = [
-        "guid",
-        "class_code",
-        "course_code",
-        "subject_name",
-        "time_slot",
-        "room",
-        "lecturer",
-        "from_to",
-    ]
-    data = [
-        dict(zip(keys, values))
-        for values in zip(
-            kwargs["guids"],
-            kwargs["subject_codes"],
-            kwargs["subject_names"],
-            kwargs["course_codes"],
-            kwargs["schedules"],
-            kwargs["rooms"],
-            kwargs["lecturers"],
-            kwargs["timeframes"],
+    # Get the semester ids
+    def get_semester_id(self) -> list:
+        semester_ids = (
+            self.session.query(SemesterSnapshot.list_semester_id)
+            .filter(SemesterSnapshot.end_time is None)
+            .all()[0][0]
         )
-    ]
+        return sorted(semester_ids, reverse=True)
 
-    for row in data:
-        row["semester_id"] = kwargs["semester_id"]
-        query = pg_insert(RecentSemesterClasses).values(**row).on_conflict_do_nothing()
-        session.execute(query)
+    # Import the latest id to class_codes_snapshot table
+    def insert_latest_id(self, set_subject_codes: set) -> None:
+        for code in set_subject_codes:
+            query = (
+                pg_insert(ClassCodesSnapshot).values(code=code).on_conflict_do_nothing()
+            )
+            self.session.execute(query)
 
-    session.commit()
+        self.session.commit()
 
+    # Get class codes, engine_2 for local testing, change to engine_1 for production
+    def get_class_codes(self) -> list:
+        class_codes = self.session.query(ClassCodesSnapshot.code).all()
+        return class_codes
 
-# Insert to classes table
-def insert_to_classes(subject_codes):
-    Session = sessionmaker(bind=DEFAULT_ENGINE)  # engine_2 for testing
-    session = Session()
+    # Insert to RecentSemesterClasses table
+    def insert_to_latest_sem(self, **kwargs):
 
-    for code in subject_codes:
-        query = pg_insert(Class).values(code=code).on_conflict_do_nothing()
-        session.execute(query)
+        # Truncate the table before inserting new data
+        self.session.execute("TRUNCATE TABLE recent_semester_classes")
 
-    session.commit()
+        keys = [
+            "guid",
+            "class_code",
+            "course_code",
+            "subject_name",
+            "time_slot",
+            "room",
+            "lecturer",
+            "from_to",
+        ]
+        data = [
+            dict(zip(keys, values))
+            for values in zip(
+                kwargs["guids"],
+                kwargs["subject_codes"],
+                kwargs["subject_names"],
+                kwargs["course_codes"],
+                kwargs["schedules"],
+                kwargs["rooms"],
+                kwargs["lecturers"],
+                kwargs["timeframes"],
+            )
+        ]
 
+        for row in data:
+            row["semester_id"] = kwargs["semester_id"]
+            query = (
+                pg_insert(RecentSemesterClasses).values(**row).on_conflict_do_nothing()
+            )
+            self.session.execute(query)
 
-# Insert to semesters table
-def insert_to_semester():
-    Session = sessionmaker(bind=DEFAULT_ENGINE)
-    session = Session()
+        self.session.commit()
 
-    details = (
-        session.query(SemesterSnapshot.details)
-        .filter(SemesterSnapshot.end_time is None)
-        .all()[0][0]
-    )
-    sem_ids = list(details.keys())
-    sem_names = list(details.values())
-    for sem_id, sem_name in zip(sem_ids, sem_names):
-        query = (
-            pg_insert(Semester)
-            .values(id=sem_id, name=sem_name)
-            .on_conflict_do_nothing()
+    # Insert to classes table
+    def insert_to_classes(self, subject_codes: list) -> None:
+        for code in subject_codes:
+            query = pg_insert(Class).values(code=code).on_conflict_do_nothing()
+            self.session.execute(query)
+
+        self.session.commit()
+
+    # Insert to semesters table
+    def insert_to_semester(self) -> None:
+        details = (
+            self.session.query(SemesterSnapshot.details)
+            .filter(SemesterSnapshot.end_time is None)
+            .all()[0][0]
         )
-        session.execute(query)
+        sem_ids = list(details.keys())
+        sem_names = list(details.values())
+        for sem_id, sem_name in zip(sem_ids, sem_names):
+            query = (
+                pg_insert(Semester)
+                .values(id=sem_id, name=sem_name)
+                .on_conflict_do_nothing()
+            )
+            self.session.execute(query)
 
-    session.commit()
+        self.session.commit()
 
+    # Query penultimate Semester Snapshot record to filter out only the lastest Semester
+    def diff_with_penultimate_semester_snapshot(self) -> int:
+        penultimate_snapshot = (
+            self.session.query(SemesterSnapshot.list_semester_id)
+            .order_by(SemesterSnapshot.end_time.desc())
+            .offset(1)
+            .limit(1)
+            .all()[0][0]
+        )
 
-# Query penultimate Semester Snapshot record to filter out only the lastest Semester
-def diff_with_penultimate_semester_snapshot():
-    Session = sessionmaker(bind=DEFAULT_ENGINE)  # Change to 1 for prod
-    session = Session()
-
-    penultimate_snapshot = (
-        session.query(SemesterSnapshot.list_semester_id)
-        .order_by(SemesterSnapshot.end_time.desc())
-        .offset(1)
-        .limit(1)
-        .all()[0][0]
-    )
-
-    if penultimate_snapshot is not None:
-        new_sem = set(get_semester_id()) - set(penultimate_snapshot)
-        if new_sem:
-            new_sem = new_sem.pop()
-            return new_sem
+        if penultimate_snapshot is not None:
+            new_sem = set(self.get_semester_id()) - set(penultimate_snapshot)
+            if new_sem:
+                new_sem = new_sem.pop()
+                return new_sem
+            else:
+                return None
         else:
             return None
-    else:
-        return None
 
 
 # Server - side Queries, always is engine_2
@@ -238,9 +215,9 @@ class WebServing:
             return conn.execute(query).fetchall()
 
     @classmethod
-    def update_status(cls, guid: str, cookie: str):
-        print(f"guid: {guid}")
-        print(f"cookie: {cookie}")
+    def update_status(cls, guid: str, cookie: str) -> None:
+        logging.info(f"guid: {guid}")
+        logging.info(f"cookie: {cookie}")
         query = (
             update(UsersRegisteredClasses)
             .where(
@@ -280,15 +257,3 @@ class TempLists:
             self.rooms.append(each[5])
             self.lecturers.append(each[6])
             self.timeframes.append(each[7])
-
-
-# Loggers
-# Set up a formatter to include timestamp for logs
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-
-# Set up a logger to write logs to a file
-file_logger = logging.getLogger("file_logger")
-file_logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler("executor/logging.log")
-file_handler.setFormatter(formatter)
-file_logger.addHandler(file_handler)

@@ -4,13 +4,11 @@ import logging
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 from utils.utils import (
-    get_semester_id,
-    get_class_codes,
-    insert_to_latest_sem,
-    insert_to_classes,
+    engine_1,
+    DbUtils,
     TempLists,
 )
-from utils.default_logging import setup_logging
+from config.default_logging import setup_logging
 from config.default import (
     ASC_AUTH_STR,
     HP_URL,
@@ -67,12 +65,13 @@ def crawl_lhp_data(code: str) -> list:
 
 if __name__ == "__main__":
     setup_logging()
+    db_utils = DbUtils(engine_1)
     start_time = time.time()
 
     # Initialize variables
     temp_instance = TempLists()
-    latest_sem_id = get_semester_id()[1]  # 0 = newest semester
-    class_codes = [item[0] for item in get_class_codes()]
+    latest_sem_id = db_utils.get_semester_id()[1]  # 0 = newest semester
+    class_codes = [item[0] for item in db_utils.get_class_codes()]
     num_processes = DEFAULT_NUM_PROCESSES * PROCESSES_FACTOR  # *3
     chunk_size = (
         len(class_codes) // num_processes
@@ -87,11 +86,11 @@ if __name__ == "__main__":
 
     # Insert data into database
     logging("Inserting data into classes...")
-    insert_to_classes(temp_instance.subject_codes)
+    db_utils.insert_to_classes(temp_instance.subject_codes)
     logging.info("Data inserted into classes.")
 
     logging.info("Inserting data into latest semester...")
-    insert_to_latest_sem(
+    db_utils.insert_to_latest_sem(
         guids=temp_instance.guids,
         subject_codes=temp_instance.subject_codes,
         subject_names=temp_instance.subject_names,
@@ -112,8 +111,3 @@ if __name__ == "__main__":
         logging.info("Task completed")
     else:
         logging.info("Task failed")
-
-# TODO: When a new semester detected,\
-# replace the data in the current RecentSemesterClasses
-# TODO: Add constraints to subject_names so it can be updated to the classes_snapshot
-# TODO: Refactor the scraping method
